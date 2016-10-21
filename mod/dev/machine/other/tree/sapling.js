@@ -109,8 +109,8 @@ TileEntity.registerPrototype(BlockID.rubberTreeSapling, {
 			this.updateAnimation();
 		}
 		if (this.data.growth > 512){
-			World.removeTileEntity(this.x, this.y, this.z);
-			RubberTreeGenerationHelper.generateRubberTree(this.x, this.y, this.z);
+			this.selfDestroy();
+			RubberTreeGenerationHelper.generateRubberTree(this.x, this.y, this.z, true);
 		}
 	}
 });

@@ -103,7 +103,7 @@ var RubberTreeGenerationHelper = {
 		}
 	},
 	
-	generateRubberTree: function(x, y, z){
+	generateRubberTree: function(x, y, z, activateTileEntity){
 		RubberTreeGenerationHelper.generateCustomTree(x, y, z, {
 			log: {
 				id: BlockID.rubberTreeLog,
@@ -122,9 +122,40 @@ var RubberTreeGenerationHelper = {
 			pike: 2 + parseInt(Math.random() * 1.5),
 			radius: 2
 		});
-		return World.addTileEntity(x, y, z);
+		if (activateTileEntity){
+			return World.addTileEntity(x, y, z);
+		}
 	}
 }
 
 
+var DesertBiomeIDs = {2:true, 17:true};
+var ForestBiomeIDs = {4:true, 18:true, 27:true, 28:true, 29:true};
+var JungleBiomeIDs = {21:true};
+var SwampBiomeIDs = {6:true};
+
+var RUBBER_TREE_BIOME_DATA = {
+	4: .5,
+	18: .5,
+	27: .5,
+	28: .5,
+	29: .5,
+	21: .8,
+	6: 1
+};
+
+Callback.addCallback("GenerateChunk", function(chunkX, chunkZ){
+	if (Math.random() < .08){
+		if(Math.random() < RUBBER_TREE_BIOME_DATA[World.getBiome((chunkX + .5) * 16, (chunkZ + .5) * 16)] || .1){
+			for (var i = 0; i < 1 + Math.random() * 2; i++){
+				var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 64, 128);
+				coords = GenerationUtils.findSurface(coords.x, coords.y, coords.z);
+				if (World.getBlockID(coords.x, coords.y, coords.z) == 2){	
+					coords.y++;	
+					RubberTreeGenerationHelper.generateRubberTree(coords.x, coords.y, coords.z, false);
+				}
+			}
+		}
+	}
+});
 

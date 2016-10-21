@@ -10,11 +10,8 @@
  This code is a copyright, do not distribute.
 */
 
+// constants
 var GUI_BAR_STANDART_SCALE = 3.2;
-
-var nativeGetTile = ModAPI.requireGlobal("getTile_origin");
-var nativeGetLightLevel = ModAPI.requireGlobal("Level.getBrightness");
-
 var FURNACE_FUEL_MAP = {
 	5: 300,
 	6: 100,
@@ -42,7 +39,23 @@ var FURNACE_FUEL_MAP = {
 	58: 300
 };
 
+
+// import native methods, that work faster
+var nativeGetTile = ModAPI.requireGlobal("getTile_origin");
+var nativeGetLightLevel = ModAPI.requireGlobal("Level.getBrightness");
+
+
+// square lava texture for geothermal generator ui.
 LiquidRegistry.getLiquidData("lava").uiTextures.push("gui_lava_texture_16x16");
+
+
+// if mod running on core engine 1.02 or less, it will make callback for undeground generation to be called with usual generation
+if (getCoreAPILevel() < 3){
+	Callback.addCallback("GenerateChunk", function(x, z){
+		Callback.invokeCallback("GenerateChunkUnderground", x, z);
+	});
+	Logger.Log("Core Engine with low api level detected, ore generation will not be optimized", "WARNING");
+}
 
 
 var MachineRegistry = {
@@ -341,6 +354,8 @@ Callback.addCallback("PostLoaded", function(){
 		"x#x",
 		"xxx"
 	], ['x', ItemID.plateSteel, -1, '#', BlockID.machineBlockBasic, -1]);
+	
+	Recipes.addShapeless({id: ItemID.plateIron, count: 8, data: 0}, [{id: BlockID.machineBlockBasic, data: 0}]);
 });
 
 
@@ -468,6 +483,56 @@ Block.registerDropFunction("oreUranium", function(coords, blockID, blockData, le
 }, 3);
 
 
+
+
+Callback.addCallback("GenerateChunkUnderground", function(chunkX, chunkZ){
+	for (var i = 0; i < 12; i++){
+		var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 24, 64);
+		GenerationUtils.genMinable(coords.x, coords.y, coords.z, {
+			id: BlockID.oreCopper,
+			data: 0,
+			size: 3,
+			ratio: .3,
+			checkerTile: 1,
+			checkerMode: false
+		});
+	}
+	for (var i = 0; i < 9; i++){
+		var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 18, 52);
+		GenerationUtils.genMinable(coords.x, coords.y, coords.z, {
+			id: BlockID.oreTin,
+			data: 0,
+			size: 2,
+			ratio: .3,
+			checkerTile: 1,
+			checkerMode: false
+		});
+	}
+	for (var i = 0; i < 7; i++){
+		var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 18, 48);
+		GenerationUtils.genMinable(coords.x, coords.y, coords.z, {
+			id: BlockID.oreLead,
+			data: 0,
+			size: 1,
+			ratio: .4,
+			checkerTile: 1,
+			checkerMode: false
+		});
+	}
+	for (var i = 0; i < 3; i++){
+		var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 18, 48);
+		GenerationUtils.genMinable(coords.x, coords.y, coords.z, {
+			id: BlockID.oreUranium,
+			data: 0,
+			size: 1,
+			ratio: 1,
+			checkerTile: 1,
+			checkerMode: false
+		});
+	}
+});
+
+
 var BLOCK_TYPE_LOG = Block.createSpecialType({
 	base: 17
 });
@@ -573,7 +638,7 @@ var RubberTreeGenerationHelper = {
 		}
 	},
 	
-	generateRubberTree: function(x, y, z){
+	generateRubberTree: function(x, y, z, activateTileEntity){
 		RubberTreeGenerationHelper.generateCustomTree(x, y, z, {
 			log: {
 				id: BlockID.rubberTreeLog,
@@ -592,11 +657,42 @@ var RubberTreeGenerationHelper = {
 			pike: 2 + parseInt(Math.random() * 1.5),
 			radius: 2
 		});
-		return World.addTileEntity(x, y, z);
+		if (activateTileEntity){
+			return World.addTileEntity(x, y, z);
+		}
 	}
 }
 
 
+var DesertBiomeIDs = {2:true, 17:true};
+var ForestBiomeIDs = {4:true, 18:true, 27:true, 28:true, 29:true};
+var JungleBiomeIDs = {21:true};
+var SwampBiomeIDs = {6:true};
+
+var RUBBER_TREE_BIOME_DATA = {
+	4: .5,
+	18: .5,
+	27: .5,
+	28: .5,
+	29: .5,
+	21: .8,
+	6: 1
+};
+
+Callback.addCallback("GenerateChunk", function(chunkX, chunkZ){
+	if (Math.random() < .08){
+		if(Math.random() < RUBBER_TREE_BIOME_DATA[World.getBiome((chunkX + .5) * 16, (chunkZ + .5) * 16)] || .1){
+			for (var i = 0; i < 1 + Math.random() * 2; i++){
+				var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 64, 128);
+				coords = GenerationUtils.findSurface(coords.x, coords.y, coords.z);
+				if (World.getBlockID(coords.x, coords.y, coords.z) == 2){	
+					coords.y++;	
+					RubberTreeGenerationHelper.generateRubberTree(coords.x, coords.y, coords.z, false);
+				}
+			}
+		}
+	}
+});
 
 
 
@@ -1902,8 +1998,8 @@ TileEntity.registerPrototype(BlockID.rubberTreeSapling, {
 			this.updateAnimation();
 		}
 		if (this.data.growth > 512){
-			World.removeTileEntity(this.x, this.y, this.z);
-			RubberTreeGenerationHelper.generateRubberTree(this.x, this.y, this.z);
+			this.selfDestroy();
+			RubberTreeGenerationHelper.generateRubberTree(this.x, this.y, this.z, true);
 		}
 	}
 });
@@ -2135,13 +2231,91 @@ IDRegistry.genItemID("scrap");
 Item.createItem("scrap", "Scrap", {name: "scrap", data: 0});
 
 IDRegistry.genItemID("scrapBox");
-Item.createItem("scrapBox", "Scrap Box", {name: "scrap_box", data: 0});
+Item.createThrowableItem("scrapBox", "Scrap Box", {name: "scrap_box", data: 0});
 
 Recipes.addShaped({id: ItemID.scrapBox, count: 1, data: 0}, [
 		"xxx",
 		"xxx",
 		"xxx"
 	], ['x', ItemID.scrab, -1]);
+	
+
+
+Item.registerThrowableFunction("scrapBox", function(projectile, item, target){
+	var drop = getScrapDropItem();
+	World.drop(target.x, target.y + .1, target.z, drop.id, 1, drop.data);
+});
+
+
+
+
+
+
+
+
+
+
+
+	
+var SCRAP_BOX_RANDOM_DROP = [
+	{chance: .1, id: 264, data: 0},
+	{chance: 1.8, id: 15, data: 0},
+	{chance: 1.0, id: 14, data: 0},
+	{chance: 3, id: 331, data: 0},
+	{chance: 0.5, id: 348, data: 0},
+	{chance: 5, id: 351, data: 15},
+	{chance: 2, id: 17, data: 0},
+	{chance: 2, id: 6, data: 0},
+	{chance: 2, id: 263, data: 0},
+	{chance: 3, id: 260, data: 0},
+	{chance: 2.1, id: 262, data: 0},
+	{chance: 1, id: 354, data: 0},
+	{chance: 3, id: 296, data: 0},
+	{chance: 5, id: 280, data: 0},
+	{chance: 3.5, id: 287, data: 0},
+	{chance: 10, id: 3, data: 0},
+	{chance: 3, id: 12, data: 0},
+	{chance: 3, id: 13, data: 0},
+	{chance: 4, id: 2, data: 0},
+	{chance: 1.0, id: ItemID.dustIron, data: 0},
+	{chance: 0.8, id: ItemID.dustGold, data: 0},
+	{chance: 1.2, id: ItemID.dustCopper, data: 0},
+	{chance: 1.2, id: ItemID.dustLead, data: 0},
+	{chance: 1.2, id: ItemID.dustTin, data: 0},
+	{chance: 1.2, id: ItemID.dustCoal, data: 0},
+	{chance: 0.4, id: ItemID.dustDiamond, data: 0},
+	{chance: 1.0, id: ItemID.casingIron, data: 0},
+	{chance: 0.8, id: ItemID.casingGold, data: 0},
+	{chance: 1.2, id: ItemID.casingCopper, data: 0},
+	{chance: 1.2, id: ItemID.casingLead, data: 0},
+	{chance: 1.2, id: ItemID.casingTin, data: 0},
+	{chance: 1.2, id: ItemID.casingCoal, data: 0},
+	{chance: 0.4, id: ItemID.casingDiamond, data: 0},
+	{chance: 2, id: ItemID.rubber, data: 0},
+	{chance: 2, id: ItemID.latex, data: 0},
+	{chance: 0.4, id: ItemID.uraniumChunk, data: 0},
+	{chance: 2.5, id: ItemID.oreCrushedCopper, data: 0},
+	{chance: 1.5, id: ItemID.oreCrushedTin, data: 0},
+	{chance: 1.5, id: ItemID.oreCrushedLead, data: 0},
+];
+
+function getScrapDropItem(){
+	var total = 0;
+	for (var i in SCRAP_BOX_RANDOM_DROP){
+		total += SCRAP_BOX_RANDOM_DROP[i].chance;
+	}
+	var random = Math.random() * total * 1.4;
+	var current = 0;
+	for (var i in SCRAP_BOX_RANDOM_DROP){
+		var drop = SCRAP_BOX_RANDOM_DROP[i];
+		if (current < random && current + drop.chance > random){
+			return drop;
+		}
+		current += drop.chance;
+	}
+	
+	return {id: ItemID.scrap, data: 0};
+}
 
 
 IDRegistry.genItemID("cableTin0");
