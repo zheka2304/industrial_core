@@ -1,0 +1,45 @@
+IDRegistry.genItemID("storageBattery");
+Item.createItem("storageBattery", "Battery", {name: "re_battery", meta: 0}, {stack: 1});
+ChargeItemRegistry.registerItem(ItemID.storageBattery, 10000, 0);
+
+IDRegistry.genItemID("storageCrystal");
+Item.createItem("storageCrystal", "Energy Crystal", {name: "energy_crystal", meta: 0}, {stack: 1});
+ChargeItemRegistry.registerItem(ItemID.storageCrystal, 100000, 1);
+
+IDRegistry.genItemID("circuitBasic");
+Item.createItem("circuitBasic", "Circuit", {name: "circuit", meta: 0});
+
+IDRegistry.genItemID("circuitAdvanced");
+Item.createItem("circuitAdvanced", "Advanced Circuit", {name: "circuit", meta: 1});
+
+Callback.addCallback("PostLoaded", function(){
+	Recipes.addShaped({id: ItemID.storageBattery, count: 1, data: Item.getMaxDamage(ItemID.storageBattery)}, [
+		" x ",
+		"a#a",
+		"a#a"
+	], ['x', ItemID.cableTin1, -1, 'a', ItemID.casingTin, -1, '#', 331, -1]);
+	
+	Recipes.addShaped({id: ItemID.circuitBasic, count: 1, data: 0}, [
+		"xxx",
+		"a#a",
+		"xxx"
+	], ['x', ItemID.cableCopper1, -1, 'a', 331, -1, '#', ItemID.plateIron, -1]);
+	
+	Recipes.addShaped({id: ItemID.circuitBasic, count: 1, data: 0}, [
+		"xax",
+		"x#x",
+		"xax"
+	], ['x', ItemID.cableCopper1, -1, 'a', 331, -1, '#', ItemID.plateIron, -1]);
+	
+	Recipes.addShaped({id: ItemID.circuitAdvanced, count: 1, data: 0}, [
+		"xbx",
+		"a#a",
+		"xbx"
+	], ['x', 331, -1, 'a', 348, -1, 'b', 351, 4, '#', ItemID.circuitBasic, -1]);
+	
+	Recipes.addShaped({id: ItemID.circuitAdvanced, count: 1, data: 0}, [
+		"xax",
+		"b#b",
+		"xax"
+	], ['x', 331, -1, 'a', 348, -1, 'b', 351, 4, '#', ItemID.circuitBasic, -1]);
+});
