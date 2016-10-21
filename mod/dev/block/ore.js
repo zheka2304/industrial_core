@@ -58,6 +58,7 @@ Block.registerDropFunction("oreUranium", function(coords, blockID, blockData, le
 
 
 Callback.addCallback("GenerateChunkUnderground", function(chunkX, chunkZ){
+	//Debug.message([chunkX, chunkZ])
 	for (var i = 0; i < 12; i++){
 		var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 24, 64);
 		GenerationUtils.genMinable(coords.x, coords.y, coords.z, {

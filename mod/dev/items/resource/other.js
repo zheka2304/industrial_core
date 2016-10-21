@@ -8,7 +8,7 @@ Recipes.addShaped({id: ItemID.scrapBox, count: 1, data: 0}, [
 		"xxx",
 		"xxx",
 		"xxx"
-	], ['x', ItemID.scrab, -1]);
+	], ['x', ItemID.scrap, -1]);
 	
 
 

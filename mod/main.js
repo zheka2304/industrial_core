@@ -486,6 +486,7 @@ Block.registerDropFunction("oreUranium", function(coords, blockID, blockData, le
 
 
 Callback.addCallback("GenerateChunkUnderground", function(chunkX, chunkZ){
+	//Debug.message([chunkX, chunkZ])
 	for (var i = 0; i < 12; i++){
 		var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 24, 64);
 		GenerationUtils.genMinable(coords.x, coords.y, coords.z, {
@@ -930,7 +931,7 @@ Callback.addCallback("PreLoaded", function(){
 		"ItemID.ingotTin": {id: ItemID.dustTin, count: 1, data: 0},
 		"ItemID.ingotLead": {id: ItemID.dustLead, count: 1, data: 0},
 		"ItemID.ingotSteel": {id: ItemID.dustIron, count: 1, data: 0},
-		"ItemID.ingotBronze": {id: ItemID.dustBrone, count: 1, data: 0},
+		"ItemID.ingotBronze": {id: ItemID.dustBronze, count: 1, data: 0},
 		// plates
 		"ItemID.plateIron": {id: ItemID.dustIron, count: 1, data: 0},
 		"ItemID.plateGold": {id: ItemID.dustGold, count: 1, data: 0},
@@ -2237,7 +2238,7 @@ Recipes.addShaped({id: ItemID.scrapBox, count: 1, data: 0}, [
 		"xxx",
 		"xxx",
 		"xxx"
-	], ['x', ItemID.scrab, -1]);
+	], ['x', ItemID.scrap, -1]);
 	
 
 

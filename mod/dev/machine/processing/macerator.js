@@ -48,7 +48,7 @@ Callback.addCallback("PreLoaded", function(){
 		"ItemID.ingotTin": {id: ItemID.dustTin, count: 1, data: 0},
 		"ItemID.ingotLead": {id: ItemID.dustLead, count: 1, data: 0},
 		"ItemID.ingotSteel": {id: ItemID.dustIron, count: 1, data: 0},
-		"ItemID.ingotBronze": {id: ItemID.dustBrone, count: 1, data: 0},
+		"ItemID.ingotBronze": {id: ItemID.dustBronze, count: 1, data: 0},
 		// plates
 		"ItemID.plateIron": {id: ItemID.dustIron, count: 1, data: 0},
 		"ItemID.plateGold": {id: ItemID.dustGold, count: 1, data: 0},
