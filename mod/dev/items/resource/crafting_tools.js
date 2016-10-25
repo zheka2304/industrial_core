@@ -36,6 +36,6 @@ Callback.addCallback("PostLoaded", function(){
 		"x x",
 		" x ",
 		"a a"
-	], ['x', 265, -1, '#', ItemID.plateIron, - 1]);
+	], ['a', 265, -1, 'x', ItemID.plateIron, - 1]);
 });
 	

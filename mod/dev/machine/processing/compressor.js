@@ -48,6 +48,10 @@ Callback.addCallback("PreLoaded", function(){
 		87: {id: 405, count: 2, data: 0},
 		332: {id: 79, count: 1, data: 0},
 		12: {id: 24, count: 1, data: 0},
+		"ItemID.ingotAlloy": {id: ItemID.plateAlloy, count: 1, data: 0},
+		"ItemID.carbonMesh": {id: ItemID.carbonPlate, count: 1, data: 0},
+		"ItemID.coalBall": {id: ItemID.coalBlock, count: 1, data: 0},
+		"ItemID.coalChunk": {id: 264, count: 1, data: 0},
 	}, true);
 });
 

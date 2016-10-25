@@ -35,14 +35,9 @@ Recipes.addShapeless({id: ItemID.dustBronze, count: 4, data: 0}, [
 	{id: ItemID.dustTin, data: -1}
 ]);
 
-Recipes.addShapeless({id: ItemID.dustEnergium, count: 4, data: 0}, [
-	{id: ItemID.dustDiamond, data: -1},
-	{id: ItemID.dustDiamond, data: -1}, 
-	{id: ItemID.dustDiamond, data: -1}, 
-	{id: ItemID.dustDiamond, data: -1}, 
-	{id: 331, data: -1},
-	{id: 331, data: -1},
-	{id: 331, data: -1},
-	{id: 331, data: -1},
-	{id: 331, data: -1},
-]);
+Recipes.addShaped({id: ItemID.dustEnergium, count: 4, data: 0}, [
+	"xax",
+	"axa",
+	"xax",
+],
+['x', 331, -1, 'a', ItemID.dustDiamond, -1]);

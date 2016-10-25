@@ -5,7 +5,7 @@ var BLOCK_TYPE_ORE = Block.createSpecialType({
 
 IDRegistry.genBlockID("oreCopper");
 Block.createBlock("oreCopper", [
-	{name: "Tin Copper (block)", texture: [["ore_copper", 0]], inCreative: true}
+	{name: "Copper Ore (block)", texture: [["ore_copper", 0]], inCreative: true}
 ], BLOCK_TYPE_ORE);
 ToolAPI.registerBlockMaterial(BlockID.oreCopper, "stone");
 Block.registerDropFunction("oreCopper", function(coords, blockID, blockData, level){
@@ -58,7 +58,6 @@ Block.registerDropFunction("oreUranium", function(coords, blockID, blockData, le
 
 
 Callback.addCallback("GenerateChunkUnderground", function(chunkX, chunkZ){
-	//Debug.message([chunkX, chunkZ])
 	for (var i = 0; i < 12; i++){
 		var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 24, 64);
 		GenerationUtils.genMinable(coords.x, coords.y, coords.z, {

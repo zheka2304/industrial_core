@@ -58,11 +58,17 @@ MachineRegistry.registerPrototype(BlockID.storageMFE, {
 	},
 	
 	energyTick: function(){
-		var output = Math.min(128, this.data.energy);
-		var left = this.web.addEnergy(output);
-		this.data.energy += left - output;
-		if (left == output){
-			var input = this.web.requireEnergy(Math.min(128, this.getEnergyStorage() - this.data.energy));
+		var TRANSFER = 128;
+		var delta = 8 - this.web.energy;
+		var transfer = Math.min(Math.abs(delta), TRANSFER);
+		
+		if (delta > 0){
+			var output = Math.min(TRANSFER, this.data.energy);
+			var left = this.web.addEnergy(output);
+			this.data.energy += left - output;
+		}
+		if (delta < 0){
+			var input = this.web.requireEnergy(Math.min(transfer, this.getEnergyStorage() - this.data.energy));
 			this.data.energy += input;
 		}
 	}

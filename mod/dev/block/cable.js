@@ -37,6 +37,12 @@ Block.setBlockShape(BlockID.cableGold, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CAB
 Block.setBlockShape(BlockID.cableIron, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CABLE_BLOCK_WIDTH, z: 0.5 - CABLE_BLOCK_WIDTH}, {x: 0.5 + CABLE_BLOCK_WIDTH, y: 0.5 + CABLE_BLOCK_WIDTH, z: 0.5 + CABLE_BLOCK_WIDTH});
 Block.setBlockShape(BlockID.cableOptic, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CABLE_BLOCK_WIDTH, z: 0.5 - CABLE_BLOCK_WIDTH}, {x: 0.5 + CABLE_BLOCK_WIDTH, y: 0.5 + CABLE_BLOCK_WIDTH, z: 0.5 + CABLE_BLOCK_WIDTH});
 
+ICRenderLib.registerAsWire(BlockID.cableTin);
+ICRenderLib.registerAsWire(BlockID.cableCopper);
+ICRenderLib.registerAsWire(BlockID.cableGold);
+ICRenderLib.registerAsWire(BlockID.cableIron);
+ICRenderLib.registerAsWire(BlockID.cableOptic);
+
 // drop 
 Block.registerDropFunction("cableTin", function(){
 	EnergyWebBuilder.postWebRebuild();

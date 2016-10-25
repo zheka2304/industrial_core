@@ -1,7 +1,7 @@
 var ChargeItemRegistry = {
 	chargeData: {},
 	
-	registerItem: function(item, energy, level){
+	registerItem: function(item, energy, level, preventUncharge){
 		var power = Math.floor(Math.log10(energy));
 		var energyPerDamage = Math.pow(2, power);
 		var maxDamage = Math.floor(energy / energyPerDamage + .999) + 1;
@@ -13,7 +13,8 @@ var ChargeItemRegistry = {
 			level: level || 0,
 			maxDamage: maxDamage,
 			maxCharge: energy,
-			perDamage: energyPerDamage
+			perDamage: energyPerDamage,
+			preventUncharge: preventUncharge
 		};
 	},
 	
@@ -30,13 +31,21 @@ var ChargeItemRegistry = {
 		return this.chargeData[id];
 	},
 	
+	isFlashStorage: function(id){
+		var data = this.getItemData(id);
+		return data && data.type == "flash";
+	},
+	
 	getEnergyFrom: function(item, amount, level){
 		level = level || 0;
 		var data = this.getItemData(item.id);
-		if (!data || data.level > level){
+		if (!data || data.level > level || data.preventUncharge){
 			return 0;
 		}
-		if (data.type == "flash" && amount > 0){
+		if (data.type == "flash"){
+			if (amount < 1){
+				return 0;
+			}
 			item.count--;
 			if (item.count < 1){
 				item.id = item.data = item.count = 0;

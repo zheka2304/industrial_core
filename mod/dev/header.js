@@ -40,10 +40,10 @@ var FURNACE_FUEL_MAP = {
 };
 
 
-// import native methods, that work faster
+// import native methods & values, that work faster
 var nativeGetTile = ModAPI.requireGlobal("getTile_origin");
 var nativeGetLightLevel = ModAPI.requireGlobal("Level.getBrightness");
-
+var MobEffect = ModAPI.requireGlobal("MobEffect")
 
 // square lava texture for geothermal generator ui.
 LiquidRegistry.getLiquidData("lava").uiTextures.push("gui_lava_texture_16x16");

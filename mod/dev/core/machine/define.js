@@ -20,6 +20,8 @@ var MachineRegistry = {
 	},
 	
 	registerPrototype: function(id, Prototype){
+		// register render
+		ICRenderLib.registerAsConnector(id);
 		// register ID
 		this.machineIDs[id] = true;
 		// set base for web object
