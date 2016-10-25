@@ -2,24 +2,34 @@ IDRegistry.genItemID("matter");
 Item.createItem("matter", "UU-Matter", {name: "uu_matter"});
 
 IDRegistry.genItemID("iridiumChunk");
+Item.createItem("iridiumChunk", "Iridium", {name: "iridium"});
 
 IDRegistry.genItemID("plateIridium");
+Item.createItem("plateIridium", "Iridium Plate", {name: "plate_iridium"});
 
 IDRegistry.genItemID("ingotAlloy");
+Item.createItem("ingotAlloy", "Alloy Ingot", {name: "ingot_alloy"});
 
 IDRegistry.genItemID("plateAlloy");
+Item.createItem("plateAlloy", "Alloy Plate", {name: "plate_alloy"});
 
 IDRegistry.genItemID("carbonFibre");
+Item.createItem("carbonFibre", "Carbon Fibre", {name: "carbon_fibre"});
 
 IDRegistry.genItemID("carbonMesh");
+Item.createItem("carbonMesh", "Carbon Mesh", {name: "carbon_mesh"});
 
 IDRegistry.genItemID("carbonPlate");
+Item.createItem("carbonPlate", "Carbon Plate", {name: "carbon_plate"});
 
 IDRegistry.genItemID("coalBall");
+Item.createItem("coalBall", "Coal Ball", {name: "coal_ball"});
 
 IDRegistry.genItemID("coalBlock");
+Item.createItem("coalBlock", "Coal Block", {name: "coal_block"});
 
 IDRegistry.genItemID("coalChunk");
+Item.createItem("coalChunk", "Coal Chunk", {name: "coal_chunk"});
 
 Callback.addCallback("PostLoaded", function(){
 	Recipes.addShaped({id: ItemID.ingotAlloy, count: 2, data: 0}, [
