@@ -5,9 +5,7 @@ core/machine/interaction.js
 core/machine/recipe.js
 core/energy/web.js
 core/energy/builder.js
-
 core/api/icrender.js
-core/api/shared.js
 
 
 block/basic.js
@@ -57,4 +55,4 @@ items/armor/bronze.js
 items/armor/nano.js
 items/tool/nano_saber.js
 
-
+core/api/shared.js

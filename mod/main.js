@@ -381,21 +381,6 @@ if (!ICRenderLib){
 }
 
 
-Callback.addCallback("PreLoaded", function(){
-	ModAPI.registerAPI("ICore", {
-		Machine: MachineRegistry,
-		Recipe: MachineRecipeRegistry,
-		ChargeRegistry: ChargeItemRegistry,
-		
-		requireGlobal: function(command){
-			return eval(command);
-		}
-	});
-
-	Logger.Log("Industrial Core API shared with name ICore.", "API");
-});
-
-
 IDRegistry.genBlockID("machineBlockBasic");
 Block.createBlock("machineBlockBasic", [
 	{name: "Machine Block", texture: [["machine_bottom", 1], ["machine_top", 1], ["machine_side", 1], ["machine_side", 1], ["machine_side", 1], ["machine_side", 1]], inCreative: true}
@@ -3228,5 +3213,18 @@ Callback.addCallback("PostLoaded", function(){
 		"x#x"
 	], ['#', ItemID.storageCrystal, -1, 'x', ItemID.carbonPlate, -1], RECIPE_FUNC_TRANSPORT_ENERGY);
 });
+
+
+ModAPI.registerAPI("ICore", {
+	Machine: MachineRegistry,
+	Recipe: MachineRecipeRegistry,
+	ChargeRegistry: ChargeItemRegistry,
+	
+	requireGlobal: function(command){
+		return eval(command);
+	}
+});
+
+Logger.Log("Industrial Core API shared with name ICore.", "API");
 
 
