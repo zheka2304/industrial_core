@@ -40,6 +40,7 @@ var FURNACE_FUEL_MAP = {
 };
 
 
+
 // import native methods & values, that work faster
 var nativeGetTile = ModAPI.requireGlobal("getTile_origin");
 var nativeGetLightLevel = ModAPI.requireGlobal("Level.getBrightness");
@@ -56,6 +57,20 @@ if (getCoreAPILevel() < 3){
 	});
 	Logger.Log("Core Engine with low api level detected, ore generation will not be optimized", "WARNING");
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 var MachineRegistry = {
@@ -400,9 +415,9 @@ Callback.addCallback("PostLoaded", function(){
 	], ['x', ItemID.plateIron, -1]);
 	
 	Recipes.addShaped({id: BlockID.machineBlockAdvanced, count: 1, data: 0}, [
-		" x",
+		" x ",
 		"a#a",
-		" x"
+		" x "
 	], ['x', ItemID.carbonPlate, -1, 'a', ItemID.plateAlloy, -1, '#', BlockID.machineBlockBasic, -1]);
 	
 	Recipes.addShapeless({id: ItemID.plateIron, count: 8, data: 0}, [{id: BlockID.machineBlockBasic, data: 0}]);
@@ -542,7 +557,7 @@ Block.registerDropFunction("oreUranium", function(coords, blockID, blockData, le
 
 
 Callback.addCallback("GenerateChunkUnderground", function(chunkX, chunkZ){
-	for (var i = 0; i < 12; i++){
+	for (var i = 0; i < 16; i++){
 		var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 24, 64);
 		GenerationUtils.genMinable(coords.x, coords.y, coords.z, {
 			id: BlockID.oreCopper,
@@ -553,24 +568,24 @@ Callback.addCallback("GenerateChunkUnderground", function(chunkX, chunkZ){
 			checkerMode: false
 		});
 	}
-	for (var i = 0; i < 9; i++){
+	for (var i = 0; i < 12; i++){
 		var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 18, 52);
 		GenerationUtils.genMinable(coords.x, coords.y, coords.z, {
 			id: BlockID.oreTin,
 			data: 0,
-			size: 2,
+			size: 3,
 			ratio: .3,
 			checkerTile: 1,
 			checkerMode: false
 		});
 	}
-	for (var i = 0; i < 7; i++){
+	for (var i = 0; i < 5; i++){
 		var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 18, 48);
 		GenerationUtils.genMinable(coords.x, coords.y, coords.z, {
 			id: BlockID.oreLead,
 			data: 0,
 			size: 1,
-			ratio: .4,
+			ratio: 1,
 			checkerTile: 1,
 			checkerMode: false
 		});
@@ -580,8 +595,8 @@ Callback.addCallback("GenerateChunkUnderground", function(chunkX, chunkZ){
 		GenerationUtils.genMinable(coords.x, coords.y, coords.z, {
 			id: BlockID.oreUranium,
 			data: 0,
-			size: 1,
-			ratio: 1,
+			size: 2,
+			ratio: .4,
 			checkerTile: 1,
 			checkerMode: false
 		});
@@ -600,7 +615,7 @@ var BLOCK_TYPE_LEAVES = Block.createSpecialType({
 
 IDRegistry.genBlockID("rubberTreeLog");
 Block.createBlock("rubberTreeLog", [
-	{name: "tile.rubberTreeLog.name", texture: [["rubber_tree_log", 1], ["rubber_tree_log", 1], ["rubber_tree_log", 0], ["rubber_tree_log", 0], ["rubber_tree_log", 0], ["rubber_tree_log", 0]], inCreative: false}
+	{name: "Rubber Tree Log", texture: [["rubber_tree_log", 1], ["rubber_tree_log", 1], ["rubber_tree_log", 0], ["rubber_tree_log", 0], ["rubber_tree_log", 0], ["rubber_tree_log", 0]], inCreative: false}
 ], BLOCK_TYPE_LOG);
 ToolAPI.registerBlockMaterial(BlockID.rubberTreeLog, "wood");
 
@@ -618,7 +633,7 @@ ToolAPI.registerBlockMaterial(BlockID.rubberTreeLogLatex, "wood");
 
 IDRegistry.genBlockID("rubberTreeLeaves");
 Block.createBlock("rubberTreeLeaves", [
-	{name: "tile.rubberTreeLeaves.name", texture: [["rubber_tree_leaves", 0]], inCreative: false}
+	{name: "Rubber Tree Leaves", texture: [["rubber_tree_leaves", 0]], inCreative: false}
 ], BLOCK_TYPE_LEAVES);
 Block.registerDropFunction("rubberTreeLeaves", function(){
 	if (Math.random() < .075){
@@ -629,6 +644,8 @@ Block.registerDropFunction("rubberTreeLeaves", function(){
 	}
 });
 ToolAPI.registerBlockMaterial(BlockID.rubberTreeLeaves, "plant");
+
+Recipes.addShaped({id: 5, count: 3, data: 3}, ["x"], ['x', BlockID.rubberTreeLog, -1]);
 
 
 
@@ -736,8 +753,8 @@ var RUBBER_TREE_BIOME_DATA = {
 };
 
 Callback.addCallback("GenerateChunk", function(chunkX, chunkZ){
-	if (Math.random() < .08){
-		if(Math.random() < RUBBER_TREE_BIOME_DATA[World.getBiome((chunkX + .5) * 16, (chunkZ + .5) * 16)] || .1){
+	if (Math.random() < .1){
+		if(Math.random() < RUBBER_TREE_BIOME_DATA[World.getBiome((chunkX + .5) * 16, (chunkZ + .5) * 16)] || .05){
 			for (var i = 0; i < 1 + Math.random() * 2; i++){
 				var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 64, 128);
 				coords = GenerationUtils.findSurface(coords.x, coords.y, coords.z);
@@ -757,6 +774,8 @@ IDRegistry.genBlockID("ironFurnace");
 Block.createBlockWithRotation("ironFurnace", [
 	{name: "Iron Furnace", texture: [["machine_bottom", 1], ["machine_top", 1], ["machine_side", 1], ["iron_furnace_side", 0], ["machine_side", 1], ["machine_side", 1]], inCreative: true}
 ]);
+
+
 
 Callback.addCallback("PostLoaded", function(){
 	Recipes.addShaped({id: BlockID.ironFurnace, count: 1, data: 0}, [
@@ -1411,7 +1430,8 @@ var guiExtractor = new UI.StandartWindow({
 
 Callback.addCallback("PreLoaded", function(){
 	MachineRecipeRegistry.registerRecipesFor("extractor", {
-		"ItemID.latex": {id: ItemID.rubber, count: 3, data: 0}
+		"ItemID.latex": {id: ItemID.rubber, count: 3, data: 0},
+		"BlockID.rubberTreeLog": {id: ItemID.rubber, count: 1, data: 0}
 	}, true);
 });
 
@@ -1498,7 +1518,6 @@ var guiMassFabricator = new UI.StandartWindow({
 	}
 });
 
-//UI.testUI(guiMassFabricator);
 
 MachineRegistry.registerPrototype(BlockID.massFabricator, {
 	defaultValues: {

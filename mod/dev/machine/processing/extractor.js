@@ -35,6 +35,7 @@ var guiExtractor = new UI.StandartWindow({
 Callback.addCallback("PreLoaded", function(){
 	MachineRecipeRegistry.registerRecipesFor("extractor", {
 		"ItemID.latex": {id: ItemID.rubber, count: 3, data: 0},
+		"BlockID.rubberTreeLog": {id: ItemID.rubber, count: 1, data: 0}
 	}, true);
 });
 
