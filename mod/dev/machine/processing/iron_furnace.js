@@ -4,6 +4,8 @@ Block.createBlockWithRotation("ironFurnace", [
 	{name: "Iron Furnace", texture: [["machine_bottom", 1], ["machine_top", 1], ["machine_side", 1], ["iron_furnace_side", 0], ["machine_side", 1], ["machine_side", 1]], inCreative: true}
 ]);
 
+
+
 Callback.addCallback("PostLoaded", function(){
 	Recipes.addShaped({id: BlockID.ironFurnace, count: 1, data: 0}, [
 		" x ",

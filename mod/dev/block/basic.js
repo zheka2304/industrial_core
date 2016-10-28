@@ -17,9 +17,9 @@ Callback.addCallback("PostLoaded", function(){
 	], ['x', ItemID.plateIron, -1]);
 	
 	Recipes.addShaped({id: BlockID.machineBlockAdvanced, count: 1, data: 0}, [
-		" x",
+		" x ",
 		"a#a",
-		" x"
+		" x "
 	], ['x', ItemID.carbonPlate, -1, 'a', ItemID.plateAlloy, -1, '#', BlockID.machineBlockBasic, -1]);
 	
 	Recipes.addShapeless({id: ItemID.plateIron, count: 8, data: 0}, [{id: BlockID.machineBlockBasic, data: 0}]);

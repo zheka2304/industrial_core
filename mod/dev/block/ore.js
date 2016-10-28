@@ -58,7 +58,7 @@ Block.registerDropFunction("oreUranium", function(coords, blockID, blockData, le
 
 
 Callback.addCallback("GenerateChunkUnderground", function(chunkX, chunkZ){
-	for (var i = 0; i < 12; i++){
+	for (var i = 0; i < 16; i++){
 		var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 24, 64);
 		GenerationUtils.genMinable(coords.x, coords.y, coords.z, {
 			id: BlockID.oreCopper,
@@ -69,24 +69,24 @@ Callback.addCallback("GenerateChunkUnderground", function(chunkX, chunkZ){
 			checkerMode: false
 		});
 	}
-	for (var i = 0; i < 9; i++){
+	for (var i = 0; i < 12; i++){
 		var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 18, 52);
 		GenerationUtils.genMinable(coords.x, coords.y, coords.z, {
 			id: BlockID.oreTin,
 			data: 0,
-			size: 2,
+			size: 3,
 			ratio: .3,
 			checkerTile: 1,
 			checkerMode: false
 		});
 	}
-	for (var i = 0; i < 7; i++){
+	for (var i = 0; i < 5; i++){
 		var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 18, 48);
 		GenerationUtils.genMinable(coords.x, coords.y, coords.z, {
 			id: BlockID.oreLead,
 			data: 0,
 			size: 1,
-			ratio: .4,
+			ratio: 1,
 			checkerTile: 1,
 			checkerMode: false
 		});
@@ -96,8 +96,8 @@ Callback.addCallback("GenerateChunkUnderground", function(chunkX, chunkZ){
 		GenerationUtils.genMinable(coords.x, coords.y, coords.z, {
 			id: BlockID.oreUranium,
 			data: 0,
-			size: 1,
-			ratio: 1,
+			size: 2,
+			ratio: .4,
 			checkerTile: 1,
 			checkerMode: false
 		});

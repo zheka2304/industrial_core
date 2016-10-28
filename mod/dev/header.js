@@ -40,6 +40,7 @@ var FURNACE_FUEL_MAP = {
 };
 
 
+
 // import native methods & values, that work faster
 var nativeGetTile = ModAPI.requireGlobal("getTile_origin");
 var nativeGetLightLevel = ModAPI.requireGlobal("Level.getBrightness");
@@ -56,3 +57,17 @@ if (getCoreAPILevel() < 3){
 	});
 	Logger.Log("Core Engine with low api level detected, ore generation will not be optimized", "WARNING");
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

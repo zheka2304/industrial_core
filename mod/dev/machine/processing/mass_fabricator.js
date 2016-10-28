@@ -33,7 +33,6 @@ var guiMassFabricator = new UI.StandartWindow({
 	}
 });
 
-//UI.testUI(guiMassFabricator);
 
 MachineRegistry.registerPrototype(BlockID.massFabricator, {
 	defaultValues: {
