@@ -26,7 +26,7 @@ TileEntity.registerPrototype(BlockID.rubberTreeLog, {
 	
 	tick: function(){
 		if (World.getThreadTime() % 100 == 0){
-			if (Math.random() < .5){
+			if (Math.random() < .125){
 				this.addLatex();
 			}
 			this.checkLog();

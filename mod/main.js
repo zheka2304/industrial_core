@@ -1057,12 +1057,12 @@ MachineRegistry.registerPrototype(BlockID.inductionFurnace, {
 		
 		if (this.data.isHeating && this.data.energy > 0){
 			if (this.data.heat < 1){
-				this.data.heat += 0.001;
+				this.data.heat += 0.0002;
 				this.data.energy--;
 			}
 		}
 		else if (this.data.heat > 0){
-			this.data.heat -= 0.001;
+			this.data.heat -= 0.0002;
 		}
 		
 		var energyStorage = this.getEnergyStorage();
@@ -2213,7 +2213,7 @@ TileEntity.registerPrototype(BlockID.rubberTreeLog, {
 	
 	tick: function(){
 		if (World.getThreadTime() % 100 == 0){
-			if (Math.random() < .5){
+			if (Math.random() < .125){
 				this.addLatex();
 			}
 			this.checkLog();

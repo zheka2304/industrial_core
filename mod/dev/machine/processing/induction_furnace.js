@@ -100,12 +100,12 @@ MachineRegistry.registerPrototype(BlockID.inductionFurnace, {
 		
 		if (this.data.isHeating && this.data.energy > 0){
 			if (this.data.heat < 1){
-				this.data.heat += 0.001;
+				this.data.heat += 0.0002;
 				this.data.energy--;
 			}
 		}
 		else if (this.data.heat > 0){
-			this.data.heat -= 0.001;
+			this.data.heat -= 0.0002;
 		}
 		
 		var energyStorage = this.getEnergyStorage();
