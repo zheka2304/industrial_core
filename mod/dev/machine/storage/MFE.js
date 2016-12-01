@@ -67,9 +67,9 @@ MachineRegistry.registerPrototype(BlockID.storageMFE, {
 			var left = this.web.addEnergy(output);
 			this.data.energy += left - output;
 		}
-		if (delta < 0){
+		/*if (delta < 0){
 			var input = this.web.requireEnergy(Math.min(transfer, this.getEnergyStorage() - this.data.energy));
 			this.data.energy += input;
-		}
+		}*/
 	}
 });
