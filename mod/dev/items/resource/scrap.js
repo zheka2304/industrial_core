@@ -13,9 +13,9 @@ Recipes.addShaped({id: ItemID.scrapBox, count: 1, data: 0}, [
 MachineRecipeRegistry.addRecipeFor("catalyser", ItemID.scrap, {input: 5000, output: 30000});
 MachineRecipeRegistry.addRecipeFor("catalyser", ItemID.scrapBox, {input: 45000, output: 270000});
 
-Item.registerThrowableFunction("scrapBox", function(projectile, item, target){
+Item.registerUseFunction("scrapBox", function(coords, item, block){
 	var drop = getScrapDropItem();
-	World.drop(target.x, target.y + .1, target.z, drop.id, 1, drop.data);
+	World.drop(coords.relative.x + 0.5, coords.relative.y + 0.1, coords.relative.z + 0.5, drop.id, 1, drop.data);
 });
 
 
