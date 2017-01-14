@@ -51,6 +51,7 @@ TileEntity.registerPrototype(BlockID.rubberTreeSapling, {
 			size: this.data.size
 		});
 		this.animation1.load();
+		
 		this.animation2.describeItem({
 			id: ItemID.rubberSapling,
 			count: 1,
