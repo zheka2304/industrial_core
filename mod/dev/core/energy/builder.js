@@ -14,7 +14,7 @@ var EnergyWebBuilder = {
 			explored[coordKey] = true;
 		}
 		
-		var mech = MachineRegistry.accessMachineAtCoords(x, y, z)
+		var mech = MachineRegistry.accessMachineAtCoords(x, y, z);
 		if (mech){
 			web.addMachine(mech);
 			this.rebuildFor6Sides(web, x, y, z, explored);

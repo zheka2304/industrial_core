@@ -1,9 +1,9 @@
 var ChargeItemRegistry = {
 	chargeData: {},
 	
-	registerItem: function(item, energy, level, preventUncharge){
+	registerItem: function(item, energy, level, preventUncharge, EPD){
 		var power = Math.floor(Math.log10(energy));
-		var energyPerDamage = Math.pow(2, power);
+		var energyPerDamage = EPD || Math.pow(2, power);
 		var maxDamage = Math.floor(energy / energyPerDamage + .999) + 1;
 		
 		Item.setMaxDamage(item, maxDamage);

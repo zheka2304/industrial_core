@@ -1,7 +1,8 @@
 var BLOCK_TYPE_ORE = Block.createSpecialType({
 	base: 1,
-	opaque: true
-});
+	destroytime: 2,
+	opaque: true,
+}, "ore");
 
 IDRegistry.genBlockID("oreCopper");
 Block.createBlock("oreCopper", [
@@ -34,9 +35,9 @@ Block.createBlock("oreLead", [
 	{name: "Lead Ore (block)", texture: [["ore_lead", 0]], inCreative: true}
 ], BLOCK_TYPE_ORE);
 ToolAPI.registerBlockMaterial(BlockID.oreLead, "stone");
-Block.registerDropFunction("oreLead", function(coords, blockID, blockData, level){
+Block.registerDropFunction("oreLead", function(coords, blockID, blockData, level, enchant){
 	if (level > 1){
-		return [[ItemID.oreCrushedLead, 1, 0]]
+		return [[ItemID.oreCrushedLead, 1, 0]];
 	}
 	return [];
 }, 2);
@@ -53,8 +54,6 @@ Block.registerDropFunction("oreUranium", function(coords, blockID, blockData, le
 	}
 	return [];
 }, 3);
-
-
 
 
 Callback.addCallback("GenerateChunkUnderground", function(chunkX, chunkZ){
