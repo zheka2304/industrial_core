@@ -2,7 +2,7 @@ IDRegistry.genItemID("scrap");
 Item.createItem("scrap", "Scrap", {name: "scrap"});
 
 IDRegistry.genItemID("scrapBox");
-Item.createThrowableItem("scrapBox", "Scrap Box", {name: "scrap_box"});
+/*Item.createThrowableItem("scrapBox", "Scrap Box", {name: "scrap_box"});*/
 
 Recipes.addShaped({id: ItemID.scrapBox, count: 1, data: 0}, [
 		"xxx",
@@ -13,10 +13,10 @@ Recipes.addShaped({id: ItemID.scrapBox, count: 1, data: 0}, [
 MachineRecipeRegistry.addRecipeFor("catalyser", ItemID.scrap, {input: 5000, output: 30000});
 MachineRecipeRegistry.addRecipeFor("catalyser", ItemID.scrapBox, {input: 45000, output: 270000});
 
-Item.registerThrowableFunction("scrapBox", function(projectile, item, target){
+/*Item.registerThrowableFunction("scrapBox", function(projectile, item, target){
 	var drop = getScrapDropItem();
 	World.drop(target.x, target.y + .1, target.z, drop.id, 1, drop.data);
-});
+});*/
 
 
 

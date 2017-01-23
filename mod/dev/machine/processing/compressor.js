@@ -57,7 +57,9 @@ Callback.addCallback("PreLoaded", function(){
 
 MachineRegistry.registerPrototype(BlockID.compressor, {
 	defaultValues: {
-		progress: 0
+		result: 0,
+		progress: 0,
+		maxProgress: 480
 	},
 	
 	getGuiScreen: function(){
@@ -66,19 +68,19 @@ MachineRegistry.registerPrototype(BlockID.compressor, {
 	
 	tick: function(){
 		var sourceSlot = this.container.getSlot("slotSource");
-		var result = MachineRecipeRegistry.getRecipeResult("compressor", sourceSlot.id);
-		if (result && (sourceSlot.count >= result.ingredientCount || !result.ingredientCount)){
+		this.data.result = MachineRecipeRegistry.getRecipeResult("compressor", sourceSlot.id);
+		if (this.data.result && (sourceSlot.count >=this.data.result.ingredientCount || !this.data.result.ingredientCount)){
 			if (this.data.energy > 2){
 				this.data.energy -= 3;
 				this.data.progress++;
 			}
-			if (this.data.progress >= 400){
+			if (this.data.progress >= this.data.maxProgress){
 				var resultSlot = this.container.getSlot("slotResult");
-				if (resultSlot.id == result.id && resultSlot.data == result.data && resultSlot.count <= Item.getMaxStack(result.id) - result.count || resultSlot.id == 0){
-					sourceSlot.count -= result.ingredientCount || 1;
-					resultSlot.id = result.id;
-					resultSlot.data = result.data;
-					resultSlot.count += result.count;
+				if (resultSlot.id == this.data.result.id && resultSlot.data == this.data.result.data && resultSlot.count <= Item.getMaxStack(this.data.result.id) - this.data.result.count || resultSlot.id == 0){
+					sourceSlot.count -= this.data.result.ingredientCount || 1;
+					resultSlot.id = this.data.result.id;
+					resultSlot.data = this.data.result.data;
+					resultSlot.count += this.data.result.count;
 					this.container.validateAll();
 					this.data.progress = 0;
 				}
@@ -91,7 +93,7 @@ MachineRegistry.registerPrototype(BlockID.compressor, {
 		var energyStorage = this.getEnergyStorage();
 		this.data.energy += ChargeItemRegistry.getEnergyFrom(this.container.getSlot("slotEnergy"), Math.min(32, energyStorage - this.data.energy), 0);
 		
-		this.container.setScale("progressScale", this.data.progress / 400);
+		this.container.setScale("progressScale", this.data.progress / this.data.maxProgress);
 		this.container.setScale("energyScale", this.data.energy / energyStorage);
 	},
 	
@@ -99,5 +101,6 @@ MachineRegistry.registerPrototype(BlockID.compressor, {
 		return 2000;
 	},
 	
-	energyTick: MachineRegistry.basicEnergyReceiveFunc
+	energyTick: MachineRegistry.basicEnergyReceiveFunc,
+	 wrenchDescriptions:MachineRegistry.StandardDescriptions.PROCESSING_MACHINE
 });

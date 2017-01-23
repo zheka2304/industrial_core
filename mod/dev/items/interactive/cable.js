@@ -26,10 +26,10 @@ Item.createItem("cableIron3", "Iron wire (isolated 3x)", {name: "cable_iron", me
 
 // cutting recipes
 
-addRecipeWithCraftingTool({id: ItemID.cableTin0, count: 3, data: 0}, [{id: ItemID.plateTin, data: -1}], ItemID.craftingCutter);
-addRecipeWithCraftingTool({id: ItemID.cableCopper0, count: 3, data: 0}, [{id: ItemID.plateCopper, data: -1}], ItemID.craftingCutter);
-addRecipeWithCraftingTool({id: ItemID.cableGold0, count: 4, data: 0}, [{id: ItemID.plateGold, data: -1}], ItemID.craftingCutter);
-addRecipeWithCraftingTool({id: ItemID.cableIron0, count: 4, data: 0}, [{id: ItemID.plateIron, data: -1}], ItemID.craftingCutter);
+ToolsModule.addRecipeWithCraftingTool({id: ItemID.cableTin0, count: 3, data: 0}, [{id: ItemID.plateTin, data: -1}], ItemID.craftingCutter);
+ToolsModule.addRecipeWithCraftingTool({id: ItemID.cableCopper0, count: 3, data: 0}, [{id: ItemID.plateCopper, data: -1}], ItemID.craftingCutter);
+ToolsModule.addRecipeWithCraftingTool({id: ItemID.cableGold0, count: 4, data: 0}, [{id: ItemID.plateGold, data: -1}], ItemID.craftingCutter);
+ToolsModule.addRecipeWithCraftingTool({id: ItemID.cableIron0, count: 4, data: 0}, [{id: ItemID.plateIron, data: -1}], ItemID.craftingCutter, 2);
 
 // isolation recipes
 Recipes.addShapeless({id: ItemID.cableTin1, count: 1, data: 0}, [{id: ItemID.cableTin0, data: -1}, {id: ItemID.rubber, data: -1}]);

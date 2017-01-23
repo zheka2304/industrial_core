@@ -30,6 +30,7 @@ var FURNACE_FUEL_MAP = {
 	162: 300,
 	163: 300,
 	164: 300,
+	173: 16000,
 	184: 300,
 	185: 300,
 	186: 300,
@@ -45,6 +46,7 @@ var FURNACE_FUEL_MAP = {
 var nativeGetTile = ModAPI.requireGlobal("getTile_origin");
 var nativeGetLightLevel = ModAPI.requireGlobal("Level.getBrightness");
 var MobEffect = ModAPI.requireGlobal("MobEffect")
+var nativeGetVersion = ModAPI.requireGlobal("ModPE.getMinecraftVersion")
 
 // square lava texture for geothermal generator ui.
 LiquidRegistry.getLiquidData("lava").uiTextures.push("gui_lava_texture_16x16");

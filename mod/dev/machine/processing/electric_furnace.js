@@ -35,7 +35,9 @@ var guiElectricFurnace = new UI.StandartWindow({
 
 MachineRegistry.registerPrototype(BlockID.electricFurnace, {
 	defaultValues: {
-		progress: 0
+		result: 0,
+		progress: 0,
+		maxProgress: 120
 	},
 	
 	getGuiScreen: function(){
@@ -44,18 +46,18 @@ MachineRegistry.registerPrototype(BlockID.electricFurnace, {
 	
 	tick: function(){
 		var sourceSlot = this.container.getSlot("slotSource");
-		var result = Recipes.getFurnaceRecipeResult(sourceSlot.id, "iron");
-		if (result){
+		this.data.result = Recipes.getFurnaceRecipeResult(sourceSlot.id, "iron");
+		if (this.data.result){
 			if (this.data.energy > 1){
 				this.data.energy -= 2;
 				this.data.progress++;
 			}
-			if (this.data.progress >= 100){
+			if (this.data.progress >= this.data.maxProgress){
 				var resultSlot = this.container.getSlot("slotResult");
-				if (resultSlot.id == result.id && resultSlot.data == result.data && resultSlot.count < 64 || resultSlot.id == 0){
+				if (resultSlot.id == this.data.result.id && resultSlot.data == this.data.result.data && resultSlot.count < 64 || resultSlot.id == 0){
 					sourceSlot.count--;
-					resultSlot.id = result.id;
-					resultSlot.data = result.data;
+					resultSlot.id = this.data.result.id;
+					resultSlot.data = this.data.result.data;
 					resultSlot.count++;
 					this.container.validateAll();
 					this.data.progress = 0;
@@ -69,7 +71,7 @@ MachineRegistry.registerPrototype(BlockID.electricFurnace, {
 		var energyStorage = this.getEnergyStorage();
 		this.data.energy += ChargeItemRegistry.getEnergyFrom(this.container.getSlot("slotEnergy"), Math.min(32, energyStorage - this.data.energy), 0);
 		
-		this.container.setScale("progressScale", this.data.progress / 100);
+		this.container.setScale("progressScale", this.data.progress / this.data.maxProgress);
 		this.container.setScale("energyScale", this.data.energy / energyStorage);
 	},
 	
@@ -77,5 +79,6 @@ MachineRegistry.registerPrototype(BlockID.electricFurnace, {
 		return 2000;
 	},
 	
-	energyTick: MachineRegistry.basicEnergyReceiveFunc
+	energyTick: MachineRegistry.basicEnergyReceiveFunc,
+	 wrenchDescriptions:MachineRegistry.StandardDescriptions.PROCESSING_MACHINE
 });

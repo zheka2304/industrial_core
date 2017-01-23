@@ -23,12 +23,12 @@ IDRegistry.genItemID("plateLead");
 Item.createItem("plateLead", "Lead Plate", {name: "plate_lead"});
 
 // recipes
-addRecipeWithCraftingTool({id: ItemID.plateCopper, count: 1, data: 0}, [{id: ItemID.ingotCopper, data: -1}], ItemID.craftingHammer);
-addRecipeWithCraftingTool({id: ItemID.plateTin, count: 1, data: 0}, [{id: ItemID.ingotTin, data: -1}], ItemID.craftingHammer);
-addRecipeWithCraftingTool({id: ItemID.plateIron, count: 1, data: 0}, [{id: 265, data: -1}], ItemID.craftingHammer);
-addRecipeWithCraftingTool({id: ItemID.plateBronze, count: 1, data: 0}, [{id: ItemID.ingotBronze, data: -1}], ItemID.craftingHammer);
-addRecipeWithCraftingTool({id: ItemID.plateSteel, count: 1, data: 0}, [{id: ItemID.ingotSteel, data: -1}], ItemID.craftingHammer);
-addRecipeWithCraftingTool({id: ItemID.plateGold, count: 1, data: 0}, [{id: 266, data: -1}], ItemID.craftingHammer);
-addRecipeWithCraftingTool({id: ItemID.plateLapis, count: 1, data: 0}, [{id: 351, data: 4}], ItemID.craftingHammer);
-addRecipeWithCraftingTool({id: ItemID.plateLead, count: 1, data: 0}, [{id: ItemID.ingotLead, data: -1}], ItemID.craftingHammer);
+ToolsModule.addRecipeWithCraftingTool({id: ItemID.plateCopper, count: 1, data: 0}, [{id: ItemID.ingotCopper, data: -1}], ItemID.craftingHammer);
+ToolsModule.addRecipeWithCraftingTool({id: ItemID.plateTin, count: 1, data: 0}, [{id: ItemID.ingotTin, data: -1}], ItemID.craftingHammer);
+ToolsModule.addRecipeWithCraftingTool({id: ItemID.plateIron, count: 1, data: 0}, [{id: 265, data: -1}], ItemID.craftingHammer);
+ToolsModule.addRecipeWithCraftingTool({id: ItemID.plateBronze, count: 1, data: 0}, [{id: ItemID.ingotBronze, data: -1}], ItemID.craftingHammer);
+ToolsModule.addRecipeWithCraftingTool({id: ItemID.plateSteel, count: 1, data: 0}, [{id: ItemID.ingotSteel, data: -1}], ItemID.craftingHammer, 2);
+ToolsModule.addRecipeWithCraftingTool({id: ItemID.plateGold, count: 1, data: 0}, [{id: 266, data: -1}], ItemID.craftingHammer);
+ToolsModule.addRecipeWithCraftingTool({id: ItemID.plateLapis, count: 1, data: 0}, [{id: 351, data: 4}], ItemID.craftingHammer);
+ToolsModule.addRecipeWithCraftingTool({id: ItemID.plateLead, count: 1, data: 0}, [{id: ItemID.ingotLead, data: -1}], ItemID.craftingHammer);
 

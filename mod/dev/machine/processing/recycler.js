@@ -36,7 +36,9 @@ var guiRecycler = new UI.StandartWindow({
 
 MachineRegistry.registerPrototype(BlockID.recycler, {
 	defaultValues: {
-		progress: 0
+		result: 0,
+		progress: 0,
+		maxProgress: 40
 	},
 	
 	getGuiScreen: function(){
@@ -50,7 +52,7 @@ MachineRegistry.registerPrototype(BlockID.recycler, {
 				this.data.energy --;
 				this.data.progress++;
 			}
-			if (this.data.progress >= 50){
+			if (this.data.progress >= this.data.maxProgress){
 				var resultSlot = this.container.getSlot("slotResult");
 				if (resultSlot.id == ItemID.scrap && resultSlot.count < 64 || resultSlot.id == 0){
 					sourceSlot.count--;
@@ -70,7 +72,7 @@ MachineRegistry.registerPrototype(BlockID.recycler, {
 		var energyStorage = this.getEnergyStorage();
 		this.data.energy += ChargeItemRegistry.getEnergyFrom(this.container.getSlot("slotEnergy"), Math.min(32, energyStorage - this.data.energy), 0);
 		
-		this.container.setScale("progressScale", this.data.progress / 50);
+		this.container.setScale("progressScale", this.data.progress / this.data.maxProgress);
 		this.container.setScale("energyScale", this.data.energy / energyStorage);
 	},
 	
@@ -78,5 +80,6 @@ MachineRegistry.registerPrototype(BlockID.recycler, {
 		return 500;
 	},
 	
-	energyTick: MachineRegistry.basicEnergyReceiveFunc
+	energyTick: MachineRegistry.basicEnergyReceiveFunc,
+	 wrenchDescriptions:MachineRegistry.StandardDescriptions.PROCESSING_MACHINE
 });

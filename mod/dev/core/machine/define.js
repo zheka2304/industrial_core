@@ -103,7 +103,58 @@ var MachineRegistry = {
 	basicEnergyReceiveFunc: function(){
 		var energyNeed = this.getEnergyStorage() - this.data.energy;
 		this.data.energy += this.web.requireEnergy(energyNeed);
+	},
+	//wrench descriptions for standard machines
+	StandardDescriptions: {
+		ENERGY_STORAGE: {
+			energy: {
+				description: "Energy storage",
+				value: function(){
+					return this.data.energy + "/" + this.getEnergyStorage()
+				}
+			},
+			transfer: {
+				description: "Input/output",
+				value: function(){
+					return this.data.TRANSFER + "Eu/t"
+				}
+			}
+		},
+		GENERATOR: {
+			burning_scale: {
+				description: "Fuel scale",
+				value: function(){
+					return Math.floor((this.data.burn / this.data.burnMax) * 100) + "%"
+				}
+			},
+			energy_storage: {
+				description: "Energy storage",
+				value: function(){
+					return this.data.energy + "/" + this.getEnergyStorage()
+			}
+		}
+	},
+	PROCESSING_MACHINE: {
+		processing_item: {
+			description: "Processing item",
+			value: function(){
+				return this.data.result.id + ", " + this.data.result.data
+			}
+		},
+		progress: {
+			description: "Progress",
+			value: function(){
+				return Math.floor((this.data.progress / this.data.maxProgress) * 100)
+			}
+		},
+		energy_storage: {
+			description: "Energy storage",
+			value: function(){
+				 return this.data.energy + "/" + this.getEnergyStorage()
+			}
+		}
 	}
+}
 }
 
 Callback.addCallback("LevelLoaded", function(){

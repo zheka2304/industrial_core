@@ -42,6 +42,9 @@ var guiBatBox = new UI.StandartWindow({
 
 
 MachineRegistry.registerPrototype(BlockID.storageBatBox, {
+	defaultValues: {
+		TRANSFER: 32
+	},
 	getGuiScreen: function(){
 		return guiBatBox;
 	},
@@ -52,9 +55,8 @@ MachineRegistry.registerPrototype(BlockID.storageBatBox, {
 		this.container.setText("textInfo1", parseInt(this.data.energy) + "/");
 		this.container.setText("textInfo2", energyStorage);
 		
-		var TRANSFER = 32;
-		this.data.energy += ChargeItemRegistry.getEnergyFrom(this.container.getSlot("slot2"), Math.min(TRANSFER, energyStorage - this.data.energy), 0);
-		this.data.energy += ChargeItemRegistry.addEnergyTo(this.container.getSlot("slot1"), Math.min(TRANSFER, this.data.energy), 0) - Math.min(TRANSFER, this.data.energy);
+		this.data.energy += ChargeItemRegistry.getEnergyFrom(this.container.getSlot("slot2"), Math.min(this.data.TRANSFER, energyStorage - this.data.energy), 0);
+		this.data.energy += ChargeItemRegistry.addEnergyTo(this.container.getSlot("slot1"), Math.min(this.data.TRANSFER, this.data.energy), 0) - Math.min(this.data.TRANSFER, this.data.energy);
 	},
 	
 	getEnergyStorage: function(){
@@ -62,18 +64,18 @@ MachineRegistry.registerPrototype(BlockID.storageBatBox, {
 	},
 	
 	energyTick: function(){
-		var TRANSFER = 32;
 		var delta = 8 - this.web.energy;
-		var transfer = Math.min(Math.abs(delta), TRANSFER);
+		var transfer = Math.min(Math.abs(delta), this.data.TRANSFER);
 		
 		if (delta > 0){
-			var output = Math.min(TRANSFER, this.data.energy);
+			var output = Math.min(this.data.TRANSFER, this.data.energy);
 			var left = this.web.addEnergy(output);
 			this.data.energy += left - output;
 		}
-		/*if (delta < 0){
+		if (delta < 0){
 			var input = this.web.requireEnergy(Math.min(transfer, this.getEnergyStorage() - this.data.energy));
 			this.data.energy += input;
-		}*/
-	}
+		}
+	},
+	wrenchDescriptions: MachineRegistry.StandardDescriptions.ENERGY_STORAGE
 });

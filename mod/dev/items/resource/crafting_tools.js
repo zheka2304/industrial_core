@@ -1,4 +1,4 @@
-var CRAFTING_TOOL_ITEM_MAX_DAMAGE = 96;
+var CRAFTING_TOOL_ITEM_MAX_DAMAGE = 100;
 
 IDRegistry.genItemID("craftingHammer");
 Item.createItem("craftingHammer", "Forge Hammer", {name: "crafting_hammer"}, {stack: 1});
@@ -8,12 +8,39 @@ IDRegistry.genItemID("craftingCutter");
 Item.createItem("craftingCutter", "Cutter", {name: "crafting_cutter"}, {stack: 1});
 Item.setMaxDamage(ItemID.craftingCutter, CRAFTING_TOOL_ITEM_MAX_DAMAGE);
 
-function addRecipeWithCraftingTool(result, data, tool){
+ToolsModule.addRecipeWithCraftingTool = function(result, data, tool,toolDamage){
 	data.push({id: tool, data: -1});
 	Recipes.addShapeless(result, data, function(api, field, result){
 		for (var i in field){
 			if (field[i].id == tool){
+				if(toolDamage!=undefined){
+				field[i].data += toolDamage;
+				}
+			else{
 				field[i].data++;
+				}
+				if (field[i].data >= CRAFTING_TOOL_ITEM_MAX_DAMAGE){
+					field[i].id = field[i].count = field[i].data = 0;
+				}
+			}
+			else {
+				api.decreaseFieldSlot(i);
+			}
+		}
+	});
+}
+
+ToolsModule.addShapedRecipeWithCraftingTool = function(result,recipe, descriptor,tool,toolDamage){
+	data.push({id: tool, data: -1});
+	Recipes.addShaped(result, recipe, descriptor, function(api, field, result){
+		for (var i in field){
+			if (field[i].id == tool){
+			if (toolDamage!=undefined){
+					field[i].data += toolDamage;
+				}
+				else{
+					field[i].data++;
+				}
 				if (field[i].data >= CRAFTING_TOOL_ITEM_MAX_DAMAGE){
 					field[i].id = field[i].count = field[i].data = 0;
 				}

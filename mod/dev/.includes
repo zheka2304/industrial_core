@@ -6,6 +6,7 @@ core/machine/recipe.js
 core/energy/web.js
 core/energy/builder.js
 core/api/icrender.js
+core/api/tools.js
 
 
 block/basic.js
@@ -50,6 +51,7 @@ items/resource/produced.js
 items/interactive/cable.js
 items/interactive/treetap.js
 items/interactive/cells.js
+items/interactive/wrench.js
 items/other/energy_element.js
 items/armor/bronze.js
 items/armor/nano.js

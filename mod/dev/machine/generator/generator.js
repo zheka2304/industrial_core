@@ -60,7 +60,7 @@ MachineRegistry.registerPrototype(BlockID.primalGenerator, {
 		
 		if (this.data.burn > 0){
 			if (this.data.energy < energyStorage){
-				this.data.energy = Math.min(this.data.energy + 10, energyStorage);
+				this.data.energy = Math.min(this.data.energy + 15, energyStorage);
 				this.data.burn--;
 			}
 		}
@@ -100,5 +100,6 @@ MachineRegistry.registerPrototype(BlockID.primalGenerator, {
 	energyTick: function(){
 		var output = Math.min(32, this.data.energy);
 		this.data.energy += this.web.addEnergy(output) - output;
-	}
+	},
+	 wrenchDescriptions: MachineRegistry.StandardDescriptions.GENERATOR
 });

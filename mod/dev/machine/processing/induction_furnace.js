@@ -40,8 +40,9 @@ var guiInductionFurnace = new UI.StandartWindow({
 MachineRegistry.registerPrototype(BlockID.inductionFurnace, {
 	defaultValues: {
 		isHeating: false,
+		result: 0,
 		heat: 0,
-		progress: 0
+		progress: 0,
 	},
 	
 	getGuiScreen: function(){
@@ -79,7 +80,7 @@ MachineRegistry.registerPrototype(BlockID.inductionFurnace, {
 	},
 	
 	tick: function(){
-		var result = this.getResult();
+		result = this.getResult();
 		if (result){
 			var efficiency = this.getEfficiency();
 			if (this.data.energy > 15){
@@ -124,5 +125,6 @@ MachineRegistry.registerPrototype(BlockID.inductionFurnace, {
 		return 10000;
 	},
 	
-	energyTick: MachineRegistry.basicEnergyReceiveFunc
+	energyTick: MachineRegistry.basicEnergyReceiveFunc,
+	wrenchDescriptions:MachineRegistry.StandardDescriptions.PROCESSING_MACHINE
 });
