@@ -37,11 +37,11 @@ Block.setBlockShape(BlockID.cableGold, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CAB
 Block.setBlockShape(BlockID.cableIron, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CABLE_BLOCK_WIDTH, z: 0.5 - CABLE_BLOCK_WIDTH}, {x: 0.5 + CABLE_BLOCK_WIDTH, y: 0.5 + CABLE_BLOCK_WIDTH, z: 0.5 + CABLE_BLOCK_WIDTH});
 Block.setBlockShape(BlockID.cableOptic, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CABLE_BLOCK_WIDTH, z: 0.5 - CABLE_BLOCK_WIDTH}, {x: 0.5 + CABLE_BLOCK_WIDTH, y: 0.5 + CABLE_BLOCK_WIDTH, z: 0.5 + CABLE_BLOCK_WIDTH});
 
-ICRenderLib.registerAsWire(BlockID.cableTin);
-ICRenderLib.registerAsWire(BlockID.cableCopper);
-ICRenderLib.registerAsWire(BlockID.cableGold);
-ICRenderLib.registerAsWire(BlockID.cableIron);
-ICRenderLib.registerAsWire(BlockID.cableOptic);
+ICRenderLib.registerAsWire(BlockID.cableTin, TILE_RENDERER_CONNECTION_GROUP);
+ICRenderLib.registerAsWire(BlockID.cableCopper, TILE_RENDERER_CONNECTION_GROUP);
+ICRenderLib.registerAsWire(BlockID.cableGold, TILE_RENDERER_CONNECTION_GROUP);
+ICRenderLib.registerAsWire(BlockID.cableIron, TILE_RENDERER_CONNECTION_GROUP);
+ICRenderLib.registerAsWire(BlockID.cableOptic, TILE_RENDERER_CONNECTION_GROUP);
 
 // drop 
 Block.registerDropFunction("cableTin", function(){

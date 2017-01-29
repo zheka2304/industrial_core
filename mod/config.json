@@ -1,4 +1,5 @@
 {
 	"enabled": true,
-	"advanced_api": false
+	"advanced_api": false,
+	"show_resource_errors": true
 }
