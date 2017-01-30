@@ -1,6 +1,6 @@
 IDRegistry.genBlockID("storageBatBox");
 Block.createBlock("storageBatBox", [
-	{name: "Bat-Box", texture: [["bat_box", 0], ["bat_box", 2], ["bat_box", 1], ["bat_box", 1], ["bat_box", 1], ["bat_box", 1]], inCreative: true}
+	{name: "BatBox", texture: [["bat_box", 0], ["bat_box", 2], ["bat_box", 1], ["bat_box", 1], ["bat_box", 1], ["bat_box", 1]], inCreative: true}
 ]);
 
 Callback.addCallback("PostLoaded", function(){

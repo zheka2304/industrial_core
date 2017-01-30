@@ -2,7 +2,7 @@ IDRegistry.genItemID("plateCopper");
 Item.createItem("plateCopper", "Copper Plate", {name: "plate_copper"});
 
 IDRegistry.genItemID("plateTin");
-Item.createItem("plateTin", "Tin plate", {name: "plate_tin"});
+Item.createItem("plateTin", "Tin Plate", {name: "plate_tin"});
 
 IDRegistry.genItemID("plateIron");
 Item.createItem("plateIron", "Iron Plate", {name: "plate_iron"});

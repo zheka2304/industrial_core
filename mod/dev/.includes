@@ -1,5 +1,7 @@
 header.js
 
+translation.js
+
 core/machine/define.js
 core/machine/interaction.js
 core/machine/recipe.js
@@ -53,6 +55,7 @@ items/interactive/cells.js
 items/other/energy_element.js
 items/armor/bronze.js
 items/armor/nano.js
+items/armor/quantum.js
 items/tool/nano_saber.js
 
 core/api/shared.js
