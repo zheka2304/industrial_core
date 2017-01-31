@@ -20,8 +20,9 @@ function TileRenderModel(id, data){
 	this.registerAsId(id, data);
 	
 	this.boxes = [];
+	this.dynamic = [];
 
-	this.addBoxF = function(x1, y1, z1, x2, y2, z2, block){
+	this.formatBox = function(x1, y1, z1, x2, y2, z2, block){
 		var M = 1.0;
 		var box = [
 			x1 * M, y1 * M, z1 * M,
@@ -38,29 +39,90 @@ function TileRenderModel(id, data){
 			box.push(-1);
 		}
 
-		this.boxes.push(box);
+		return box;
+	}
+
+	this.addBoxF = function(x1, y1, z1, x2, y2, z2, block){
+		this.boxes.push(this.formatBox(x1, y1, z1, x2, y2, z2, block));
 	}
  
 	this.addBox = function(x, y, z, size, block){
-		var M = 1.0;
-		var box = [
-			x * M, y * M, z * M,
-			(x + size.x) * M,
-			(y + size.y) * M,
-			(z + size.z) * M
-		];
-		
-		if (block){
-			block = Unlimited.API.GetReal(block.id, block.data);
-			box.push(parseInt(block.id) || 0);
-			box.push(parseInt(block.data) || 0)
-		}
-		else{
-			box.push(-1);
-			box.push(-1);
-		}
-		
-		this.boxes.push(box);
+		this.boxes.push(this.formatBox(
+				x, y, z,
+				(x + size.x),
+				(y + size.y),
+				(z + size.z), 
+				block
+			)
+		);
+	}
+
+	this.createCondition = function(x, y, z, mode){
+		var model = this;
+		var condition = {
+			x: x, y: y, z: z,
+			mode: Math.max(0, mode || 0),
+
+			boxes: [],
+			
+			addBoxF: function(x1, y1, z1, x2, y2, z2, block){
+				this.boxes.push(model.formatBox(x1, y1, z1, x2, y2, z2, block));
+			},
+
+			addBox: function(x, y, z, size, block){
+				this.boxes.push(model.formatBox(
+						x, y, z,
+						(x + size.x),
+						(y + size.y),
+						(z + size.z), 
+						block
+					)
+				);
+			},
+
+			tiles: {},
+			tileGroups: [],
+			
+			addBlock: function(id, data){
+				var block = Unlimited.API.GetReal(id, data || 0);
+				var convertedId = block.id * 16 + block.data;
+				this.tiles[convertedId] = true;
+			},
+			
+			addBlockGroup: function(name){
+				this.tileGroups.push(name);
+			},
+			
+			addBlockGroupFinal: function(name){
+				var group = ICRenderLib.getConnectionGroup(name);
+				for (var id in group){
+					this.tiles[id] = true;
+				}
+			},
+			
+			writeCondition: function(){
+				var output = parseInt(this.x) + " " + parseInt(this.y) + " " + parseInt(this.z) + " " + parseInt(this.mode) + "\n";
+				
+				for (var i in this.tileGroups){
+					this.addBlockGroupFinal(this.tileGroups[i]);
+				}
+				
+				var blocks = [];
+				for(var id in this.tiles){
+					blocks.push(id);
+				}
+				output += blocks.length + " " + blocks.join(" ") + "\n" + condition.boxes.length + "\n";
+				
+				for(var i in condition.boxes){
+					output += condition.boxes[i].join(" ") + "\n";
+				}
+				
+				return output;
+			}
+		};
+
+		this.dynamic.push(condition);
+		return condition;
 	}
 	
 	this.connections = {};
@@ -96,7 +158,6 @@ function TileRenderModel(id, data){
 		this.hasConnections = true;
 	}
 	
-	
 	this.writeAsId = function(id){
 		var output = "";
 		output += id + " " + (this.hasConnections ? 1 : 0) + "\n";
@@ -105,20 +166,23 @@ function TileRenderModel(id, data){
 		for (var i in this.boxes){
 			output += this.boxes[i].join(" ") + "\n";
 		}
-		
-		var connections = "";
-		var count = 0;
+
+		output += this.dynamic.length + "\n";
+		for(var i in this.dynamic){
+			var condition = this.dynamic[i];
+			output += condition.writeCondition();
+		}
 		
 		for (var i in this.connectionGroups){
 			this.addConnectionGroupFinal(this.connectionGroups[i]);
 		}
 		
+		var connections = [];
 		for (var id in this.connections){
-			connections += id + " ";
-			count++;
+			connections.push(id);
 		}
 		
-		output += count + " " + this.connectionWidth + "\n" + connections;
+		output += connections.length + " " + this.connectionWidth + "\n" + connections.join(" ");
 		return output;
 	}
 }
@@ -208,25 +272,32 @@ if (!ICRenderLib){
 
 
 
-/*
+/**
 
 // exampe of block model
 
-Block.setPrototype("testRender", {
+Block.setPrototype("pillar", {
 	getVariations: function(){
 		return [
-			{name: "pillar", texture: [["cobblestone", 0]], inCreative: true}
+			{name: "Pillar", texture: [["cobblestone", 0]], inCreative: true}
 		]
 	}
 });
+Block.setBlockShape(BlockID.pillar, {x: 0.25, y: 0, z: 0.25},  {x: 0.75, y: 1, z: 0.75})
 
-var pillarRender = new TileRenderModel(BlockID.testRender);
+var pillarRender = new TileRenderModel(BlockID.pillar);
+
+var pillarCondition1 = pillarRender.createCondition(0, -1, 0, 1);
+var pillarCondition2 = pillarRender.createCondition(0, 1, 0, 1);
+pillarCondition1.addBlock(BlockID.pillar, 0);
+pillarCondition2.addBlock(BlockID.pillar, 0);
 
 for(var i = 0; i < 4; i++){
-	pillarRender.addBoxF(i / 16, i / 16, i / 16, 1.0 - i / 16, (i + 1) / 16, 1.0 - i / 16);
-	pillarRender.addBoxF(i / 16, 1.0 - (i + 1) / 16, i / 16, 1.0 - i / 16, 1.0 - i / 16, 1.0 - i / 16);
+	pillarCondition1.addBoxF(i / 16, i / 16, i / 16, 1.0 - i / 16, (i + 1) / 16, 1.0 - i / 16);
+	pillarCondition2.addBoxF(i / 16, 1.0 - (i + 1) / 16, i / 16, 1.0 - i / 16, 1.0 - i / 16, 1.0 - i / 16);
 }
 
 pillarRender.addBoxF(0.25, 0.0, 0.25, 0.75, 1.0, 0.75, {id: 5, data: 2});
 
 */
+
