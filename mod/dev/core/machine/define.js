@@ -22,6 +22,7 @@ var MachineRegistry = {
 	registerPrototype: function(id, Prototype){
 		// register render
 		ICRenderLib.addConnectionBlock(TILE_RENDERER_CONNECTION_GROUP, id);
+		ICRenderLib.addConnectionBlock("ic-containers", id); // TODO: specialize
 		// register ID
 		this.machineIDs[id] = true;
 		// set base for web object
