@@ -60,16 +60,4 @@ if (getCoreAPILevel() < 3){
 	Logger.Log("Core Engine with low api level detected, ore generation will not be optimized", "WARNING");
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+importLib("ToolType", "*");

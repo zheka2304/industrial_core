@@ -12,6 +12,8 @@
 
 // constants
 var GUI_BAR_STANDART_SCALE = 3.2;
+var TILE_RENDERER_CONNECTION_GROUP = "ic-wire";
+
 var FURNACE_FUEL_MAP = {
 	5: 300,
 	6: 100,
@@ -58,19 +60,7 @@ if (getCoreAPILevel() < 3){
 	Logger.Log("Core Engine with low api level detected, ore generation will not be optimized", "WARNING");
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+importLib("ToolType", "*");
 
 
 ﻿Translation.addTranslation("Machine Block", {ru: "Машинный блок"});
@@ -137,7 +127,7 @@ Translation.addTranslation("Scrap", {ru: "Утильсырьё"});
 Translation.addTranslation("Scrap Box", {ru: "Коробка утильсырья"});
 Translation.addTranslation("UU-Matter", {ru: "Материя"});
 Translation.addTranslation("Iridium", {ru: "Иридий"});
-Translation.addTranslation("Iridium Plate", {ru: "Иридиевый композит"});
+Translation.addTranslation("Iridium Reinforced Plate", {ru: "Иридиевый композит"});
 Translation.addTranslation("Alloy Ingot", {ru: "Композитный слиток"});
 Translation.addTranslation("Alloy Plate", {ru: "Композит"});
 Translation.addTranslation("Carbon Fibre", {ru: "Углеволокно"});
@@ -184,6 +174,19 @@ Translation.addTranslation("Quantum Helmet (Uncharged)", {ru: "Квантовы�
 Translation.addTranslation("Quantum Chestplate (Uncharged)", {ru: "Квантовый нагрудник (разряжено)"});
 Translation.addTranslation("Quantum Leggings (Uncharged)", {ru: "Квантовые штаны (разряжено)"});
 Translation.addTranslation("Quantum Boots (Uncharged)", {ru: "Квантовые ботинки (разряжено)"});
+Translation.addTranslation("Nano Saber", {ru: "Нано-сабля"});
+Translation.addTranslation("Coil", {ru: "Катушка"});
+Translation.addTranslation("Electric Motor", {ru: "Электромотор"});
+Translation.addTranslation("Power Unit", {ru: "Силовой агрегат"});
+Translation.addTranslation("Drill", {ru: "Шахтёрский бур"});
+Translation.addTranslation("Bronze Sword", {ru: "Бронзовый меч"});
+Translation.addTranslation("Bronze Shovel", {ru: "Бронзовая лопата"});
+Translation.addTranslation("Bronze Pickaxe", {ru: "Бронзовая кирка"});
+Translation.addTranslation("Bronze Axe", {ru: "Бронзовый топор"});
+Translation.addTranslation("Bronze Hoe", {ru: "Бронзовая мотыга"});
+Translation.addTranslation("Diamond Drill", {ru: "Алмазный бур"});
+Translation.addTranslation("Iridium Drill", {ru: "Иридиевый бур"});
+Translation.addTranslation("Chainsaw", {ru: "Электропила"});
 
 
 var MachineRegistry = {
@@ -209,7 +212,7 @@ var MachineRegistry = {
 	
 	registerPrototype: function(id, Prototype){
 		// register render
-		ICRenderLib.registerAsConnector(id);
+		ICRenderLib.addConnectionBlock(TILE_RENDERER_CONNECTION_GROUP, id);
 		// register ID
 		this.machineIDs[id] = true;
 		// set base for web object
@@ -463,52 +466,309 @@ Callback.addCallback("tick", function(){
 });
 
 
+function TileRenderModel(id, data){
+	this.registerAsId = function(id, data){
+		var block = Unlimited.API.GetReal(id, data || 0);
+		this.id = block.id;
+		this.data = block.data;
+		this.convertedId = this.id * 16 + this.data;
+		
+		if (this.convertedId){
+			ICRenderLib.registerTileModel(this.convertedId, this);
+		}
+		else{
+			Logger.Log("tile model cannot be registred: block id is undefined or 0", "ERROR");
+		}
+	}
+	
+	this.cloneForId = function(id, data){
+		this.registerAsId(id, data);
+	}
+	
+	this.registerAsId(id, data);
+	
+	this.boxes = [];
+	this.dynamic = [];
+
+	this.formatBox = function(x1, y1, z1, x2, y2, z2, block){
+		var M = 1.0;
+		var box = [
+			x1 * M, y1 * M, z1 * M,
+			x2 * M, y2 * M, z2 * M,
+		];
+
+		if (block){
+			block = Unlimited.API.GetReal(block.id, block.data);
+			box.push(parseInt(block.id) || 0);
+			box.push(parseInt(block.data) || 0)
+		}
+		else{
+			box.push(-1);
+			box.push(-1);
+		}
+
+		return box;
+	}
+
+	this.addBoxF = function(x1, y1, z1, x2, y2, z2, block){
+		this.boxes.push(this.formatBox(x1, y1, z1, x2, y2, z2, block));
+	}
+ 
+	this.addBox = function(x, y, z, size, block){
+		this.boxes.push(this.formatBox(
+				x, y, z,
+				(x + size.x),
+				(y + size.y),
+				(z + size.z), 
+				block
+			)
+		);
+	}
+
+	this.createCondition = function(x, y, z, mode){
+		var model = this;
+		var condition = {
+			x: x, y: y, z: z,
+			mode: Math.max(0, mode || 0),
+
+			boxes: [],
+			
+			addBoxF: function(x1, y1, z1, x2, y2, z2, block){
+				this.boxes.push(model.formatBox(x1, y1, z1, x2, y2, z2, block));
+			},
+
+			addBox: function(x, y, z, size, block){
+				this.boxes.push(model.formatBox(
+						x, y, z,
+						(x + size.x),
+						(y + size.y),
+						(z + size.z), 
+						block
+					)
+				);
+			},
+
+			tiles: {},
+			tileGroups: [],
+			
+			addBlock: function(id, data){
+				var block = Unlimited.API.GetReal(id, data || 0);
+				var convertedId = block.id * 16 + block.data;
+				this.tiles[convertedId] = true;
+			},
+			
+			addBlockGroup: function(name){
+				this.tileGroups.push(name);
+			},
+			
+			addBlockGroupFinal: function(name){
+				var group = ICRenderLib.getConnectionGroup(name);
+				for (var id in group){
+					this.tiles[id] = true;
+				}
+			},
+			
+			writeCondition: function(){
+				var output = parseInt(this.x) + " " + parseInt(this.y) + " " + parseInt(this.z) + " " + parseInt(this.mode) + "\n";
+				
+				for (var i in this.tileGroups){
+					this.addBlockGroupFinal(this.tileGroups[i]);
+				}
+				
+				var blocks = [];
+				for(var id in this.tiles){
+					blocks.push(id);
+				}
+				output += blocks.length + " " + blocks.join(" ") + "\n" + condition.boxes.length + "\n";
+				
+				for(var i in condition.boxes){
+					output += condition.boxes[i].join(" ") + "\n";
+				}
+				
+				return output;
+			}
+		};
+
+		this.dynamic.push(condition);
+		return condition;
+	}
+	
+	this.connections = {};
+	this.connectionGroups = [];
+	this.connectionWidth = 0.5;
+	this.hasConnections = false;
+	
+	this.setConnectionWidth = function(width){
+		this.connectionWidth = width;
+	}
+	
+	this.addConnection = function(id, data){
+		var block = Unlimited.API.GetReal(id, data || 0);
+		var convertedId = block.id * 16 + block.data;
+		this.connections[convertedId] = true;
+		this.hasConnections = true;
+	}
+	
+	this.addConnectionGroup = function(name){
+		this.connectionGroups.push(name);
+		this.hasConnections = true;
+	}
+	
+	this.addConnectionGroupFinal = function(name){
+		var group = ICRenderLib.getConnectionGroup(name);
+		for (var id in group){
+			this.connections[id] = true;
+		}
+	}
+	
+	this.addSelfConnection = function(){
+		this.connections[this.convertedId] = true;
+		this.hasConnections = true;
+	}
+	
+	this.writeAsId = function(id){
+		var output = "";
+		output += id + " " + (this.hasConnections ? 1 : 0) + "\n";
+		output += this.boxes.length + "\n";
+		
+		for (var i in this.boxes){
+			output += this.boxes[i].join(" ") + "\n";
+		}
+
+		output += this.dynamic.length + "\n";
+		for(var i in this.dynamic){
+			var condition = this.dynamic[i];
+			output += condition.writeCondition();
+		}
+		
+		for (var i in this.connectionGroups){
+			this.addConnectionGroupFinal(this.connectionGroups[i]);
+		}
+		
+		var connections = [];
+		for (var id in this.connections){
+			connections.push(id);
+		}
+		
+		output += connections.length + " " + this.connectionWidth + "\n" + connections.join(" ");
+		return output;
+	}
+}
+
+
 var ICRenderLib = ModAPI.requireAPI("ICRenderLib");
 
 if (!ICRenderLib){
-	ICRenderLib = {
-		wireTiles: {},
-		connectorTiles: {},
+	var ICRenderLib = {
+		/* model registry */
+		tileModels: {},
 		
-		addTileToArray: function(array, id, data){
-			var real = Unlimited.API.GetReal(id, data);
-			array[real.id * 16 + real.data] = true;
+		registerTileModel: function(convertedId, model){
+			this.tileModels[convertedId] = model;
 		},
 		
-		addAllDatasToArray: function(array, id){
+		/* output */
+		writeAllData: function(){
+			var output = "";
+			var count = 0;
+			for (var id in this.tileModels){
+				output += this.tileModels[id].writeAsId(id) + "\n\n";
+				count++;
+			}
+			
+			output = count + "\n\n" + output;
+			FileTools.WriteText("games/com.mojang/mods/icrender", output);
+		},
+		
+		/* connection groups functions */
+		connectionGroups: {},
+		
+		addConnectionBlockWithData: function(name, blockId, blockData){
+			var group = this.connectionGroups[name];
+			if (!group){
+				group = {};
+				this.connectionGroups[name] = group;
+			}
+			
+			var block = Unlimited.API.GetReal(blockId, blockData);
+			group[block.id * 16 + block.data] = true;
+		},
+		
+		addConnectionBlock: function(name, blockId){
 			for (var data = 0; data < 16; data++){
-				this.addTileToArray(array, id, data);
+				this.addConnectionBlockWithData(name, blockId, data);
 			}
 		},
 		
-		registerAsWire: function(id){
-			this.addAllDatasToArray(this.wireTiles, id);
+		addConnectionGroup: function(name, blockIds){
+			for (var i in blockIds){
+				this.addConnectionBlock(name, blockIds[i]);
+			}
 		},
 		
-		registerAsConnector: function(id){
-			this.addAllDatasToArray(this.connectorTiles, id);
+		getConnectionGroup: function(name){
+			return this.connectionGroups[name];
 		},
 		
-		writeData: function(){
-			var wires = [];
-			for (var id in this.wireTiles){
-				wires.push(parseInt(id));
-			}
-			var connectors = [];
-			for (var id in this.connectorTiles){
-				connectors.push(parseInt(id));
-			}
-			var filecontent = wires.length + "\n" + wires.join(" ") + "\n" + connectors.length + "\n" + connectors.join(" ");
-			FileTools.WriteText("games/com.mojang/mods/icrender", filecontent);
+		
+		/* standart models */
+		registerAsWire: function(id, connectionGroupName, width){
+			width = width || 0.5;
+			
+			var model = new TileRenderModel(id, 0);
+			model.addConnectionGroup(connectionGroupName);
+			model.addSelfConnection();
+			model.setConnectionWidth(width);
+			model.addBox(.5 - width / 2.0, .5 - width / 2.0, .5 - width / 2.0, {
+				x: width,
+				y: width,
+				z: width,
+			});
+			
+			this.addConnectionBlock(connectionGroupName, id);
 		}
 	};
 	
+	
 	ModAPI.registerAPI("ICRenderLib", ICRenderLib);
 	Callback.addCallback("PostLoaded", function(){
-		ICRenderLib.writeData();
+		ICRenderLib.writeAllData();
 	});
 	Logger.Log("ICRender API was created and shared by " + __name__ + " with name ICRenderLib", "API");
 }
+
+
+
+
+/**
+
+// exampe of block model
+
+Block.setPrototype("pillar", {
+	getVariations: function(){
+		return [
+			{name: "Pillar", texture: [["cobblestone", 0]], inCreative: true}
+		]
+	}
+});
+Block.setBlockShape(BlockID.pillar, {x: 0.25, y: 0, z: 0.25},  {x: 0.75, y: 1, z: 0.75})
+
+var pillarRender = new TileRenderModel(BlockID.pillar);
+
+var pillarCondition1 = pillarRender.createCondition(0, -1, 0, 1);
+var pillarCondition2 = pillarRender.createCondition(0, 1, 0, 1);
+pillarCondition1.addBlock(BlockID.pillar, 0);
+pillarCondition2.addBlock(BlockID.pillar, 0);
+
+for(var i = 0; i < 4; i++){
+	pillarCondition1.addBoxF(i / 16, i / 16, i / 16, 1.0 - i / 16, (i + 1) / 16, 1.0 - i / 16);
+	pillarCondition2.addBoxF(i / 16, 1.0 - (i + 1) / 16, i / 16, 1.0 - i / 16, 1.0 - i / 16, 1.0 - i / 16);
+}
+
+pillarRender.addBoxF(0.25, 0.0, 0.25, 0.75, 1.0, 0.75, {id: 5, data: 2});
+
+*/
+
 
 
 IDRegistry.genBlockID("machineBlockBasic");
@@ -579,11 +839,11 @@ Block.setBlockShape(BlockID.cableGold, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CAB
 Block.setBlockShape(BlockID.cableIron, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CABLE_BLOCK_WIDTH, z: 0.5 - CABLE_BLOCK_WIDTH}, {x: 0.5 + CABLE_BLOCK_WIDTH, y: 0.5 + CABLE_BLOCK_WIDTH, z: 0.5 + CABLE_BLOCK_WIDTH});
 Block.setBlockShape(BlockID.cableOptic, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CABLE_BLOCK_WIDTH, z: 0.5 - CABLE_BLOCK_WIDTH}, {x: 0.5 + CABLE_BLOCK_WIDTH, y: 0.5 + CABLE_BLOCK_WIDTH, z: 0.5 + CABLE_BLOCK_WIDTH});
 
-ICRenderLib.registerAsWire(BlockID.cableTin);
-ICRenderLib.registerAsWire(BlockID.cableCopper);
-ICRenderLib.registerAsWire(BlockID.cableGold);
-ICRenderLib.registerAsWire(BlockID.cableIron);
-ICRenderLib.registerAsWire(BlockID.cableOptic);
+ICRenderLib.registerAsWire(BlockID.cableTin, TILE_RENDERER_CONNECTION_GROUP);
+ICRenderLib.registerAsWire(BlockID.cableCopper, TILE_RENDERER_CONNECTION_GROUP);
+ICRenderLib.registerAsWire(BlockID.cableGold, TILE_RENDERER_CONNECTION_GROUP);
+ICRenderLib.registerAsWire(BlockID.cableIron, TILE_RENDERER_CONNECTION_GROUP);
+ICRenderLib.registerAsWire(BlockID.cableOptic, TILE_RENDERER_CONNECTION_GROUP);
 
 // drop 
 Block.registerDropFunction("cableTin", function(){
@@ -1262,6 +1522,7 @@ Callback.addCallback("PreLoaded", function(){
         // other items
         263: {id: ItemID.dustCoal, count: 1, data: 0},
         264: {id: ItemID.dustDiamond, count: 1, data: 0},
+        351: {id: ItemID.dustLapis, count: 1, data: 0, ingredientData: 4},
         // other materials
         1: {id: 4, count: 1, data: 0},
         4: {id: 12, count: 1, data: 0},
@@ -1284,7 +1545,7 @@ MachineRegistry.registerPrototype(BlockID.macerator, {
     tick: function(){
         var sourceSlot = this.container.getSlot("slotSource");
         var result = MachineRecipeRegistry.getRecipeResult("macerator", sourceSlot.id);
-        if (result){
+        if (result && (sourceSlot.data == result.ingredientData || !result.ingredientData)){
             if (this.data.energy > 2){
                 this.data.energy -= 3;
                 this.data.progress++;
@@ -2771,8 +3032,8 @@ Item.createItem("matter", "UU-Matter", {name: "uu_matter"});
 IDRegistry.genItemID("iridiumChunk");
 Item.createItem("iridiumChunk", "Iridium", {name: "iridium"});
 
-IDRegistry.genItemID("plateIridium");
-Item.createItem("plateIridium", "Iridium Plate", {name: "plate_iridium"});
+IDRegistry.genItemID("plateReinforcedIridium");
+Item.createItem("plateReinforcedIridium", "Iridium Reinforced Plate", {name: "plate_reinforced_iridium"});
 
 IDRegistry.genItemID("ingotAlloy");
 Item.createItem("ingotAlloy", "Alloy Ingot", {name: "ingot_alloy"});
@@ -2803,7 +3064,7 @@ Callback.addCallback("PostLoaded", function(){
 		"xxx",
 		"###",
 		"aaa"
-	], ['#', ItemID.ingotBronze, -1, 'x', ItemID.ingotSteel, -1, 'a', ItemID.ingotTin, -1]);
+	], ['#', ItemID.plateBronze, -1, 'x', ItemID.plateSteel, -1, 'a', ItemID.palteTin, -1]);
 	
 	Recipes.addShaped({id: ItemID.carbonFibre, count: 1, data: 0}, [
 		"xx",
@@ -2832,7 +3093,7 @@ Callback.addCallback("PostLoaded", function(){
 		"xxx"
 	], ['x', ItemID.coalBlock, -1, '#', 49, -1]);
 	
-	Recipes.addShaped({id: ItemID.plateIridium, count: 1, data: 0}, [
+	Recipes.addShaped({id: ItemID.plateReinforcedIridium, count: 1, data: 0}, [
 		"xax",
 		"a#a",
 		"xax"
@@ -3159,6 +3420,16 @@ Item.createItem("circuitBasic", "Circuit", {name: "circuit", meta: 0});
 IDRegistry.genItemID("circuitAdvanced");
 Item.createItem("circuitAdvanced", "Advanced Circuit", {name: "circuit", meta: 1});
 
+IDRegistry.genItemID("coil");
+IDRegistry.genItemID("electricMotor");
+IDRegistry.genItemID("powerUnit");
+
+Item.createItem("coil", "Coil", {name: "coil", meta: 0});
+Item.createItem("electricMotor", "Electric Motor", {name: "motor", meta: 0});
+Item.createItem("powerUnit", "Power Unit", {name: "power_unit", meta: 0});
+
+
+
 
 var RECIPE_FUNC_TRANSPORT_ENERGY = function(api, field, result){
 	var energy = 0;
@@ -3178,12 +3449,18 @@ Callback.addCallback("PostLoaded", function(){
 		"a#a"
 	], ['x', ItemID.cableTin1, -1, 'a', ItemID.casingTin, -1, '#', 331, -1]);
 	
+	Recipes.addShaped({id: ItemID.storageLapotronCrystal, count: 1, data: Item.getMaxDamage(ItemID.storageLapotronCrystal)}, [
+		"x#x",
+		"xax",
+		"x#x"
+	], ['a', ItemID.storageCrystal, -1, 'x', 351, 4, '#', ItemID.circuitBasic, -1], RECIPE_FUNC_TRANSPORT_ENERGY);
+	
+	
 	Recipes.addShaped({id: ItemID.circuitBasic, count: 1, data: 0}, [
 		"xxx",
 		"a#a",
 		"xxx"
 	], ['x', ItemID.cableCopper1, -1, 'a', 331, -1, '#', ItemID.plateIron, -1]);
-	
 	Recipes.addShaped({id: ItemID.circuitBasic, count: 1, data: 0}, [
 		"xax",
 		"x#x",
@@ -3194,19 +3471,31 @@ Callback.addCallback("PostLoaded", function(){
 		"xbx",
 		"a#a",
 		"xbx"
-	], ['x', 331, -1, 'a', 348, -1, 'b', 351, 4, '#', ItemID.circuitBasic, -1]);
-	
+	], ['x', 331, -1, 'a', 348, -1, 'b', ItemID.dustLapis, -1, '#', ItemID.circuitBasic, -1]);
 	Recipes.addShaped({id: ItemID.circuitAdvanced, count: 1, data: 0}, [
 		"xax",
 		"b#b",
 		"xax"
-	], ['x', 331, -1, 'a', 348, -1, 'b', 351, 4, '#', ItemID.circuitBasic, -1]);
+	], ['x', 331, -1, 'a', 348, -1, 'b', ItemID.dustLapis, -1, '#', ItemID.circuitBasic, -1]);
 	
-	Recipes.addShaped({id: ItemID.storageLapotronCrystal, count: 1, data: Item.getMaxDamage(ItemID.storageLapotronCrystal)}, [
-		"x#x",
-		"xax",
-		"x#x"
-	], ['a', ItemID.storageCrystal, -1, 'x', 351, 4, '#', ItemID.circuitBasic, -1], RECIPE_FUNC_TRANSPORT_ENERGY);
+	
+	Recipes.addShaped({id: ItemID.coil, count: 1, data: 0}, [
+		"aaa",
+		"axa",
+		"aaa"
+	], ['x', 265, 0, 'a', ItemID.cableCopper0, -1]);
+
+	Recipes.addShaped({id: ItemID.electricMotor, count: 1, data: 0}, [
+		" b ",
+		"axa",
+		" b "
+	], ['x', 265, 0, 'a', ItemID.coil, -1, 'b', ItemID.casingTin, -1]);
+	
+	Recipes.addShaped({id: ItemID.powerUnit, count: 1, data: 0}, [
+		"acs",
+		"axe",
+		"acs"
+	], ["x", ItemID.circuitBasic, 0, 'e', ItemID.electricMotor, 0,  "a", ItemID.storageBattery, -1, "s", ItemID.casingSteel, 0, "c", ItemID.cableCopper0, 0]);
 });
 
 
@@ -3255,10 +3544,10 @@ Item.createArmorItem("nanoChestplate", "Nano Chestplate", {name: "armor_nano_che
 Item.createArmorItem("nanoLeggings", "Nano Leggings", {name: "armor_nano_leggings"}, {type: "leggings", armor: 6, durability: 1000, texture: "armor/nano_2.png"});
 Item.createArmorItem("nanoBoots", "Nano Boots", {name: "armor_nano_boots"}, {type: "boots", armor: 4, durability: 1000, texture: "armor/nano_1.png"});
 
-ChargeItemRegistry.registerItem(ItemID.nanoHelmet, 100000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.nanoChestplate, 100000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.nanoLeggings, 100000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.nanoBoots, 100000, 1, true);
+ChargeItemRegistry.registerItem(ItemID.nanoHelmet, 100000, 1, true, 50);
+ChargeItemRegistry.registerItem(ItemID.nanoChestplate, 100000, 1, true, 50);
+ChargeItemRegistry.registerItem(ItemID.nanoLeggings, 100000, 1, true, 50);
+ChargeItemRegistry.registerItem(ItemID.nanoBoots, 100000, 1, true, 50);
 
 IDRegistry.genItemID("nanoHelmetUncharged");
 IDRegistry.genItemID("nanoChestplateUncharged");
@@ -3270,10 +3559,10 @@ Item.createArmorItem("nanoChestplateUncharged", "Nano Chestplate (Uncharged)", {
 Item.createArmorItem("nanoLeggingsUncharged", "Nano Leggings (Uncharged)", {name: "armor_nano_leggings"}, {type: "leggings", armor: 3, durability: 1000, texture: "armor/nano_2.png", isTech: true});
 Item.createArmorItem("nanoBootsUncharged", "Nano Boots (Uncharged)", {name: "armor_nano_boots"}, {type: "boots", armor: 2, durability: 1000, texture: "armor/nano_1.png", isTech: true});
 
-ChargeItemRegistry.registerItem(ItemID.nanoHelmetUncharged, 100000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.nanoChestplateUncharged, 100000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.nanoLeggingsUncharged, 100000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.nanoBootsUncharged, 100000, 1, true);
+ChargeItemRegistry.registerItem(ItemID.nanoHelmetUncharged, 100000, 1, true, 50);
+ChargeItemRegistry.registerItem(ItemID.nanoChestplateUncharged, 100000, 1, true, 50);
+ChargeItemRegistry.registerItem(ItemID.nanoLeggingsUncharged, 100000, 1, true, 50);
+ChargeItemRegistry.registerItem(ItemID.nanoBootsUncharged, 100000, 1, true, 50);
 
 
 MachineRecipeRegistry.registerRecipesFor("nano-armor-charge", {
@@ -3360,10 +3649,10 @@ Item.createArmorItem("quantumChestplate", "Quantum Chestplate", {name: "armor_qu
 Item.createArmorItem("quantumLeggings", "Quantum Leggings", {name: "armor_quantum_leggings"}, {type: "leggings", armor: 6, durability: 1000, texture: "armor/quantum_2.png"});
 Item.createArmorItem("quantumBoots", "Quantum Boots", {name: "armor_quantum_boots"}, {type: "boots", armor: 4, durability: 1000, texture: "armor/quantum_1.png"});
 
-ChargeItemRegistry.registerItem(ItemID.quantumHelmet, 1000000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.quantumChestplate, 1000000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.quantumLeggings, 1000000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.quantumBoots, 1000000, 1, true);
+ChargeItemRegistry.registerItem(ItemID.quantumHelmet, 1000000, 2, true, 40);
+ChargeItemRegistry.registerItem(ItemID.quantumChestplate, 1000000, 2, true, 40);
+ChargeItemRegistry.registerItem(ItemID.quantumLeggings, 1000000, 2, true, 40);
+ChargeItemRegistry.registerItem(ItemID.quantumBoots, 1000000, 2, true, 40);
 
 IDRegistry.genItemID("quantumHelmetUncharged");
 IDRegistry.genItemID("quantumChestplateUncharged");
@@ -3375,10 +3664,10 @@ Item.createArmorItem("quantumChestplateUncharged", "Quantum Chestplate (Uncharge
 Item.createArmorItem("quantumLeggingsUncharged", "Quantum Leggings (Uncharged)", {name: "armor_quantum_leggings"}, {type: "leggings", armor: 3, durability: 1000, texture: "armor/quantum_2.png", isTech: true});
 Item.createArmorItem("quantumBootsUncharged", "Quantum Boots (Uncharged)", {name: "armor_quantum_boots"}, {type: "boots", armor: 2, durability: 1000, texture: "armor/quantum_1.png", isTech: true});
 
-ChargeItemRegistry.registerItem(ItemID.quantumHelmetUncharged, 1000000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.quantumChestplateUncharged, 1000000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.quantumLeggingsUncharged, 1000000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.quantumBootsUncharged, 1000000, 1, true);
+ChargeItemRegistry.registerItem(ItemID.quantumHelmetUncharged, 1000000, 2, true, 40);
+ChargeItemRegistry.registerItem(ItemID.quantumChestplateUncharged, 1000000, 2, true, 40);
+ChargeItemRegistry.registerItem(ItemID.quantumLeggingsUncharged, 1000000, 2, true, 40);
+ChargeItemRegistry.registerItem(ItemID.quantumBootsUncharged, 1000000, 2, true, 40);
 
 
 MachineRecipeRegistry.registerRecipesFor("quantum-armor-charge", {
@@ -3392,12 +3681,18 @@ MachineRecipeRegistry.registerRecipesFor("quantum-armor-charge", {
 	"ItemID.quantumBootsUncharged": {charged: ItemID.quantumBoots, uncharged: ItemID.quantumBootsUncharged},
 }, true);
 
+var currentUIscreen;
+
+Callback.addCallback("NativeGuiChanged", function(screenName){
+	currentUIscreen = screenName;
+});
+
 var quantumUIbuttons = new UI.Window({
 	location: {
-		x: 900,
-		y: 400,
-		width: 100,
-		height: 300
+		x: 925,
+		y: UI.getScreenHeight()/2-112.5,
+		width: 75,
+		height: 225
 	},
 	drawing: [{type: "background", color: 0}],
 	elements: {}
@@ -3458,7 +3753,7 @@ var isQuantumEquiped = false;
 var quantumUIcontainer = null;
 
 Callback.addCallback("tick", function(){
-	if(isQuantumEquiped){
+	if(isQuantumEquiped && (currentUIscreen == "hud_screen" || currentUIscreen == "in_game_play_screen")){
 		updateQuantumUI();
 		if(!quantumUIcontainer){
 			quantumUIcontainer = new UI.Container();
@@ -3520,7 +3815,7 @@ var QUANTUM_ARMOR_FUNCS_CHARGED = {
 		if (index == 3){
 			var vel = Player.getVelocity();
 			if (vel.y < - 0.226 && slot.data < this.maxDamage - 4){
-				Entity.addEffect(Player.get(), MobEffect.jump, 2, 12);
+				Entity.addEffect(Player.get(), MobEffect.jump, 2, 255);
 				slot.data++;
 				return true;
 			}
@@ -3542,29 +3837,200 @@ Armor.registerFuncs("quantumBootsUncharged", QUANTUM_ARMOR_FUNCS_CHARGED);
 
 Callback.addCallback("PostLoaded", function(){
 	Recipes.addShaped({id: ItemID.quantumHelmet, count: 1, data: Item.getMaxDamage(ItemID.quantumHelmet)}, [
-		"x#x",
-		"xax"
-	], ['#', ItemID.storageLapotronCrystal, -1, 'x', ItemID.carbonPlate, -1, 'a', ItemID.nanoHelmet, -1], RECIPE_FUNC_TRANSPORT_ENERGY);
+		"a#a",
+		"bxb"
+	], ['#', ItemID.storageLapotronCrystal, -1, 'x', ItemID.nanoHelmet, -1, 'a', ItemID.plateReinforcedIridium, 0, 'b', ItemID.plateAlloy, 0], RECIPE_FUNC_TRANSPORT_ENERGY);
 	
 	Recipes.addShaped({id: ItemID.quantumChestplate, count: 1, data: Item.getMaxDamage(ItemID.quantumChestplate)}, [
-		"x x",
-		"x#x",
-		"xxx"
-	], ['#', ItemID.storageCrystal, -1, 'x', ItemID.carbonPlate, -1], RECIPE_FUNC_TRANSPORT_ENERGY);
+		"bxb",
+		"a#a",
+		"aba"
+	], ['#', ItemID.storageLapotronCrystal, -1, 'x', ItemID.nanoChestplate, -1, 'a', ItemID.plateReinforcedIridium, 0, 'b', ItemID.plateAlloy, 0], RECIPE_FUNC_TRANSPORT_ENERGY);
 	
 	Recipes.addShaped({id: ItemID.quantumLeggings, count: 1, data: Item.getMaxDamage(ItemID.quantumLeggings)}, [
-		"x#x",
-		"x x",
-		"x x"
-	], ['#', ItemID.storageCrystal, -1, 'x', ItemID.carbonPlate, -1], RECIPE_FUNC_TRANSPORT_ENERGY);
+		"m#m",
+		"axa",
+		"c c"
+	], ['#', ItemID.storageLapotronCrystal, -1, 'x', ItemID.nanoLeggings, -1, 'a', ItemID.plateReinforcedIridium, 0, 'm', BlockID.machineBlockBasic, -1, 'c', 348, 0], RECIPE_FUNC_TRANSPORT_ENERGY);
 	
 	Recipes.addShaped({id: ItemID.quantumBoots, count: 1, data: Item.getMaxDamage(ItemID.quantumBoots)}, [
-		"x x",
-		"x#x"
-	], ['#', ItemID.storageCrystal, -1, 'x', ItemID.carbonPlate, -1], RECIPE_FUNC_TRANSPORT_ENERGY);
+		"axa",
+		"b#b"
+	], ['#', ItemID.storageLapotronCrystal, -1, 'x', ItemID.nanoBoots, -1, 'a', ItemID.plateReinforcedIridium, 0, 'b', ItemID.plateAlloy, 0], RECIPE_FUNC_TRANSPORT_ENERGY);
 });
 
 
+IDRegistry.genItemID("nanoSaber");
+Item.createItem("nanoSaber", "Nano Saber", {name: "nano_saber", meta: 0}, {stack: 1});
+
+Callback.addCallback("PostLoaded", function(){
+	Recipes.addShaped({id: ItemID.quantumHelmet, count: 1, data: Item.getMaxDamage(ItemID.quantumHelmet)}, [
+		"ca ",
+		"ca "
+	], ['bxb', 'x', ItemID.storageCrystal, -1, 'a', ItemID.plateAlloy, 0, 'b', ItemID.carbonPlate, 0], RECIPE_FUNC_TRANSPORT_ENERGY);
+});
+
+ChargeItemRegistry.registerItem(ItemID.nanoSaber, 100000, 1, true, 10);
+
+var NANO_SABER_DURABILITY = 10000;
+
+ToolAPI.registerSword(ItemID.nanoSaber, {level: 0, durability: NANO_SABER_DURABILITY, damage: 4}, {
+	damage: 0,
+	onBroke: function(item){
+		item.data = Math.min(item.data, NANO_SABER_DURABILITY);
+		return true;
+	},
+	onAttack: function(item, mob){
+		item.data++;
+		this.damage = item.data < NANO_SABER_DURABILITY ? 16 : 0;
+	}
+});
+
+Callback.addCallback("tick", function(){
+	if(World.getThreadTime() % 10 == 0){
+		var item = Player.getCarriedItem()
+		if(item.id == ItemID.nanoSaber){
+			item.data = Math.min(item.data+1, NANO_SABER_DURABILITY);
+			Player.setCarriedItem(item.id, 1, item.data);
+		} 
+	}
+});
+
+
+IDRegistry.genItemID("bronzeSword");
+IDRegistry.genItemID("bronzeShovel");
+IDRegistry.genItemID("bronzePickaxe");
+IDRegistry.genItemID("bronzeAxe");
+IDRegistry.genItemID("bronzeHoe");
+Item.createItem("bronzeSword", "Bronze Sword", {name: "bronze_sword", meta: 0}, {stack: 1});
+Item.createItem("bronzeShovel", "Bronze Shovel", {name: "bronze_shovel", meta: 0}, {stack: 1});
+Item.createItem("bronzePickaxe", "Bronze Pickaxe", {name: "bronze_pickaxe", meta: 0}, {stack: 1});
+Item.createItem("bronzeAxe", "Bronze Axe", {name: "bronze_axe", meta: 0}, {stack: 1});
+Item.createItem("bronzeHoe", "Bronze Hoe", {name: "bronze_hoe", meta: 0}, {stack: 1});
+
+ToolAPI.addToolMaterial("bronze", {durability: 225, level: 3, efficiency: 6, damage: 2, enchantability: 14});
+ToolAPI.setTool(ItemID.bronzeSword, "bronze", ToolType.sword);
+ToolAPI.setTool(ItemID.bronzeShovel, "bronze", ToolType.shovel);
+ToolAPI.setTool(ItemID.bronzePickaxe, "bronze", ToolType.pickaxe);
+ToolAPI.setTool(ItemID.bronzeAxe, "bronze", ToolType.axe);
+ToolAPI.setTool(ItemID.bronzeHoe, "bronze", ToolType.hoe);
+
+
+Callback.addCallback("PostLoaded", function(){
+	Recipes.addShaped({id: ItemID.bronzeSword, count: 1, data: 0}, [
+		" a ",
+		" a ",
+		" b "
+	], ['a', ItemID.ingotBronze, -1, 'b', 280, 0]);
+	
+	Recipes.addShaped({id: ItemID.bronzeShovel, count: 1, data: 0}, [
+		" a ",
+		" b ",
+		" b "
+	], ['a', ItemID.ingotBronze, -1, 'b', 280, 0]);
+	
+	Recipes.addShaped({id: ItemID.bronzePickaxe, count: 1, data: 0}, [
+		"aaa",
+		" b ",
+		" b "
+	], ['a', ItemID.ingotBronze, -1, 'b', 280, 0]);
+	
+	Recipes.addShaped({id: ItemID.bronzeAxe, count: 1, data: 0}, [
+		"aa",
+		"ab ",
+		" b "
+	], ['a', ItemID.ingotBronze, -1, 'b', 280, 0]);
+	
+	Recipes.addShaped({id: ItemID.bronzeHoe, count: 1, data: 0}, [
+		"aa ",
+		" b ",
+		" b "
+	], ['a', ItemID.ingotBronze, -1, 'b', 280, 0]);
+});
+
+
+IDRegistry.genItemID("drill");
+IDRegistry.genItemID("drillDiamond");
+//IDRegistry.genItemID("drillIridium");
+Item.createItem("drill", "Drill", {name: "drill", meta: 0}, {stack: 1});
+Item.createItem("drillDiamond", "Diamond Drill", {name: "diamond_drill", meta: 0}, {stack: 1});
+//Item.createItem("drillIridium", "Iridium Drill", {name: "tool_iridium_drill", meta: 0}, {stack: 1});
+ChargeItemRegistry.registerItem(ItemID.drill, 30000, 0, true, 50);
+ChargeItemRegistry.registerItem(ItemID.drillDiamond, 30000, 0, true, 80);
+//ChargeItemRegistry.registerItem(ItemID.drillIridium, 100000, 1, true, 160);
+
+ToolType.drill = {
+	damage: 0,
+	blockTypes: ["stone", "dirt"],
+	onBroke: function(item){
+		item.data = Math.min(item.data, Item.getMaxDamage(item.id));
+		return true;
+	},
+	calcDestroyTime: function(item, block, params, destroyTime, enchant){
+		if(item.data < Item.getMaxDamage(item.id)){
+			return destroyTime;
+		}
+		else{
+			return params.base;
+		}
+	}
+}
+
+ToolAPI.setTool(ItemID.drill, {durability: 625, level: 3, efficiency: 8, damage: 4},  ToolType.drill);
+ToolAPI.setTool(ItemID.drillDiamond, {durability: 375, level: 4, efficiency: 16, damage: 5}, ToolType.drill);
+
+
+Callback.addCallback("PostLoaded", function(){
+	Recipes.addShaped({id: ItemID.drill, count: 1, data: Item.getMaxDamage(ItemID.drill)}, [
+		" p ",
+		"ppp",
+		"pxp"
+	], ['x', ItemID.powerUnit, -1, 'p', ItemID.plateIron, 0]);
+	
+	Recipes.addShaped({id: ItemID.drillDiamond, count: 1, data: Item.getMaxDamage(ItemID.drillDiamond)}, [
+		" a ",
+		"ada"
+	], ['d', ItemID.drill, -1, 'a', ItemID.dustDiamond, 0]);
+	
+	Recipes.addShaped({id: ItemID.drillIridium, count: 1, data: Item.getMaxDamage(ItemID.drillIridium)}, [
+		" a ",
+		"ada",
+		" e "
+	], ['d', ItemID.drill, -1, 'e', ItemID.storageCrystal, -1, 'a', ItemID.plateReinforcedIridium, 0], RECIPE_FUNC_TRANSPORT_ENERGY);
+});
+
+
+IDRegistry.genItemID("chainsaw");
+Item.createItem("chainsaw", "Chainsaw", {name: "chainsaw", meta: 0}, {stack: 1});
+ChargeItemRegistry.registerItem(ItemID.chainsaw, 30000, 1, true, 50);
+
+Callback.addCallback("PostLoaded", function(){
+	Recipes.addShaped({id: ItemID.chainsaw, count: 1, data: Item.getMaxDamage(ItemID.drill)}, [
+		" pp",
+		"ppp",
+		"xp "
+	], ['x', ItemID.powerUnit, -1, 'p', ItemID.plateIron, 0]);
+});
+
+
+ToolType.chainsaw = {
+	damage: 0,
+	blockTypes: ["wood"],
+	onBroke: function(item){
+		item.data = Math.min(item.data, Item.getMaxDamage(item.id));
+		return true;
+	},
+	calcDestroyTime: function(item, block, params, destroyTime, enchant){
+		if(item.data < Item.getMaxDamage(item.id)){
+			return destroyTime;
+		}
+		else{
+			return params.base;
+		}
+	}
+}
+
+ToolAPI.setTool(ItemID.chainsaw, {durability: 625, level: 3, efficiency: 8, damage: 4},  ToolType.chainsaw);
 
 
 ModAPI.registerAPI("ICore", {

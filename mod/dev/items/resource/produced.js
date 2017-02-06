@@ -5,7 +5,7 @@ IDRegistry.genItemID("iridiumChunk");
 Item.createItem("iridiumChunk", "Iridium", {name: "iridium"});
 
 IDRegistry.genItemID("plateReinforcedIridium");
-Item.createItem("plateReinforcedIridium", "Iridium Reinforced Plate", {name: "plate_reinforced_iridiums"});
+Item.createItem("plateReinforcedIridium", "Iridium Reinforced Plate", {name: "plate_reinforced_iridium"});
 
 IDRegistry.genItemID("ingotAlloy");
 Item.createItem("ingotAlloy", "Alloy Ingot", {name: "ingot_alloy"});
@@ -36,7 +36,7 @@ Callback.addCallback("PostLoaded", function(){
 		"xxx",
 		"###",
 		"aaa"
-	], ['#', ItemID.ingotBronze, -1, 'x', ItemID.ingotSteel, -1, 'a', ItemID.ingotTin, -1]);
+	], ['#', ItemID.plateBronze, -1, 'x', ItemID.plateSteel, -1, 'a', ItemID.palteTin, -1]);
 	
 	Recipes.addShaped({id: ItemID.carbonFibre, count: 1, data: 0}, [
 		"xx",

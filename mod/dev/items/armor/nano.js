@@ -8,10 +8,10 @@ Item.createArmorItem("nanoChestplate", "Nano Chestplate", {name: "armor_nano_che
 Item.createArmorItem("nanoLeggings", "Nano Leggings", {name: "armor_nano_leggings"}, {type: "leggings", armor: 6, durability: 1000, texture: "armor/nano_2.png"});
 Item.createArmorItem("nanoBoots", "Nano Boots", {name: "armor_nano_boots"}, {type: "boots", armor: 4, durability: 1000, texture: "armor/nano_1.png"});
 
-ChargeItemRegistry.registerItem(ItemID.nanoHelmet, 100000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.nanoChestplate, 100000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.nanoLeggings, 100000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.nanoBoots, 100000, 1, true);
+ChargeItemRegistry.registerItem(ItemID.nanoHelmet, 100000, 1, true, 50);
+ChargeItemRegistry.registerItem(ItemID.nanoChestplate, 100000, 1, true, 50);
+ChargeItemRegistry.registerItem(ItemID.nanoLeggings, 100000, 1, true, 50);
+ChargeItemRegistry.registerItem(ItemID.nanoBoots, 100000, 1, true, 50);
 
 IDRegistry.genItemID("nanoHelmetUncharged");
 IDRegistry.genItemID("nanoChestplateUncharged");
@@ -23,10 +23,10 @@ Item.createArmorItem("nanoChestplateUncharged", "Nano Chestplate (Uncharged)", {
 Item.createArmorItem("nanoLeggingsUncharged", "Nano Leggings (Uncharged)", {name: "armor_nano_leggings"}, {type: "leggings", armor: 3, durability: 1000, texture: "armor/nano_2.png", isTech: true});
 Item.createArmorItem("nanoBootsUncharged", "Nano Boots (Uncharged)", {name: "armor_nano_boots"}, {type: "boots", armor: 2, durability: 1000, texture: "armor/nano_1.png", isTech: true});
 
-ChargeItemRegistry.registerItem(ItemID.nanoHelmetUncharged, 100000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.nanoChestplateUncharged, 100000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.nanoLeggingsUncharged, 100000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.nanoBootsUncharged, 100000, 1, true);
+ChargeItemRegistry.registerItem(ItemID.nanoHelmetUncharged, 100000, 1, true, 50);
+ChargeItemRegistry.registerItem(ItemID.nanoChestplateUncharged, 100000, 1, true, 50);
+ChargeItemRegistry.registerItem(ItemID.nanoLeggingsUncharged, 100000, 1, true, 50);
+ChargeItemRegistry.registerItem(ItemID.nanoBootsUncharged, 100000, 1, true, 50);
 
 
 MachineRecipeRegistry.registerRecipesFor("nano-armor-charge", {

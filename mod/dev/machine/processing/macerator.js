@@ -61,6 +61,7 @@ Callback.addCallback("PreLoaded", function(){
         // other items
         263: {id: ItemID.dustCoal, count: 1, data: 0},
         264: {id: ItemID.dustDiamond, count: 1, data: 0},
+        351: {id: ItemID.dustLapis, count: 1, data: 0, ingredientData: 4},
         // other materials
         1: {id: 4, count: 1, data: 0},
         4: {id: 12, count: 1, data: 0},
@@ -83,7 +84,7 @@ MachineRegistry.registerPrototype(BlockID.macerator, {
     tick: function(){
         var sourceSlot = this.container.getSlot("slotSource");
         var result = MachineRecipeRegistry.getRecipeResult("macerator", sourceSlot.id);
-        if (result){
+        if (result && (sourceSlot.data == result.ingredientData || !result.ingredientData)){
             if (this.data.energy > 2){
                 this.data.energy -= 3;
                 this.data.progress++;

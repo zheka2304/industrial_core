@@ -8,10 +8,10 @@ Item.createArmorItem("quantumChestplate", "Quantum Chestplate", {name: "armor_qu
 Item.createArmorItem("quantumLeggings", "Quantum Leggings", {name: "armor_quantum_leggings"}, {type: "leggings", armor: 6, durability: 1000, texture: "armor/quantum_2.png"});
 Item.createArmorItem("quantumBoots", "Quantum Boots", {name: "armor_quantum_boots"}, {type: "boots", armor: 4, durability: 1000, texture: "armor/quantum_1.png"});
 
-ChargeItemRegistry.registerItem(ItemID.quantumHelmet, 1000000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.quantumChestplate, 1000000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.quantumLeggings, 1000000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.quantumBoots, 1000000, 1, true);
+ChargeItemRegistry.registerItem(ItemID.quantumHelmet, 1000000, 2, true, 40);
+ChargeItemRegistry.registerItem(ItemID.quantumChestplate, 1000000, 2, true, 40);
+ChargeItemRegistry.registerItem(ItemID.quantumLeggings, 1000000, 2, true, 40);
+ChargeItemRegistry.registerItem(ItemID.quantumBoots, 1000000, 2, true, 40);
 
 IDRegistry.genItemID("quantumHelmetUncharged");
 IDRegistry.genItemID("quantumChestplateUncharged");
@@ -23,10 +23,10 @@ Item.createArmorItem("quantumChestplateUncharged", "Quantum Chestplate (Uncharge
 Item.createArmorItem("quantumLeggingsUncharged", "Quantum Leggings (Uncharged)", {name: "armor_quantum_leggings"}, {type: "leggings", armor: 3, durability: 1000, texture: "armor/quantum_2.png", isTech: true});
 Item.createArmorItem("quantumBootsUncharged", "Quantum Boots (Uncharged)", {name: "armor_quantum_boots"}, {type: "boots", armor: 2, durability: 1000, texture: "armor/quantum_1.png", isTech: true});
 
-ChargeItemRegistry.registerItem(ItemID.quantumHelmetUncharged, 1000000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.quantumChestplateUncharged, 1000000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.quantumLeggingsUncharged, 1000000, 1, true);
-ChargeItemRegistry.registerItem(ItemID.quantumBootsUncharged, 1000000, 1, true);
+ChargeItemRegistry.registerItem(ItemID.quantumHelmetUncharged, 1000000, 2, true, 40);
+ChargeItemRegistry.registerItem(ItemID.quantumChestplateUncharged, 1000000, 2, true, 40);
+ChargeItemRegistry.registerItem(ItemID.quantumLeggingsUncharged, 1000000, 2, true, 40);
+ChargeItemRegistry.registerItem(ItemID.quantumBootsUncharged, 1000000, 2, true, 40);
 
 
 MachineRecipeRegistry.registerRecipesFor("quantum-armor-charge", {
@@ -40,12 +40,18 @@ MachineRecipeRegistry.registerRecipesFor("quantum-armor-charge", {
 	"ItemID.quantumBootsUncharged": {charged: ItemID.quantumBoots, uncharged: ItemID.quantumBootsUncharged},
 }, true);
 
+var currentUIscreen;
+
+Callback.addCallback("NativeGuiChanged", function(screenName){
+	currentUIscreen = screenName;
+});
+
 var quantumUIbuttons = new UI.Window({
 	location: {
-		x: 900,
-		y: 400,
-		width: 50,
-		height: 150
+		x: 925,
+		y: UI.getScreenHeight()/2-112.5,
+		width: 75,
+		height: 225
 	},
 	drawing: [{type: "background", color: 0}],
 	elements: {}
@@ -106,7 +112,7 @@ var isQuantumEquiped = false;
 var quantumUIcontainer = null;
 
 Callback.addCallback("tick", function(){
-	if(isQuantumEquiped){
+	if(isQuantumEquiped && (currentUIscreen == "hud_screen" || currentUIscreen == "in_game_play_screen")){
 		updateQuantumUI();
 		if(!quantumUIcontainer){
 			quantumUIcontainer = new UI.Container();
@@ -168,7 +174,7 @@ var QUANTUM_ARMOR_FUNCS_CHARGED = {
 		if (index == 3){
 			var vel = Player.getVelocity();
 			if (vel.y < - 0.226 && slot.data < this.maxDamage - 4){
-				Entity.addEffect(Player.get(), MobEffect.jump, 2, 12);
+				Entity.addEffect(Player.get(), MobEffect.jump, 2, 255);
 				slot.data++;
 				return true;
 			}
@@ -190,24 +196,24 @@ Armor.registerFuncs("quantumBootsUncharged", QUANTUM_ARMOR_FUNCS_CHARGED);
 
 Callback.addCallback("PostLoaded", function(){
 	Recipes.addShaped({id: ItemID.quantumHelmet, count: 1, data: Item.getMaxDamage(ItemID.quantumHelmet)}, [
-		"x#x",
-		"xax"
-	], ['#', ItemID.storageLapotronCrystal, -1, 'x', ItemID.carbonPlate, -1, 'a', ItemID.nanoHelmet, -1], RECIPE_FUNC_TRANSPORT_ENERGY);
+		"a#a",
+		"bxb"
+	], ['#', ItemID.storageLapotronCrystal, -1, 'x', ItemID.nanoHelmet, -1, 'a', ItemID.plateReinforcedIridium, 0, 'b', ItemID.plateAlloy, 0], RECIPE_FUNC_TRANSPORT_ENERGY);
 	
 	Recipes.addShaped({id: ItemID.quantumChestplate, count: 1, data: Item.getMaxDamage(ItemID.quantumChestplate)}, [
-		"xax",
-		"x#x",
-		"xxx"
-	], ['#', ItemID.storageLapotronCrystal, -1, 'x', ItemID.carbonPlate, -1, 'a', ItemID.nanoChestplate], RECIPE_FUNC_TRANSPORT_ENERGY);
+		"bxb",
+		"a#a",
+		"aba"
+	], ['#', ItemID.storageLapotronCrystal, -1, 'x', ItemID.nanoChestplate, -1, 'a', ItemID.plateReinforcedIridium, 0, 'b', ItemID.plateAlloy, 0], RECIPE_FUNC_TRANSPORT_ENERGY);
 	
 	Recipes.addShaped({id: ItemID.quantumLeggings, count: 1, data: Item.getMaxDamage(ItemID.quantumLeggings)}, [
-		"x#x",
-		"xax",
-		"x x"
-	], ['#', ItemID.storageLapotronCrystal, -1, 'x', ItemID.carbonPlate, -1, 'a', ItemID.nanoLeggings], RECIPE_FUNC_TRANSPORT_ENERGY);
+		"m#m",
+		"axa",
+		"c c"
+	], ['#', ItemID.storageLapotronCrystal, -1, 'x', ItemID.nanoLeggings, -1, 'a', ItemID.plateReinforcedIridium, 0, 'm', BlockID.machineBlockBasic, -1, 'c', 348, 0], RECIPE_FUNC_TRANSPORT_ENERGY);
 	
 	Recipes.addShaped({id: ItemID.quantumBoots, count: 1, data: Item.getMaxDamage(ItemID.quantumBoots)}, [
-		"xax",
-		"x#x"
-	], ['#', ItemID.storageLapotronCrystal, -1, 'x', ItemID.carbonPlate, -1, 'a', ItemID.nanoBoots], RECIPE_FUNC_TRANSPORT_ENERGY);
+		"axa",
+		"b#b"
+	], ['#', ItemID.storageLapotronCrystal, -1, 'x', ItemID.nanoBoots, -1, 'a', ItemID.plateReinforcedIridium, 0, 'b', ItemID.plateAlloy, 0], RECIPE_FUNC_TRANSPORT_ENERGY);
 });

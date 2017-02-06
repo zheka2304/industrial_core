@@ -109,3 +109,16 @@ Translation.addTranslation("Quantum Helmet (Uncharged)", {ru: "Квантовы�
 Translation.addTranslation("Quantum Chestplate (Uncharged)", {ru: "Квантовый нагрудник (разряжено)"});
 Translation.addTranslation("Quantum Leggings (Uncharged)", {ru: "Квантовые штаны (разряжено)"});
 Translation.addTranslation("Quantum Boots (Uncharged)", {ru: "Квантовые ботинки (разряжено)"});
+Translation.addTranslation("Nano Saber", {ru: "Нано-сабля"});
+Translation.addTranslation("Coil", {ru: "Катушка"});
+Translation.addTranslation("Electric Motor", {ru: "Электромотор"});
+Translation.addTranslation("Power Unit", {ru: "Силовой агрегат"});
+Translation.addTranslation("Drill", {ru: "Шахтёрский бур"});
+Translation.addTranslation("Bronze Sword", {ru: "Бронзовый меч"});
+Translation.addTranslation("Bronze Shovel", {ru: "Бронзовая лопата"});
+Translation.addTranslation("Bronze Pickaxe", {ru: "Бронзовая кирка"});
+Translation.addTranslation("Bronze Axe", {ru: "Бронзовый топор"});
+Translation.addTranslation("Bronze Hoe", {ru: "Бронзовая мотыга"});
+Translation.addTranslation("Diamond Drill", {ru: "Алмазный бур"});
+Translation.addTranslation("Iridium Drill", {ru: "Иридиевый бур"});
+Translation.addTranslation("Chainsaw", {ru: "Электропила"});
