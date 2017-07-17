@@ -1,15 +1,9 @@
 IDRegistry.genBlockID("storageBatBox");
-Block.createBlock("storageBatBox", [
-	{name: "BatBox", texture: [["bat_box", 0], ["bat_box", 2], ["bat_box", 1], ["bat_box", 1], ["bat_box", 1], ["bat_box", 1]], inCreative: true}
+Block.createBlockWithRotation("storageBatBox", [
+	{name: "BatBox", texture: [["batbox_bottom", 0], ["batbox_top", 0], ["batbox_side", 1], ["batbox_front", 0], ["batbox_side", 0], ["batbox_side", 0]], inCreative: true}
 ]);
 
 Callback.addCallback("PostLoaded", function(){
-	Recipes.addShaped({id: BlockID.storageBatBox, count: 1, data: 0}, [
-		"xax",
-		"bbb",
-		"xxx"
-	], ['a', ItemID.cableTin1, -1, 'x', 5, -1, 'b', ItemID.storageBattery, -1]);
-	
 	Recipes.addShaped({id: BlockID.storageBatBox, count: 1, data: 0}, [
 		"xax",
 		"bbb",
@@ -54,7 +48,7 @@ MachineRegistry.registerPrototype(BlockID.storageBatBox, {
 		
 		var TRANSFER = 32;
 		this.data.energy += ChargeItemRegistry.getEnergyFrom(this.container.getSlot("slot2"), Math.min(TRANSFER, energyStorage - this.data.energy), 0);
-		this.data.energy += ChargeItemRegistry.addEnergyTo(this.container.getSlot("slot1"), Math.min(TRANSFER, this.data.energy), 0) - Math.min(TRANSFER, this.data.energy);
+		this.data.energy -= ChargeItemRegistry.addEnergyTo(this.container.getSlot("slot1"), this.data.energy, TRANSFER, 0);
 	},
 	
 	getEnergyStorage: function(){
@@ -77,3 +71,5 @@ MachineRegistry.registerPrototype(BlockID.storageBatBox, {
 		}
 	}
 });
+
+ToolAPI.registerBlockMaterial(BlockID.storageBatBox, "wood");

@@ -17,34 +17,32 @@ ToolAPI.setTool(ItemID.bronzeAxe, "bronze", ToolType.axe);
 ToolAPI.setTool(ItemID.bronzeHoe, "bronze", ToolType.hoe);
 
 
-Callback.addCallback("PostLoaded", function(){
-	Recipes.addShaped({id: ItemID.bronzeSword, count: 1, data: 0}, [
-		" a ",
-		" a ",
-		" b "
-	], ['a', ItemID.ingotBronze, -1, 'b', 280, 0]);
-	
-	Recipes.addShaped({id: ItemID.bronzeShovel, count: 1, data: 0}, [
-		" a ",
-		" b ",
-		" b "
-	], ['a', ItemID.ingotBronze, -1, 'b', 280, 0]);
-	
-	Recipes.addShaped({id: ItemID.bronzePickaxe, count: 1, data: 0}, [
-		"aaa",
-		" b ",
-		" b "
-	], ['a', ItemID.ingotBronze, -1, 'b', 280, 0]);
-	
-	Recipes.addShaped({id: ItemID.bronzeAxe, count: 1, data: 0}, [
-		"aa",
-		"ab ",
-		" b "
-	], ['a', ItemID.ingotBronze, -1, 'b', 280, 0]);
-	
-	Recipes.addShaped({id: ItemID.bronzeHoe, count: 1, data: 0}, [
-		"aa ",
-		" b ",
-		" b "
-	], ['a', ItemID.ingotBronze, -1, 'b', 280, 0]);
-});
+Recipes.addShaped({id: ItemID.bronzeSword, count: 1, data: 0}, [
+	"a",
+	"a",
+	"b"
+], ['a', ItemID.ingotBronze, 0, 'b', 280, 0]);
+
+Recipes.addShaped({id: ItemID.bronzeShovel, count: 1, data: 0}, [
+	"a",
+	"b",
+	"b"
+], ['a', ItemID.ingotBronze, 0, 'b', 280, 0]);
+
+Recipes.addShaped({id: ItemID.bronzePickaxe, count: 1, data: 0}, [
+	"aaa",
+	" b ",
+	" b "
+], ['a', ItemID.ingotBronze, 0, 'b', 280, 0]);
+
+Recipes.addShaped({id: ItemID.bronzeAxe, count: 1, data: 0}, [
+	"aa",
+	"ab",
+	" b"
+], ['a', ItemID.ingotBronze, 0, 'b', 280, 0]);
+
+Recipes.addShaped({id: ItemID.bronzeHoe, count: 1, data: 0}, [
+	"aa",
+	" b",
+	" b"
+], ['a', ItemID.ingotBronze, 0, 'b', 280, 0]);

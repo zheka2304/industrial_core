@@ -1,14 +1,19 @@
 IDRegistry.genBlockID("massFabricator");
 Block.createBlockWithRotation("massFabricator", [
-	{name: "Mass Fabricator", texture: [["machine_bottom", 0], ["mass_fab_top", 0], ["mass_fab_side", 1], ["mass_fab_side", 2], ["mass_fab_side", 0], ["mass_fab_side", 0]], inCreative: true}
+	{name: "Mass Fabricator", texture: [["machine_bottom", 0], ["machine_advanced", 0], ["mass_fab_side", 1], ["mass_fab_front", 0], ["mass_fab_side", 0], ["mass_fab_side", 0]], inCreative: true}
 ]);
+ICRenderLib.addConnectionBlock("bc-container", BlockID.massFabricator);
+
+Block.registerDropFunction("massFabricator", function(coords, blockID, blockData, level){
+	return MachineRegistry.getMachineDrop(coords, blockID, BlockID.machineBlockAdvanced);
+});
 
 Callback.addCallback("PostLoaded", function(){
 	Recipes.addShaped({id: BlockID.massFabricator, count: 1, data: 0}, [
 		"xax",
 		"b#b",
 		"xax"
-	], ['b', BlockID.machineBlockAdvanced, -1, 'x', 348, -1, 'a', ItemID.circuitAdvanced, -1, '#', ItemID.storageLapotronCrystal, -1]);
+	], ['b', BlockID.machineBlockAdvanced, 0, 'x', 348, 0, 'a', ItemID.circuitAdvanced, 0, '#', ItemID.storageLapotronCrystal, -1]);
 });
 
 var guiMassFabricator = new UI.StandartWindow({
@@ -43,6 +48,10 @@ MachineRegistry.registerPrototype(BlockID.massFabricator, {
 	
 	getGuiScreen: function(){
 		return guiMassFabricator;
+	},
+		
+	getTransportSlots: function(){
+		return {input: ["catalyserSlot"], output: ["matterSlot"]};
 	},
 	
 	tick: function(){

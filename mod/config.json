@@ -1,5 +1,15 @@
 {
 	"enabled": true,
-	"advanced_api": false,
-	"show_resource_errors": true
+	"show_resource_errors": true,
+	"ore_gen": {
+		"copper_ore": true,
+		"tin_ore": true,
+		"lead_ore": true,
+		"uranium_ore": true
+	},
+	"rubber_tree_gen": {
+		"forest_and_plains": true,
+		"jungle": true,
+		"swamp": true
+	}
 }

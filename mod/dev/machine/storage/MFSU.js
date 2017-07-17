@@ -1,14 +1,18 @@
 IDRegistry.genBlockID("storageMFSU");
-Block.createBlock("storageMFSU", [
-	{name: "MFSU", texture: [["mfsu", 0], ["mfsu", 2], ["mfsu", 1], ["mfsu", 1], ["mfsu", 1], ["mfsu", 1]], inCreative: true}
+Block.createBlockWithRotation("storageMFSU", [
+	{name: "MFSU", texture: [["mfsu", 0], ["mfsu", 1], ["mfsu", 1], ["mfsu", 2], ["mfsu", 1], ["mfsu", 1]], inCreative: true}
 ]);
+
+Block.registerDropFunction("storageMFSU", function(coords, blockID, blockData, level){
+	return MachineRegistry.getMachineDrop(coords, blockID, BlockID.machineBlockAdvanced);
+});
 
 Callback.addCallback("PostLoaded", function(){
 	Recipes.addShaped({id: BlockID.storageMFSU, count: 1, data: 0}, [
 		"aca",
 		"axa",
 		"aba"
-	], ['b', BlockID.storageMFE, -1, 'a', ItemID.storageLapotronCrystal, -1, 'x', BlockID.machineBlockAdvanced, -1, 'c', ItemID.circuitAdvanced]);
+	], ['b', BlockID.storageMFE, -1, 'a', ItemID.storageLapotronCrystal, -1, 'x', BlockID.machineBlockAdvanced, 0, 'c', ItemID.circuitAdvanced, 0]);
 });
 
 
@@ -48,7 +52,7 @@ MachineRegistry.registerPrototype(BlockID.storageMFSU, {
 		
 		var TRANSFER = 512;
 		this.data.energy += ChargeItemRegistry.getEnergyFrom(this.container.getSlot("slot2"), Math.min(TRANSFER, energyStorage - this.data.energy), 2);
-		this.data.energy += ChargeItemRegistry.addEnergyTo(this.container.getSlot("slot1"), Math.min(TRANSFER, this.data.energy), 2) - Math.min(TRANSFER, this.data.energy);
+		this.data.energy -= ChargeItemRegistry.addEnergyTo(this.container.getSlot("slot1"), this.data.energy, TRANSFER, 2);
 	},
 	
 	getEnergyStorage: function(){

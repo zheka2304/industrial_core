@@ -1,34 +1,50 @@
 IDRegistry.genBlockID("genWatermill");
-Block.createBlock("genWatermill", [
-	{name: "Water Mill", texture: [["machine_bottom", 0], ["machine_top", 0], ["watermill_generator_side", 0], ["watermill_generator_side", 0], ["watermill_generator_side", 0], ["watermill_generator_side", 0]], inCreative: true}
+Block.createBlockWithRotation("genWatermill", [
+	{name: "Water Mill", texture: [["machine_bottom", 0], ["machine_top", 0], ["watermill", 2], ["watermill", 0], ["watermill", 1], ["watermill", 1]], inCreative: true}
 ]);
 
+Block.registerDropFunction("genWatermill", function(coords, blockID, blockData, level){
+	return MachineRegistry.getMachineDrop(coords, blockID, BlockID.primalGenerator);
+});
+
 Callback.addCallback("PostLoaded", function(){
-	Recipes.addShaped({id: BlockID.genWatermill, count: 2, data: 0}, [
-		"xax",
-		"a#a",
-		"xax"
-	], ['#', BlockID.primalGenerator, -1, 'x', 5, -1, 'a', 280, -1]);
-	
-	Recipes.addShaped({id: BlockID.genWatermill, count: 2, data: 0}, [
+	Recipes.addShaped({id: BlockID.genWatermill, count: 1, data: 0}, [
 		"axa",
 		"x#x",
 		"axa"
-	], ['#', BlockID.primalGenerator, -1, 'x', 5, -1, 'a', 280, -1]);
+	], ['#', BlockID.primalGenerator, -1, 'x', 5, -1, 'a', 280, 0]);
 });
 
 
 MachineRegistry.registerPrototype(BlockID.genWatermill, {
+	biomeCheck: function(x, z){
+		var coords = [[x, z], [x-7, z], [x+7, z], [x, z-7], [x, z+7]];
+		for(var c in coords){
+			var biome = World.getBiome(c[0], c[1]);
+			if(biome==0 || biome==24){return "ocean";}
+			if(biome==7){return "river";}
+		}
+		return 0;
+	},
 	energyTick: function(){
-		if (World.getThreadTime() % 20 == 0){
-			var output = 20;
+		var biome = this.biomeCheck(this.x, this.z);
+		if(World.getThreadTime()%20 == 0 && biome && this.y >= 32 && this.y < 64){
+			var output = 50;
 			var radius = 1;
+			var wether = World.getWeather();
+			if(wether.thunder && wether.rain){
+				if(wether.thunder){output *= 2;}
+				else{output *= 1.5;}
+			}
+			else if(biome=="river"){
+				output *= 1.5*Math.sin(World.getWorldTime()%6000/(6000/Math.PI));
+			}
 			var tile = nativeGetTile(
-					this.x - Math.floor((Math.random() - .5) * (radius * 2 + 1)),
-					this.y - Math.floor((Math.random() - .5) * (radius * 2 + 1)),
-					this.z - Math.floor((Math.random() - .5) * (radius * 2 + 1))
-				);
-			if (tile == 8 || tile == 9){
+				this.x - random(-radius, radius),
+				this.y - random(-radius, radius),
+				this.z - random(-radius, radius)
+			);
+			if(tile == 8 || tile == 9){
 				this.web.addEnergy(output);
 			}
 		}

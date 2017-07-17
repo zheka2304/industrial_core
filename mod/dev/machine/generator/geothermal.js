@@ -1,14 +1,20 @@
 IDRegistry.genBlockID("geothermalGenerator");
 Block.createBlockWithRotation("geothermalGenerator", [
-	{name: "Geothermal Generator", texture: [["machine_bottom", 1], ["machine_top", 1], ["machine_side", 1], ["geothermal_generator_side", 1], ["machine_side", 1], ["machine_side", 1]], inCreative: true}
+	{name: "Geothermal Generator", texture: [["machine_bottom", 0], ["machine_top", 0], ["machine_side", 0], ["geothermal_generator", 1], ["machine_side", 0], ["machine_side", 0]], inCreative: true}
 ]);
+ICRenderLib.addConnectionBlock("bc-container", BlockID.geothermalGenerator);
+ICRenderLib.addConnectionBlock("bc-fluid", BlockID.geothermalGenerator);
+
+Block.registerDropFunction("geothermalGenerator", function(coords, blockID, blockData, level){
+	return MachineRegistry.getMachineDrop(coords, blockID, BlockID.primalGenerator);
+});
 
 Callback.addCallback("PostLoaded", function(){
 	Recipes.addShaped({id: BlockID.geothermalGenerator, count: 1, data: 0}, [
-		"axa",
-		"axa",
+		"xax",
+		"xax",
 		"b#b"
-	], ['#', BlockID.primalGenerator, -1, 'a', ItemID.fluidCellEmpty, 0, 'b', ItemID.ingotSteel, -1, 'x', 102, 0]);
+	], ['#', BlockID.primalGenerator, -1, 'a', 111, 1, 'b', ItemID.casingIron, 0, 'x', 102, 0]);
 });
 
 var guiGeothermalGenerator = new UI.StandartWindow({
@@ -48,7 +54,10 @@ MachineRegistry.registerPrototype(BlockID.geothermalGenerator, {
 	
 	init: function(){
 		this.liquidStorage.setLimit("lava", 16);
-		
+	},
+	
+	getTransportSlots: function(){
+		return {input: ["slot1"], output: ["slot2"]};
 	},
 	
 	tick: function(){
@@ -57,8 +66,8 @@ MachineRegistry.registerPrototype(BlockID.geothermalGenerator, {
 		var slot1 = this.container.getSlot("slot1");
 		var slot2 = this.container.getSlot("slot2");
 		var empty = LiquidRegistry.getEmptyItem(slot1.id, slot1.data);
-		if (empty && empty.liquid == "lava"){
-			if (this.liquidStorage.getAmount("lava") <= 15 && (slot2.id == empty.id && slot2.data == empty.data && slot2.count < Item.getMaxStack(empty.id) || slot2.id == 0)){
+		if(empty && empty.liquid == "lava"){
+			if(this.liquidStorage.getAmount("lava") <= 15 && (slot2.id == empty.id && slot2.data == empty.data && slot2.count < Item.getMaxStack(empty.id) || slot2.id == 0)){
 				this.liquidStorage.addLiquid("lava", 1);
 				slot1.count--;
 				slot2.id = empty.id;
@@ -73,8 +82,8 @@ MachineRegistry.registerPrototype(BlockID.geothermalGenerator, {
 	
 	
 	energyTick: function(){
-		if (this.liquidStorage.getLiquid("lava", 0.001) > 0){
-			if (this.web.addEnergy(20) > 0){
+		if(this.liquidStorage.getLiquid("lava", 0.001) > 0){
+			if(this.web.addEnergy(20) > 0){
 				this.liquidStorage.addLiquid("lava", 0.001);
 			}
 		}

@@ -1,15 +1,19 @@
-
 IDRegistry.genBlockID("recycler");
 Block.createBlockWithRotation("recycler", [
-	{name: "Recycler", texture: [["machine_bottom", 0], ["recycler_top", 0], ["machine_side", 0], ["compressor_side", 0], ["machine_side", 0], ["machine_side", 0]], inCreative: true}
+	{name: "Recycler", texture: [["machine_bottom", 0], ["recycler_top", 0], ["machine_side", 0], ["recycler_front", 1], ["machine_side", 0], ["machine_side", 0]], inCreative: true}
 ]);
+ICRenderLib.addConnectionBlock("bc-container", BlockID.recycler);
+
+Block.registerDropFunction("recycler", function(coords, blockID, blockData, level){
+	return MachineRegistry.getMachineDrop(coords, blockID, BlockID.machineBlockBasic);
+});
 
 Callback.addCallback("PostLoaded", function(){
 	Recipes.addShaped({id: BlockID.recycler, count: 1, data: 0}, [
 		" a ",
 		"x#x",
 		"bxb"
-	], ['#', BlockID.compressor, -1, 'x', 3, -1, 'a', 348, -1, 'b', ItemID.ingotSteel]);
+	], ['#', BlockID.compressor, -1, 'x', 3, -1, 'a', 348, 0, 'b', ItemID.ingotSteel, 0]);
 });
 
 var guiRecycler = new UI.StandartWindow({
@@ -29,32 +33,52 @@ var guiRecycler = new UI.StandartWindow({
 		"energyScale": {type: "scale", x: 450, y: 150, direction: 1, value: 0.5, bitmap: "energy_small_scale", scale: GUI_BAR_STANDART_SCALE},
 		"slotSource": {type: "slot", x: 441, y: 75},
 		"slotEnergy": {type: "slot", x: 441, y: 212},
-		"slotResult": {type: "slot", x: 625, y: 142}
+		"slotResult": {type: "slot", x: 625, y: 142},
+		"slotUpgrade1": {type: "slot", x: 820, y: 48},
+		"slotUpgrade2": {type: "slot", x: 820, y: 112},
+		"slotUpgrade3": {type: "slot", x: 820, y: 175},
+		"slotUpgrade4": {type: "slot", x: 820, y: 240}
 	}
 });
 
 
 MachineRegistry.registerPrototype(BlockID.recycler, {
 	defaultValues: {
-		progress: 0
+		energy_storage: 500,
+		energy_consumption: 1,
+		work_time: 45,
+		progress: 0,
 	},
 	
 	getGuiScreen: function(){
 		return guiRecycler;
 	},
 	
+	getTransportSlots: function(){
+		return {input: ["slotSource"], output: ["slotResult"]};
+	},
+	
+	setDefaultValues: function(){
+		this.data.energy_storage = this.defaultValues.energy_storage;
+		this.data.energy_consumption = this.defaultValues.energy_consumption;
+		this.data.work_time = this.defaultValues.work_time;
+	},
+	
 	tick: function(){
+		this.setDefaultValues();
+		UpgradeAPI.executeAll(this);
+		
 		var sourceSlot = this.container.getSlot("slotSource");
-		if (sourceSlot.id > 0){
-			if (this.data.energy > 0){
-				this.data.energy --;
-				this.data.progress++;
-			}
-			if (this.data.progress >= 50){
-				var resultSlot = this.container.getSlot("slotResult");
-				if (resultSlot.id == ItemID.scrap && resultSlot.count < 64 || resultSlot.id == 0){
+		if(sourceSlot.id > 0){
+			var resultSlot = this.container.getSlot("slotResult");
+			if(resultSlot.id == ItemID.scrap && resultSlot.count < 64 || resultSlot.id == 0){
+				if(this.data.energy >= this.data.energy_consumption){
+					this.data.energy -= this.data.energy_consumption;
+					this.data.progress += 1/this.data.work_time;
+				}
+				if(this.data.progress >= 1){
 					sourceSlot.count--;
-					if (Math.random() < 0.125){
+					if(Math.random() < 0.125){
 						resultSlot.id = ItemID.scrap;
 						resultSlot.count++;
 					}
@@ -68,14 +92,15 @@ MachineRegistry.registerPrototype(BlockID.recycler, {
 		}
 		
 		var energyStorage = this.getEnergyStorage();
+		this.data.energy = Math.min(this.data.energy, energyStorage);
 		this.data.energy += ChargeItemRegistry.getEnergyFrom(this.container.getSlot("slotEnergy"), Math.min(32, energyStorage - this.data.energy), 0);
 		
-		this.container.setScale("progressScale", this.data.progress / 50);
+		this.container.setScale("progressScale", this.data.progress);
 		this.container.setScale("energyScale", this.data.energy / energyStorage);
 	},
 	
 	getEnergyStorage: function(){
-		return 500;
+		return this.data.energy_storage;
 	},
 	
 	energyTick: MachineRegistry.basicEnergyReceiveFunc

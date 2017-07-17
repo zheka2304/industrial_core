@@ -1,14 +1,14 @@
 IDRegistry.genItemID("nanoSaber");
-Item.createItem("nanoSaber", "Nano Saber", {name: "nano_saber", meta: 0}, {stack: 1});
+Item.setElectricItem("nanoSaber", "Nano Saber", {name: "nano_saber", meta: 0});
+ChargeItemRegistry.registerItem(ItemID.nanoSaber, 100000, 1, true, 10, true);
+Item.setToolRender(ItemID.nanoSaber, true);
 
-Callback.addCallback("PostLoaded", function(){
-	Recipes.addShaped({id: ItemID.quantumHelmet, count: 1, data: Item.getMaxDamage(ItemID.quantumHelmet)}, [
-		"ca ",
-		"ca "
-	], ['bxb', 'x', ItemID.storageCrystal, -1, 'a', ItemID.plateAlloy, 0, 'b', ItemID.carbonPlate, 0], RECIPE_FUNC_TRANSPORT_ENERGY);
-});
+Recipes.addShaped({id: ItemID.nanoSaber, count: 1, data: NANO_SABER_DURABILITY}, [
+	"ca ",
+	"ca ",
+	"bxb"
+], ['x', ItemID.storageCrystal, -1, 'a', ItemID.plateAlloy, 0, 'b', ItemID.carbonPlate, 0, "c", 348, 0], RECIPE_FUNC_TRANSPORT_ENERGY);
 
-ChargeItemRegistry.registerItem(ItemID.nanoSaber, 100000, 1, true, 10);
 
 var NANO_SABER_DURABILITY = 10000;
 
@@ -19,7 +19,7 @@ ToolAPI.registerSword(ItemID.nanoSaber, {level: 0, durability: NANO_SABER_DURABI
 		return true;
 	},
 	onAttack: function(item, mob){
-		item.data++;
+		item.data -= 2;
 		this.damage = item.data < NANO_SABER_DURABILITY ? 16 : 0;
 	}
 });

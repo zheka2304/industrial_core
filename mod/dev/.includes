@@ -1,18 +1,19 @@
 header.js
-
 translation.js
 
 core/machine/define.js
-core/machine/interaction.js
 core/machine/recipe.js
+core/machine/upgrade.js
 core/energy/web.js
 core/energy/builder.js
 core/api/icrender.js
 
 
-block/basic.js
 block/cable.js
 block/ore.js
+block/metal.js
+block/basic.js
+block/reinforced.js
 block/rubber_tree.js
 
 
@@ -23,6 +24,7 @@ machine/processing/macerator.js
 machine/processing/recycler.js
 machine/processing/compressor.js
 machine/processing/extractor.js
+machine/processing/metal_former.js
 machine/processing/mass_fabricator.js
 
 machine/generator/generator.js
@@ -40,7 +42,6 @@ machine/other/tree/root.js
 machine/other/tree/sapling.js
 
 
-items/resource/crafting_tools.js
 items/resource/ore_drop.js
 items/resource/dust.js
 items/resource/ingot.js
@@ -49,16 +50,29 @@ items/resource/casing.js
 items/resource/rubber.js
 items/resource/scrap.js
 items/resource/produced.js
+
 items/interactive/cable.js
-items/interactive/treetap.js
 items/interactive/cells.js
+
 items/other/energy_element.js
+items/other/upgrades.js
+
 items/armor/bronze.js
+items/armor/composite.js
+items/armor/armor_buttons.js
+items/armor/nightvision.js
 items/armor/nano.js
 items/armor/quantum.js
-items/tool/nano_saber.js
+items/armor/jetpack.js
+items/armor/energy_packs.js
+
+items/tool/treetap.js
+items/tool/crafting_tools.js
 items/tool/bronze.js
+items/tool/wrench.js
+items/tool/electric.js
 items/tool/drills.js
 items/tool/chainsaw.js
+items/tool/nano_saber.js
 
 core/api/shared.js

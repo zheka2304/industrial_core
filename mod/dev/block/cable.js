@@ -2,32 +2,29 @@ var BLOCK_TYPE_CABLE_ID = Block.createSpecialType({
 	base: 35
 });
 
-var CABLE_BLOCK_TEXTURE_META = 0;
-var CABLE_BLOCK_ADD_IN_CREATIVE = false;
-
 IDRegistry.genBlockID("cableTin");
 Block.createBlock("cableTin", [
-	{name: "tile.cableTin.name", texture: [["cable_block_tin", CABLE_BLOCK_TEXTURE_META]], inCreative: CABLE_BLOCK_ADD_IN_CREATIVE}
+	{name: "tile.cableTin.name", texture: [["cable_block_tin", 0]], inCreative: false}
 ], BLOCK_TYPE_CABLE_ID);
 
 IDRegistry.genBlockID("cableCopper");
 Block.createBlock("cableCopper", [
-	{name: "tile.cableCopper.name", texture: [["cable_block_copper", CABLE_BLOCK_TEXTURE_META]], inCreative: CABLE_BLOCK_ADD_IN_CREATIVE}
+	{name: "tile.cableCopper.name", texture: [["cable_block_copper", 0]], inCreative: false}
 ], BLOCK_TYPE_CABLE_ID);
 
 IDRegistry.genBlockID("cableGold");
 Block.createBlock("cableGold", [
-	{name: "tile.cableGold.name", texture: [["cable_block_gold", CABLE_BLOCK_TEXTURE_META]], inCreative: CABLE_BLOCK_ADD_IN_CREATIVE}
+	{name: "tile.cableGold.name", texture: [["cable_block_gold", 0]], inCreative: false}
 ], BLOCK_TYPE_CABLE_ID);
 
 IDRegistry.genBlockID("cableIron");
 Block.createBlock("cableIron", [
-	{name: "tile.cableIron.name", texture: [["cable_block_iron", CABLE_BLOCK_TEXTURE_META]], inCreative: CABLE_BLOCK_ADD_IN_CREATIVE}
+	{name: "tile.cableIron.name", texture: [["cable_block_iron", 0]], inCreative: false}
 ], BLOCK_TYPE_CABLE_ID);
 
 IDRegistry.genBlockID("cableOptic");
 Block.createBlock("cableOptic", [
-	{name: "tile.cableOptic.name", texture: [["cable_block_optic", CABLE_BLOCK_TEXTURE_META]], inCreative: CABLE_BLOCK_ADD_IN_CREATIVE}
+	{name: "tile.cableOptic.name", texture: [["cable_block_optic", 0]], inCreative: false}
 ], BLOCK_TYPE_CABLE_ID);
 
 var CABLE_BLOCK_WIDTH = 0.25;

@@ -1,16 +1,15 @@
 var BLOCK_TYPE_ORE = Block.createSpecialType({
 	base: 1,
-	destroytime: 2,
-	opaque: true,
+	destroytime: 3
 }, "ore");
 
 IDRegistry.genBlockID("oreCopper");
 Block.createBlock("oreCopper", [
-	{name: "Copper Ore (block)", texture: [["ore_copper", 0]], inCreative: true}
+	{name: "Copper Ore", texture: [["ore_copper", 0]], inCreative: true}
 ], BLOCK_TYPE_ORE);
-ToolAPI.registerBlockMaterial(BlockID.oreCopper, "stone");
+ToolAPI.registerBlockMaterial(BlockID.oreCopper, "stone", 2);
 Block.registerDropFunction("oreCopper", function(coords, blockID, blockData, level){
-	if (level > 1){
+	if(level > 1){
 		return [[ItemID.oreCrushedCopper, 1, 0]]
 	}
 	return [];
@@ -19,11 +18,11 @@ Block.registerDropFunction("oreCopper", function(coords, blockID, blockData, lev
 
 IDRegistry.genBlockID("oreTin");
 Block.createBlock("oreTin", [
-	{name: "Tin Ore (block)", texture: [["ore_tin", 0]], inCreative: true}
+	{name: "Tin Ore", texture: [["ore_tin", 0]], inCreative: true}
 ], BLOCK_TYPE_ORE);
-ToolAPI.registerBlockMaterial(BlockID.oreTin, "stone");
+ToolAPI.registerBlockMaterial(BlockID.oreTin, "stone", 2);
 Block.registerDropFunction("oreTin", function(coords, blockID, blockData, level){
-	if (level > 1){
+	if(level > 1){
 		return [[ItemID.oreCrushedTin, 1, 0]]
 	}
 	return [];
@@ -32,11 +31,11 @@ Block.registerDropFunction("oreTin", function(coords, blockID, blockData, level)
 
 IDRegistry.genBlockID("oreLead");
 Block.createBlock("oreLead", [
-	{name: "Lead Ore (block)", texture: [["ore_lead", 0]], inCreative: true}
+	{name: "Lead Ore", texture: [["ore_lead", 0]], inCreative: true}
 ], BLOCK_TYPE_ORE);
-ToolAPI.registerBlockMaterial(BlockID.oreLead, "stone");
+ToolAPI.registerBlockMaterial(BlockID.oreLead, "stone", 2);
 Block.registerDropFunction("oreLead", function(coords, blockID, blockData, level, enchant){
-	if (level > 1){
+	if(level > 1){
 		return [[ItemID.oreCrushedLead, 1, 0]];
 	}
 	return [];
@@ -45,60 +44,88 @@ Block.registerDropFunction("oreLead", function(coords, blockID, blockData, level
 
 IDRegistry.genBlockID("oreUranium");
 Block.createBlock("oreUranium", [
-	{name: "Uranium Ore (block)", texture: [["ore_uranium", 0]], inCreative: true}
+	{name: "Uranium Ore", texture: [["ore_uranium", 0]], inCreative: true}
 ], BLOCK_TYPE_ORE);
-ToolAPI.registerBlockMaterial(BlockID.oreUranium, "stone");
+ToolAPI.registerBlockMaterial(BlockID.oreUranium, "stone", 2);
 Block.registerDropFunction("oreUranium", function(coords, blockID, blockData, level){
-	if (level > 2){
+	if(level > 2){
 		return [[ItemID.uraniumChunk, 1, 0]]
 	}
 	return [];
 }, 3);
 
 
-Callback.addCallback("GenerateChunkUnderground", function(chunkX, chunkZ){
-	for (var i = 0; i < 16; i++){
-		var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 24, 64);
-		GenerationUtils.genMinable(coords.x, coords.y, coords.z, {
-			id: BlockID.oreCopper,
-			data: 0,
-			size: 3,
-			ratio: .3,
-			checkerTile: 1,
-			checkerMode: false
+var OreGenerator = {
+	"copper_ore": __config__.access("ore_gen.copper_ore"),
+	"tin_ore": __config__.access("ore_gen.tin_ore"),
+	"lead_ore": __config__.access("ore_gen.lead_ore"),
+	"uranium_ore": __config__.access("ore_gen.uranium_ore"),
+	
+	genOreNormal: function(x, y, z, ore){
+		for(var xx = -1; xx < 2; xx++){
+			for(var yy = -1; yy < 2; yy++){
+				for(var zz = -1; zz < 2; zz++){
+					var d = Math.sqrt(xx*xx + yy*yy + zz*zz);
+					var r = 1.5 - Math.random()/2;
+					if(d < r){GenerationUtils.setLockedBlock(x+xx, y+yy, z+zz);}
+				}
+			}
+		}
+	},
+	genOreSmall: function(x, y, z, ore){
+		for(var xx = 0; xx < 2; xx++){
+			for(var yy = 0; yy < 2; yy++){
+				for(var zz = 0; zz < 2; zz++){
+					var d = Math.sqrt(xx*xx + yy*yy + zz*zz);
+					var r = 2 - Math.random()*2;
+					if(d < r){GenerationUtils.setLockedBlock(x+xx, y+yy, z+zz);}
+				}
+			}
+		}
+	},
+	genOreTiny: function(x, y, z, maxCount){
+		GenerationUtils.setLockedBlock(x,y,z);
+		for(var i = 1; i < random(1, maxCount); i++){
+			GenerationUtils.setLockedBlock(x+random(-1,1), y+random(-1,1), z+random(-1,1));
+		}
+	}
+}
+
+Callback.addCallback("PostLoaded", function(){
+	if(OreGenerator.copper_ore){
+		Callback.addCallback("GenerateChunkUnderground", function(chunkX, chunkZ){
+			GenerationUtils.lockInBlock(BlockID.oreCopper, 0, 1, false);
+			for(var i = 0; i < 10; i++){
+				var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 10, 64);
+				OreGenerator.genOreNormal(coords.x, coords.y, coords.z);
+			}
 		});
 	}
-	for (var i = 0; i < 12; i++){
-		var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 18, 52);
-		GenerationUtils.genMinable(coords.x, coords.y, coords.z, {
-			id: BlockID.oreTin,
-			data: 0,
-			size: 3,
-			ratio: .3,
-			checkerTile: 1,
-			checkerMode: false
+	if(OreGenerator.tin_ore){
+		Callback.addCallback("GenerateChunkUnderground", function(chunkX, chunkZ){
+			GenerationUtils.lockInBlock(BlockID.oreTin, 0, 1, false);
+			for(var i = 0; i < 8; i++){
+				var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 1, 52);
+				OreGenerator.genOreNormal(coords.x, coords.y, coords.z);
+			}
 		});
 	}
-	for (var i = 0; i < 5; i++){
-		var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 18, 48);
-		GenerationUtils.genMinable(coords.x, coords.y, coords.z, {
-			id: BlockID.oreLead,
-			data: 0,
-			size: 1,
-			ratio: 1,
-			checkerTile: 1,
-			checkerMode: false
+	if(OreGenerator.lead_ore){
+		Callback.addCallback("GenerateChunkUnderground", function(chunkX, chunkZ){
+			GenerationUtils.lockInBlock(BlockID.oreLead, 0, 1, false);
+			for(var i = 0; i < 8; i++){
+				var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 1, 48);
+				OreGenerator.genOreTiny(coords.x, coords.y, coords.z, 3);
+			}
 		});
 	}
-	for (var i = 0; i < 3; i++){
-		var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 18, 48);
-		GenerationUtils.genMinable(coords.x, coords.y, coords.z, {
-			id: BlockID.oreUranium,
-			data: 0,
-			size: 2,
-			ratio: .4,
-			checkerTile: 1,
-			checkerMode: false
+	if(OreGenerator.uranium_ore){
+		Callback.addCallback("GenerateChunkUnderground", function(chunkX, chunkZ){
+			GenerationUtils.lockInBlock(BlockID.oreUranium, 0, 1, false);
+			for(var i = 0; i < 3; i++){
+				var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 1, 48);
+				OreGenerator.genOreTiny(coords.x, coords.y, coords.z, 3);
+			}
 		});
 	}
 });

@@ -1,14 +1,18 @@
 IDRegistry.genBlockID("storageMFE");
-Block.createBlock("storageMFE", [
-	{name: "MFE", texture: [["machine_bottom", 0], ["mfe", 0], ["machine_side", 0], ["machine_side", 0], ["machine_side", 0], ["machine_side", 0]], inCreative: true}
+Block.createBlockWithRotation("storageMFE", [
+	{name: "MFE", texture: [["machine_top", 0], ["machine_top", 0], ["mfe", 2], ["mfe", 0], ["mfe", 1], ["mfe", 1]], inCreative: true}
 ]);
+
+Block.registerDropFunction("storageMFE", function(coords, blockID, blockData, level){
+	return MachineRegistry.getMachineDrop(coords, blockID, BlockID.machineBlockBasic);
+});
 
 Callback.addCallback("PostLoaded", function(){
 	Recipes.addShaped({id: BlockID.storageMFE, count: 1, data: 0}, [
-		"aba",
-		"bxb",
-		"aba"
-	], ['b', ItemID.cableGold1, -1, 'a', ItemID.storageCrystal, -1, 'x', BlockID.machineBlockBasic, -1]);
+		"bab",
+		"axa",
+		"bab"
+	], ['x', BlockID.machineBlockBasic, 0, 'a', ItemID.storageCrystal, -1, 'b', ItemID.cableGold2, 0]);
 });
 
 
@@ -50,7 +54,7 @@ MachineRegistry.registerPrototype(BlockID.storageMFE, {
 		
 		var TRANSFER = 128;
 		this.data.energy += ChargeItemRegistry.getEnergyFrom(this.container.getSlot("slot2"), Math.min(TRANSFER, energyStorage - this.data.energy), 1);
-		this.data.energy += ChargeItemRegistry.addEnergyTo(this.container.getSlot("slot1"), Math.min(TRANSFER, this.data.energy), 1) - Math.min(TRANSFER, this.data.energy);
+		this.data.energy -= ChargeItemRegistry.addEnergyTo(this.container.getSlot("slot1"), this.data.energy, TRANSFER, 1);
 	},
 	
 	getEnergyStorage: function(){

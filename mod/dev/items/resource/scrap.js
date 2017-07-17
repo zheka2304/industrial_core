@@ -2,7 +2,7 @@ IDRegistry.genItemID("scrap");
 Item.createItem("scrap", "Scrap", {name: "scrap"});
 
 IDRegistry.genItemID("scrapBox");
-Item.createThrowableItem("scrapBox", "Scrap Box", {name: "scrap_box"});
+Item.createItem("scrapBox", "Scrap Box", {name: "scrap_box"});
 
 Recipes.addShaped({id: ItemID.scrapBox, count: 1, data: 0}, [
 		"xxx",
@@ -16,6 +16,9 @@ MachineRecipeRegistry.addRecipeFor("catalyser", ItemID.scrapBox, {input: 45000, 
 Item.registerUseFunction("scrapBox", function(coords, item, block){
 	var drop = getScrapDropItem();
 	World.drop(coords.relative.x + 0.5, coords.relative.y + 0.1, coords.relative.z + 0.5, drop.id, 1, drop.data);
+	item.count--;
+	if(!item.count){item.id = 0;}
+	Player.setCarriedItem(item.id, item.count, 0);
 });
 
 

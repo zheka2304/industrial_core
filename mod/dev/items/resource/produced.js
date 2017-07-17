@@ -33,31 +33,26 @@ Item.createItem("coalChunk", "Coal Chunk", {name: "coal_chunk"});
 
 Callback.addCallback("PostLoaded", function(){
 	Recipes.addShaped({id: ItemID.ingotAlloy, count: 2, data: 0}, [
-		"xxx",
-		"###",
-		"aaa"
-	], ['#', ItemID.plateBronze, -1, 'x', ItemID.plateSteel, -1, 'a', ItemID.palteTin, -1]);
+		"aaa",
+		"bbb",
+		"ccc"
+	], ['a', ItemID.plateSteel, 0, 'b', ItemID.plateBronze, 0, 'c', ItemID.plateTin, 0]);
 	
 	Recipes.addShaped({id: ItemID.carbonFibre, count: 1, data: 0}, [
 		"xx",
 		"xx"
-	], ['x', ItemID.dustCoal, -1]);
+	], ['x', ItemID.dustCoal, 0]);
 	
 	Recipes.addShaped({id: ItemID.carbonMesh, count: 1, data: 0}, [
 		"x",
 		"x"
-	], ['x', ItemID.carbonFibre, -1]);
-	
-	Recipes.addShaped({id: ItemID.carbonFibre, count: 1, data: 0}, [
-		"xx",
-		"xx"
-	], ['x', ItemID.dustCoal, -1]);
+	], ['x', ItemID.carbonFibre, 0]);
 	
 	Recipes.addShaped({id: ItemID.coalBall, count: 1, data: 0}, [
 		"xxx",
 		"x#x",
 		"xxx"
-	], ['x', ItemID.dustCoal, -1, '#', 318, -1]);
+	], ['x', ItemID.dustCoal, 0, '#', 318, 0]);
 	
 	Recipes.addShaped({id: ItemID.coalChunk, count: 1, data: 0}, [
 		"xxx",
@@ -69,7 +64,7 @@ Callback.addCallback("PostLoaded", function(){
 		"xax",
 		"a#a",
 		"xax"
-	], ['x', ItemID.iridiumChunk, -1, '#', 264, -1, 'a', ItemID.plateAlloy, -1]);
+	], ['x', ItemID.iridiumChunk, 0, '#', 264, 0, 'a', ItemID.plateAlloy, 0]);
 	
 	
 	// uu-matter

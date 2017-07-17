@@ -1,9 +1,17 @@
 var ToolType = {
 	sword: {
 		isWeapon: true,
+		enchantType: Native.EnchantType.weapon,
 		damage: 4,
-		blockTypes: ["fibre", "corweb"],
-		enchantType: Native.EnchantType.weapon
+		blockTypes: ["fibre", "plant"],
+		onAttack: function(item, mob){ },
+		calcDestroyTime: function(item, block, params, destroyTime, enchant){
+			if(block.id==30){return 0.08;}
+			if(block.id==35){return 0.05;}
+			var material = ToolAPI.getBlockMaterial(block.id).name
+			if(material=="fibre" || material=="plant"){return params.base/1.5;}
+			return destroyTime;
+		}
 	},
 	
 	shovel: {
@@ -13,7 +21,7 @@ var ToolType = {
 		useItem: function(coords, item, block){
 			if(block.id==2&&coords.side==1){ 
 				World.setBlock(coords.x, coords.y, coords.z, 198);
-				World.playSoundAtEntity(player, "step.grass", 0.5, 0.75);
+				World.playSoundAtEntity(Player.get(), "step.grass", 0.5, 0.75);
 				ToolAPI.breakCarriedTool(1);
 			}
 		}
@@ -35,7 +43,7 @@ var ToolType = {
 		useItem: function(coords, item, block){
 			if((block.id==2 || block.id==3) && coords.side==1){ 
 				World.setBlock(coords.x, coords.y, coords.z, 60);
-				World.playSoundAtEntity(player, "step.grass", 0.5, 0.75);
+				World.playSoundAtEntity(Player.get(), "step.grass", 0.5, 0.75);
 				ToolAPI.breakCarriedTool(1);
 			}
 		}
@@ -43,17 +51,23 @@ var ToolType = {
 }
 
 ToolAPI.breakCarriedTool = function(damage){
-	var carried = Player.getCarriedItem(true);
-	carried.data += damage;
-	if(carried.data > Item.getMaxDamage()){
-		carried.id = 0;
+	var item = Player.getCarriedItem(true);
+	item.data += damage;
+	if(item.data > Item.getMaxDamage(item.id)){
+		item.id = 0;
 	}
-	Player.setCarriedItem(carried.id, carried.count, carried.data, carried.enchant);
+	Player.setCarriedItem(item.id, item.count, item.data, item.enchant);
 }
 
 ToolAPI.setTool = function(itemID, toolProperties, toolType){
+	Item.setToolRender(itemID, true);
+	if(ToolAPI.toolMaterials[toolProperties]){
+	toolProperties = ToolAPI.toolMaterials[toolProperties];}
 	if(toolType.blockTypes){
 		ToolAPI.registerTool(itemID, toolProperties, toolType.blockTypes, toolType);
+	}
+	else{
+		Item.setMaxDamage(itemID, toolProperties.durability);
 	}
 	if(toolType.useItem){
 		Item.registerUseFunctionForID(itemID, toolType.useItem);
@@ -64,3 +78,46 @@ ToolAPI.setTool = function(itemID, toolProperties, toolType){
 }
 
 registerAPIUnit("ToolType", ToolType);
+
+// Core Engine bugs fix
+ToolAPI.registerBlockMaterial(159, "stone");
+Block.registerDropFunctionForID(23, function(coords, blockID, blockData, level){
+	if(level > 0){
+		return [[23, 1, 0]]
+	}
+	return [];
+}, 1);
+Block.registerDropFunctionForID(117, function(coords, blockID, blockData, level){
+	if(level > 0){
+		return [[379, 1, 0]]
+	}
+	return [];
+}, 1);
+Block.registerDropFunctionForID(118, function(coords, blockID, blockData, level){
+	if(level > 0){
+		return [[380, 1, 0]]
+	}
+	return [];
+}, 1);
+Block.registerDropFunctionForID(154, function(coords, blockID, blockData, level){
+	if(level > 0){
+		return [[410, 1, 0]]
+	}
+	return [];
+}, 1);
+Block.registerDropFunctionForID(159, function(coords, blockID, blockData, level){
+	if(level > 0){
+		return [[blockID, 1, blockData]]
+	}
+	return [];
+}, 1);
+
+var stoneBlocks = [23, 27, 28, 29, 33, 66, 79, 89, 145, 174];
+Callback.addCallback("DestroyBlock", function(coords, block){
+	var item = Player.getCarriedItem();
+	if(item.id==257 || item.id==270 || item.id==274 || item.id==278 || item.id==285){
+		var material = ToolAPI.getBlockMaterial(block.id)
+		if(material && material.name=="stone" && stoneBlocks.indexOf(block.id)==-1){
+		ToolAPI.breakCarriedTool(1);}
+	}
+});

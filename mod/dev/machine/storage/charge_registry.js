@@ -1,7 +1,7 @@
 var ChargeItemRegistry = {
 	chargeData: {},
 	
-	registerItem: function(item, energy, level, preventUncharge, EPD){
+	registerItem: function(item, energy, level, preventUncharge, EPD, isTool){
 		var power = Math.floor(Math.log10(energy));
 		var energyPerDamage = EPD || Math.pow(2, power);
 		var maxDamage = Math.floor(energy / energyPerDamage + .999) + 1;
@@ -14,7 +14,8 @@ var ChargeItemRegistry = {
 			maxDamage: maxDamage,
 			maxCharge: energy,
 			perDamage: energyPerDamage,
-			preventUncharge: preventUncharge
+			preventUncharge: preventUncharge,
+			isTool: isTool || false
 		};
 	},
 	
@@ -39,20 +40,20 @@ var ChargeItemRegistry = {
 	getEnergyFrom: function(item, amount, level){
 		level = level || 0;
 		var data = this.getItemData(item.id);
-		if (!data || data.level > level || data.preventUncharge){
+		if(!data || data.level > level || data.preventUncharge){
 			return 0;
 		}
-		if (data.type == "flash"){
-			if (amount < 1){
+		if(data.type == "flash"){
+			if(amount < 1){
 				return 0;
 			}
 			item.count--;
-			if (item.count < 1){
-				item.id = item.data = item.count = 0;
+			if(item.count < 1){
+				item.id = item.data = 0;
 			}
 			return data.energy;
 		}
-		if (item.data < 1){
+		if(item.data < 1){
 			item.data = 1;
 		}
 		
@@ -62,17 +63,20 @@ var ChargeItemRegistry = {
 		return energyGot;
 	},
 	
-	addEnergyTo: function(item, amount, level){
+	addEnergyTo: function(item, energy, transf, level){
 		level = level || 0;
 		var data = this.getItemData(item.id);
-		if (!data || data.type == "flash" || data.level > level){
-			return amount;
+		if(!data || data.type == "flash" || data.level > level){
+			return 0;
 		}
 		
-		var damageGot = Math.min(Math.max(item.data - 1, 0), Math.floor(amount / data.perDamage));
+		var damageGot = Math.min(Math.max(item.data - 1, 0), Math.floor(transf / data.perDamage) || 1);
 		var energyAdd = damageGot * data.perDamage;
-		item.data -= damageGot;
-		return amount - energyAdd;
+		if(energy >= energyAdd){
+			item.data -= damageGot;
+			return energyAdd;
+		}
+		return 0;
 	},
 	
 	getEnergyStored: function(item){
