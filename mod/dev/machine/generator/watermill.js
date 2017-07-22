@@ -17,6 +17,10 @@ Callback.addCallback("PostLoaded", function(){
 
 
 MachineRegistry.registerPrototype(BlockID.genWatermill, {
+	isGenerator: function() {
+		return true;
+	},
+	
 	biomeCheck: function(x, z){
 		var coords = [[x, z], [x-7, z], [x+7, z], [x, z-7], [x, z+7]];
 		for(var c in coords){
@@ -26,27 +30,35 @@ MachineRegistry.registerPrototype(BlockID.genWatermill, {
 		}
 		return 0;
 	},
-	energyTick: function(){
-		var biome = this.biomeCheck(this.x, this.z);
-		if(World.getThreadTime()%20 == 0 && biome && this.y >= 32 && this.y < 64){
-			var output = 50;
-			var radius = 1;
-			var wether = World.getWeather();
-			if(wether.thunder && wether.rain){
-				if(wether.thunder){output *= 2;}
-				else{output *= 1.5;}
-			}
-			else if(biome=="river"){
-				output *= 1.5*Math.sin(World.getWorldTime()%6000/(6000/Math.PI));
-			}
-			var tile = nativeGetTile(
-				this.x - random(-radius, radius),
-				this.y - random(-radius, radius),
-				this.z - random(-radius, radius)
-			);
-			if(tile == 8 || tile == 9){
-				this.web.addEnergy(output);
+	
+	energyTick: function(type, src){
+		var time = World.getThreadTime()%20
+		if(time == 0){
+			var biome = this.biomeCheck(this.x, this.z);
+			if(biome && this.y >= 32 && this.y < 64){
+				var output = 50;
+				var radius = 1;
+				var wether = World.getWeather();
+				if(wether.thunder && wether.rain){
+					if(wether.thunder){output *= 2;}
+					else{output *= 1.5;}
+				}
+				else if(biome=="ocean"){
+					output *= 1.5*Math.sin(World.getWorldTime()%6000/(6000/Math.PI));
+				}
+				var tile = nativeGetTile(
+					this.x - random(-radius, radius),
+					this.y - random(-radius, radius),
+					this.z - random(-radius, radius)
+				);
+				if(tile !== 8 && tile !== 9){
+					output = 0;
+				}
+				this.data.energy = output;
 			}
 		}
+		var output = Math.floor(this.data.energy/(20-time));
+		this.data.energy -= output;
+		src.add(output);
 	}
 });

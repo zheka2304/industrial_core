@@ -58,6 +58,7 @@ Player.setArmorSlot = ModAPI.requireGlobal("Player.setArmorSlot");
 LiquidRegistry.getLiquidData("lava").uiTextures.push("gui_lava_texture_16x16");
 
 importLib("ToolType", "*");
+importLib("energylib", "*");
 
 var player;
 Callback.addCallback("LevelLoaded", function(){
@@ -88,6 +89,9 @@ addShapelessRecipe = function(result, ingredients){
 Player.getArmorSlot = function(n){
 	return {id: Player.getArmorSlotID(n), data: Player.getArmorSlotDamage(n)};
 }
+
+// energy (Eu)
+var EU = EnergyTypeRegistry.assureEnergyType("Eu", 1);
 
 // Core Engine bug fix
 Recipes.addFurnace(162, 263, 1);

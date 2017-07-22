@@ -59,19 +59,8 @@ MachineRegistry.registerPrototype(BlockID.storageMFSU, {
 		return 10000000;
 	},
 	
-	energyTick: function(){
+	energyTick: function(type, src){
 		var TRANSFER = 512;
-		var delta = 8 - this.web.energy;
-		var transfer = Math.min(Math.abs(delta), TRANSFER);
-		
-		if (delta > 0){
-			var output = Math.min(TRANSFER, this.data.energy);
-			var left = this.web.addEnergy(output);
-			this.data.energy += left - output;
-		}
-		if (delta < 0){
-			var input = this.web.requireEnergy(Math.min(transfer, this.getEnergyStorage() - this.data.energy));
-			this.data.energy += input;
-		}
+		this.data.energy += src.storage(Math.min(TRANSFER, this.getEnergyStorage() - this.data.energy), Math.min(TRANSFER, this.data.energy));
 	}
 });

@@ -13,7 +13,7 @@ Recipes.addShaped({id: ItemID.wrench, count: 1, data: 0}, [
 	" a "
 ], ['a', ItemID.ingotBronze, 0]);
 
-Recipes.addShapeless({id: ItemID.electricWrench, count: 1, data: 0}, [{id: ItemID.wrench, data: 0}, {id: ItemID.powerUnitSmall, data: 0}]);
+Recipes.addShapeless({id: ItemID.electricWrench, count: 1, data: 200}, [{id: ItemID.wrench, data: 0}, {id: ItemID.powerUnitSmall, data: 0}]);
 
 
 Callback.addCallback("DestroyBlockStart", function(coords, block){

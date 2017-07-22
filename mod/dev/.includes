@@ -4,8 +4,6 @@ translation.js
 core/machine/define.js
 core/machine/recipe.js
 core/machine/upgrade.js
-core/energy/web.js
-core/energy/builder.js
 core/api/icrender.js
 
 

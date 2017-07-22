@@ -80,10 +80,13 @@ MachineRegistry.registerPrototype(BlockID.geothermalGenerator, {
 		this.container.setText("textInfo1", parseInt(this.liquidStorage.getAmount("lava") * 1000) + "/");
 	},
 	
+	isGenerator: function() {
+		return true;
+	},
 	
-	energyTick: function(){
+	energyTick: function(type, src){
 		if(this.liquidStorage.getLiquid("lava", 0.001) > 0){
-			if(this.web.addEnergy(20) > 0){
+			if(src.add(20) > 0){
 				this.liquidStorage.addLiquid("lava", 0.001);
 			}
 		}

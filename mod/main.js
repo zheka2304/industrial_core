@@ -58,6 +58,7 @@ Player.setArmorSlot = ModAPI.requireGlobal("Player.setArmorSlot");
 LiquidRegistry.getLiquidData("lava").uiTextures.push("gui_lava_texture_16x16");
 
 importLib("ToolType", "*");
+importLib("energylib", "*");
 
 var player;
 Callback.addCallback("LevelLoaded", function(){
@@ -88,6 +89,9 @@ addShapelessRecipe = function(result, ingredients){
 Player.getArmorSlot = function(n){
 	return {id: Player.getArmorSlotID(n), data: Player.getArmorSlotDamage(n)};
 }
+
+// energy (Eu)
+var EU = EnergyTypeRegistry.assureEnergyType("Eu", 1);
 
 // Core Engine bug fix
 Recipes.addFurnace(162, 263, 1);
@@ -292,20 +296,6 @@ var MachineRegistry = {
 		return this.machineIDs[id];
 	},
 	
-	quickCoordAccess: {},
-	
-	addMacineAccessAtCoords: function(x, y, z, machine){
-		this.quickCoordAccess[x + ":" + y + ":" + z] = machine;
-	},
-	
-	removeMachineAccessAtCoords: function(x, y, z){
-		delete this.quickCoordAccess[x + ":" + y + ":" + z];
-	},
-	
-	accessMachineAtCoords: function(x, y, z){
-		return this.quickCoordAccess[x + ":" + y + ":" + z];
-	},
-	
 	getMachineDrop(coords, blockID, standartDrop){
 		var item = Player.getCarriedItem();
 		if(item.id==ItemID.wrench){
@@ -327,8 +317,6 @@ var MachineRegistry = {
 		ICRenderLib.addConnectionBlock(TILE_RENDERER_CONNECTION_GROUP, id);
 		// register ID
 		this.machineIDs[id] = true;
-		// set base for web object
-		Prototype.web = null;
 		// setup energy value
 		if (Prototype.defaultValues){
 			Prototype.defaultValues.energy = 0;
@@ -339,38 +327,10 @@ var MachineRegistry = {
 			};
 		}
 		// copy functions
-		if (Prototype.tick){
-			Prototype.mechTick = Prototype.tick;
-		}
-		else if (!Prototype.mechTick){
-			Prototype.mechTick = function(){};
-		}
-		if (Prototype.init){
-			Prototype.mechInit = Prototype.init;
-		}
-		else if (!Prototype.mechInit){
-			Prototype.mechInit = function(){};
-		}
-		if (Prototype.destroy){
-			Prototype.mechDestroy = Prototype.destroy;
-		}
-		else if (!Prototype.mechDestroy){
-			Prototype.mechDestroy = function(){};
-		}
-		if (!Prototype.energyTick){
-			Prototype.energyTick = function(){};
-		}
-		if (!Prototype.getEnergyStorage){
+		if(!Prototype.getEnergyStorage){
 			Prototype.getEnergyStorage = function(){
 				return 0;
 			};
-		}
-		// set default functions
-		Prototype.init = function(){
-			MachineRegistry.addMacineAccessAtCoords(this.x, this.y, this.z, this);
-			// TODO: reload webs, apply to energy web
-			EnergyWebBuilder.postWebRebuild();
-			this.mechInit();
 		}
 		/*
 		Prototype.click = function(id, count, data, coords){
@@ -379,48 +339,18 @@ var MachineRegistry = {
 			}
 		}
 		*/
-		Prototype.tick = function(){
-			if (!this.web){
-				EnergyWebBuilder.rebuildFor(this);
-			}
-			else{
-				this.energyTick(this.web);
-			}
-			this.mechTick();
-		}
-		Prototype.destroy = function(){
-			if (this.web){
-				this.web.removeMachine(this);
-			}
-			MachineRegistry.removeMachineAccessAtCoords(this.x, this.y, this.z);
-			EnergyWebBuilder.postWebRebuild();
-			this.mechDestroy();
-		}
 		
 		ToolAPI.registerBlockMaterial(id, "stone");
 		TileEntity.registerPrototype(id, Prototype);
-	},
-	
-	executeForAll: function(func){
-		for (var key in this.quickCoordAccess){
-			var mech = this.quickCoordAccess[key];
-			if (mech){
-				func(mech);
-			}
-		}
+		EnergyTileRegistry.addEnergyTypeForId(id, EU);
 	},
 	
 	// standart functions
-	basicEnergyReceiveFunc: function(){
+	basicEnergyReceiveFunc: function(type, src){
 		var energyNeed = this.getEnergyStorage() - this.data.energy;
-		this.data.energy += this.web.requireEnergy(energyNeed);
+		this.data.energy += src.get(energyNeed);
 	}
 }
-
-Callback.addCallback("LevelLoaded", function(){
-	MachineRegistry.quickCoordAccess = {};
-});
-
 
 
 var MachineRecipeRegistry = {
@@ -513,133 +443,6 @@ var UpgradeAPI = {
 		return containers;
 	}
 }
-
-
-var MIN_ENERGY_TRANSPORT_AMOUNT = 16;
-
-function EnergyWeb(){
-	this.energyType = "Eu";
-	this.energy = 0;
-	
-	this.machines = [];
-	
-	this.addMachine = function(machine){
-		machine.web = this;
-		this.machines.push(machine);
-	}
-	
-	this.removeMachine = function(machine){
-		for (var i in this.machines){
-			if (this.machines[i] == machine){
-				machine.web = null;
-				this.machines.splice(i--, 1);
-			}
-		}
-	}
-	
-	
-	this.energyTransportedTime = -1;
-	this.energyTransportedLastTick = 0;
-	this.energyTransportedThisTick = 0;
-	
-	this.requireEnergy = function(amount){
-		var time = World.getThreadTime();
-		if (time != this.energyTransportedTime){
-			this.energyTransportedLastTick = this.energyTransportedThisTick;
-			this.energyTransportedThisTick = 0;
-			this.energyTransportedTime = time;
-		}
-		
-		var max = Math.min(this.energy * 2 / this.machines.length, this.energy);
-		if (amount != amount){
-			amount = max;
-		}
-		var got = Math.min(max, amount);
-		this.energy -= got;
-		this.energyTransportedThisTick += got;
-		//Game.tipMessage(this.energyTransportedLastTick);
-		return got;
-	}
-	
-	
-	this.addEnergy = function(amount){
-		if (this.energy < MIN_ENERGY_TRANSPORT_AMOUNT + this.energyTransportedLastTick && this.machines.length > 1){
-			this.energy += amount;
-			return 0;
-		}
-		else{
-			return amount;
-		}
-	}
-	
-	this.destroy = function(){
-		
-	}
-}
-
-
-var EnergyWebBuilder = {
-	rebuildFor: function(machine){
-		var web = new EnergyWeb();
-		this.rebuildRecursive(web, machine.x, machine.y, machine.z, {});
-		return web;
-	},
-	
-	rebuildRecursive: function(web, x, y, z, explored){
-		var coordKey = x + ":" + y + ":" + z;
-		if (explored[coordKey]){
-			return;
-		}
-		else{
-			explored[coordKey] = true;
-		}
-		
-		var mech = MachineRegistry.accessMachineAtCoords(x, y, z);
-		if (mech){
-			web.addMachine(mech);
-			this.rebuildFor6Sides(web, x, y, z, explored);
-		}
-		else {
-			var tile = nativeGetTile(x, y, z);
-			if (tile == BLOCK_TYPE_CABLE_ID){
-				this.rebuildFor6Sides(web, x, y, z, explored);
-			}
-			else {
-				return;
-			}
-		}
-	},
-	
-	rebuildFor6Sides: function(web, x, y, z, explored){
-		this.rebuildRecursive(web, x - 1, y, z, explored);
-		this.rebuildRecursive(web, x + 1, y, z, explored);
-		this.rebuildRecursive(web, x, y - 1, z, explored);
-		this.rebuildRecursive(web, x, y + 1, z, explored);
-		this.rebuildRecursive(web, x, y, z - 1, explored);
-		this.rebuildRecursive(web, x, y, z + 1, explored);
-	},
-	
-	postedRebuildTimer: 0,
-	
-	clearWebData: function(){
-		MachineRegistry.executeForAll(function(machine){
-			machine.web = null;
-		});
-	},
-	
-	postWebRebuild: function(delay){
-		this.postedRebuildTimer = delay || 60;
-	}
-}
-
-Callback.addCallback("tick", function(){
-	if (EnergyWebBuilder.postedRebuildTimer > 0){
-		EnergyWebBuilder.postedRebuildTimer--;
-		if (EnergyWebBuilder.postedRebuildTimer <= 0){
-			EnergyWebBuilder.clearWebData();
-		}
-	}
-});
 
 
 function TileRenderModel(id, data){
@@ -947,34 +750,30 @@ pillarRender.addBoxF(0.25, 0.0, 0.25, 0.75, 1.0, 0.75, {id: 5, data: 2});
 
 
 
-var BLOCK_TYPE_CABLE_ID = Block.createSpecialType({
-	base: 35
-});
-
 IDRegistry.genBlockID("cableTin");
 Block.createBlock("cableTin", [
 	{name: "tile.cableTin.name", texture: [["cable_block_tin", 0]], inCreative: false}
-], BLOCK_TYPE_CABLE_ID);
+], EU.getWireSpecialType());
 
 IDRegistry.genBlockID("cableCopper");
 Block.createBlock("cableCopper", [
 	{name: "tile.cableCopper.name", texture: [["cable_block_copper", 0]], inCreative: false}
-], BLOCK_TYPE_CABLE_ID);
+], EU.getWireSpecialType());
 
 IDRegistry.genBlockID("cableGold");
 Block.createBlock("cableGold", [
 	{name: "tile.cableGold.name", texture: [["cable_block_gold", 0]], inCreative: false}
-], BLOCK_TYPE_CABLE_ID);
+], EU.getWireSpecialType());
 
 IDRegistry.genBlockID("cableIron");
 Block.createBlock("cableIron", [
 	{name: "tile.cableIron.name", texture: [["cable_block_iron", 0]], inCreative: false}
-], BLOCK_TYPE_CABLE_ID);
+], EU.getWireSpecialType());
 
 IDRegistry.genBlockID("cableOptic");
 Block.createBlock("cableOptic", [
 	{name: "tile.cableOptic.name", texture: [["cable_block_optic", 0]], inCreative: false}
-], BLOCK_TYPE_CABLE_ID);
+], EU.getWireSpecialType());
 
 var CABLE_BLOCK_WIDTH = 0.25;
 Block.setBlockShape(BlockID.cableTin, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CABLE_BLOCK_WIDTH, z: 0.5 - CABLE_BLOCK_WIDTH}, {x: 0.5 + CABLE_BLOCK_WIDTH, y: 0.5 + CABLE_BLOCK_WIDTH, z: 0.5 + CABLE_BLOCK_WIDTH});
@@ -991,27 +790,22 @@ ICRenderLib.registerAsWire(BlockID.cableOptic, TILE_RENDERER_CONNECTION_GROUP);
 
 // drop 
 Block.registerDropFunction("cableTin", function(){
-	EnergyWebBuilder.postWebRebuild();
 	return [[ItemID.cableTin1, 1, 0]];
 });
 
 Block.registerDropFunction("cableCopper", function(){
-	EnergyWebBuilder.postWebRebuild();
 	return [[ItemID.cableCopper1, 1, 0]];
 });
 
 Block.registerDropFunction("cableGold", function(){
-	EnergyWebBuilder.postWebRebuild();
 	return [[ItemID.cableGold2, 1, 0]];
 });
 
 Block.registerDropFunction("cableIron", function(){
-	EnergyWebBuilder.postWebRebuild();
 	return [[ItemID.cableIron3, 1, 0]];
 });
 
 Block.registerDropFunction("cableOptic", function(){
-	EnergyWebBuilder.postWebRebuild();
 	return [];
 });
 
@@ -2779,13 +2573,17 @@ MachineRegistry.registerPrototype(BlockID.primalGenerator, {
 		return 0;
 	},
 	
+	isGenerator: function() {
+		return true;
+	},
+	
 	getEnergyStorage: function(){
 		return 10000;
 	},
 	
-	energyTick: function(){
+	energyTick: function(type, src){
 		var output = Math.min(32, this.data.energy);
-		this.data.energy += this.web.addEnergy(output) - output;
+		this.data.energy += src.add(output) - output;
 	}
 });
 
@@ -2872,10 +2670,13 @@ MachineRegistry.registerPrototype(BlockID.geothermalGenerator, {
 		this.container.setText("textInfo1", parseInt(this.liquidStorage.getAmount("lava") * 1000) + "/");
 	},
 	
+	isGenerator: function() {
+		return true;
+	},
 	
-	energyTick: function(){
+	energyTick: function(type, src){
 		if(this.liquidStorage.getLiquid("lava", 0.001) > 0){
-			if(this.web.addEnergy(20) > 0){
+			if(src.add(20) > 0){
 				this.liquidStorage.addLiquid("lava", 0.001);
 			}
 		}
@@ -2902,9 +2703,13 @@ Callback.addCallback("PostLoaded", function(){
 });
 
 MachineRegistry.registerPrototype(BlockID.solarPanel, {
-	energyTick: function(){
-		if(World.getThreadTime()%10 == 0 && nativeGetLightLevel(this.x, this.y + 1, this.z) == 15){
-			this.web.addEnergy(10);
+	isGenerator: function() {
+		return true;
+	},
+	
+	energyTick: function(type, src){
+		if(nativeGetLightLevel(this.x, this.y + 1, this.z) == 15){
+			src.add(1);
 		}
 	}
 });
@@ -2928,8 +2733,13 @@ Callback.addCallback("PostLoaded", function(){
 });
 
 MachineRegistry.registerPrototype(BlockID.genWindmill, {
-	energyTick: function(){
-		if(World.getThreadTime() % 20 == 0){
+	isGenerator: function() {
+		return true;
+	},
+	
+	energyTick: function(type, src){
+		var time = World.getThreadTime()%20
+		if(time == 0){
 			var height = Math.max(0, Math.min(this.y-64, 96)) / 64;
 			var output = height * 140;
 			var wether = World.getWeather();
@@ -2940,10 +2750,14 @@ MachineRegistry.registerPrototype(BlockID.genWindmill, {
 					this.x - random(-radius, radius),
 					this.y - random(-radius, radius),
 					this.z - random(-radius, radius)
-				) == 0){
-				this.web.addEnergy(output);
+				) !== 0){
+				output = 0;
 			}
+			this.data.energy = output;
 		}
+		var output = Math.floor(this.data.energy/(20-time));
+		this.data.energy -= output;
+		src.add(output);
 	}
 });
 
@@ -2967,6 +2781,10 @@ Callback.addCallback("PostLoaded", function(){
 
 
 MachineRegistry.registerPrototype(BlockID.genWatermill, {
+	isGenerator: function() {
+		return true;
+	},
+	
 	biomeCheck: function(x, z){
 		var coords = [[x, z], [x-7, z], [x+7, z], [x, z-7], [x, z+7]];
 		for(var c in coords){
@@ -2976,28 +2794,36 @@ MachineRegistry.registerPrototype(BlockID.genWatermill, {
 		}
 		return 0;
 	},
-	energyTick: function(){
-		var biome = this.biomeCheck(this.x, this.z);
-		if(World.getThreadTime()%20 == 0 && biome && this.y >= 32 && this.y < 64){
-			var output = 50;
-			var radius = 1;
-			var wether = World.getWeather();
-			if(wether.thunder && wether.rain){
-				if(wether.thunder){output *= 2;}
-				else{output *= 1.5;}
-			}
-			else if(biome=="river"){
-				output *= 1.5*Math.sin(World.getWorldTime()%6000/(6000/Math.PI));
-			}
-			var tile = nativeGetTile(
-				this.x - random(-radius, radius),
-				this.y - random(-radius, radius),
-				this.z - random(-radius, radius)
-			);
-			if(tile == 8 || tile == 9){
-				this.web.addEnergy(output);
+	
+	energyTick: function(type, src){
+		var time = World.getThreadTime()%20
+		if(time == 0){
+			var biome = this.biomeCheck(this.x, this.z);
+			if(biome && this.y >= 32 && this.y < 64){
+				var output = 50;
+				var radius = 1;
+				var wether = World.getWeather();
+				if(wether.thunder && wether.rain){
+					if(wether.thunder){output *= 2;}
+					else{output *= 1.5;}
+				}
+				else if(biome=="ocean"){
+					output *= 1.5*Math.sin(World.getWorldTime()%6000/(6000/Math.PI));
+				}
+				var tile = nativeGetTile(
+					this.x - random(-radius, radius),
+					this.y - random(-radius, radius),
+					this.z - random(-radius, radius)
+				);
+				if(tile !== 8 && tile !== 9){
+					output = 0;
+				}
+				this.data.energy = output;
 			}
 		}
+		var output = Math.floor(this.data.energy/(20-time));
+		this.data.energy -= output;
+		src.add(output);
 	}
 });
 
@@ -3152,20 +2978,9 @@ MachineRegistry.registerPrototype(BlockID.storageBatBox, {
 		return 40000;
 	},
 	
-	energyTick: function(){
+	energyTick: function(type, src){
 		var TRANSFER = 32;
-		var delta = 8 - this.web.energy;
-		var transfer = Math.min(Math.abs(delta), TRANSFER);
-		
-		if (delta > 0){
-			var output = Math.min(TRANSFER, this.data.energy);
-			var left = this.web.addEnergy(output);
-			this.data.energy += left - output;
-		}
-		if (delta < 0){
-			var input = this.web.requireEnergy(Math.min(transfer, this.getEnergyStorage() - this.data.energy));
-			this.data.energy += input;
-		}
+		this.data.energy += src.storage(Math.min(TRANSFER, this.getEnergyStorage() - this.data.energy), Math.min(TRANSFER, this.data.energy));
 	}
 });
 
@@ -3235,20 +3050,9 @@ MachineRegistry.registerPrototype(BlockID.storageMFE, {
 		return 600000;
 	},
 	
-	energyTick: function(){
+	energyTick: function(type, src){
 		var TRANSFER = 128;
-		var delta = 8 - this.web.energy;
-		var transfer = Math.min(Math.abs(delta), TRANSFER);
-		
-		if (delta > 0){
-			var output = Math.min(TRANSFER, this.data.energy);
-			var left = this.web.addEnergy(output);
-			this.data.energy += left - output;
-		}
-		if (delta < 0){
-			var input = this.web.requireEnergy(Math.min(transfer, this.getEnergyStorage() - this.data.energy));
-			this.data.energy += input;
-		}
+		this.data.energy += src.storage(Math.min(TRANSFER, this.getEnergyStorage() - this.data.energy), Math.min(TRANSFER, this.data.energy));
 	}
 });
 
@@ -3314,20 +3118,9 @@ MachineRegistry.registerPrototype(BlockID.storageMFSU, {
 		return 10000000;
 	},
 	
-	energyTick: function(){
+	energyTick: function(type, src){
 		var TRANSFER = 512;
-		var delta = 8 - this.web.energy;
-		var transfer = Math.min(Math.abs(delta), TRANSFER);
-		
-		if (delta > 0){
-			var output = Math.min(TRANSFER, this.data.energy);
-			var left = this.web.addEnergy(output);
-			this.data.energy += left - output;
-		}
-		if (delta < 0){
-			var input = this.web.requireEnergy(Math.min(transfer, this.getEnergyStorage() - this.data.energy));
-			this.data.energy += input;
-		}
+		this.data.energy += src.storage(Math.min(TRANSFER, this.getEnergyStorage() - this.data.energy), Math.min(TRANSFER, this.data.energy));
 	}
 });
 
@@ -4040,7 +3833,7 @@ Item.registerUseFunction("cableTin1", function(coords, item, block){
 	if (GenerationUtils.isTransparentBlock(World.getBlockID(place.x, place.y, place.z))){
 		World.setBlock(place.x, place.y, place.z, BlockID.cableTin);
 		Player.setCarriedItem(item.id, item.count - 1, item.data);
-		EnergyWebBuilder.postWebRebuild();
+		EnergyTypeRegistry.onWirePlaced();
 	}
 });
 
@@ -4049,7 +3842,7 @@ Item.registerUseFunction("cableCopper1", function(coords, item, block){
 	if (GenerationUtils.isTransparentBlock(World.getBlockID(place.x, place.y, place.z))){
 		World.setBlock(place.x, place.y, place.z, BlockID.cableCopper);
 		Player.setCarriedItem(item.id, item.count - 1, item.data);
-		EnergyWebBuilder.postWebRebuild();
+		EnergyTypeRegistry.onWirePlaced();
 	}
 });
 
@@ -4058,7 +3851,7 @@ Item.registerUseFunction("cableGold2", function(coords, item, block){
 	if (GenerationUtils.isTransparentBlock(World.getBlockID(place.x, place.y, place.z))){
 		World.setBlock(place.x, place.y, place.z, BlockID.cableGold);
 		Player.setCarriedItem(item.id, item.count - 1, item.data);
-		EnergyWebBuilder.postWebRebuild();
+		EnergyTypeRegistry.onWirePlaced();
 	}
 });
 
@@ -4067,7 +3860,7 @@ Item.registerUseFunction("cableIron3", function(coords, item, block){
 	if (GenerationUtils.isTransparentBlock(World.getBlockID(place.x, place.y, place.z))){
 		World.setBlock(place.x, place.y, place.z, BlockID.cableIron);
 		Player.setCarriedItem(item.id, item.count - 1, item.data);
-		EnergyWebBuilder.postWebRebuild();
+		EnergyTypeRegistry.onWirePlaced();
 	}
 });
 
@@ -4251,10 +4044,9 @@ Callback.addCallback("PostLoaded", function(){
 });
 
 Item.registerUseFunction("debugItem", function(coords, item, block){
-	var machine = MachineRegistry.accessMachineAtCoords(coords.x, coords.y, coords.z);
+	var machine = EnergyTileRegistry.accessMachineAtCoords(coords.x, coords.y, coords.z);
 	if(machine){
-		if(machine.getEnergyStorage()){
-		Game.message("Energy: " + machine.data.energy + "/" + machine.getEnergyStorage());}
+		Game.message("Energy: " + machine.data.energy + "/" + machine.getEnergyStorage());
 		if(machine.data.energy_consumption){
 		Game.message("energy consumption: " + machine.data.energy_consumption + ", work time: " + machine.data.work_time);}
 	}
@@ -4785,7 +4577,6 @@ Callback.addCallback("LevelLeft", function(){
 		for(var i in elements){
 			elements[i] = null;
 		}
-		UIbuttons.container = null;
 	}
 });
 
@@ -5295,7 +5086,7 @@ Recipes.addShaped({id: ItemID.wrench, count: 1, data: 0}, [
 	" a "
 ], ['a', ItemID.ingotBronze, 0]);
 
-Recipes.addShapeless({id: ItemID.electricWrench, count: 1, data: 0}, [{id: ItemID.wrench, data: 0}, {id: ItemID.powerUnitSmall, data: 0}]);
+Recipes.addShapeless({id: ItemID.electricWrench, count: 1, data: 200}, [{id: ItemID.wrench, data: 0}, {id: ItemID.powerUnitSmall, data: 0}]);
 
 
 Callback.addCallback("DestroyBlockStart", function(coords, block){

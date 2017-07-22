@@ -16,9 +16,13 @@ Callback.addCallback("PostLoaded", function(){
 });
 
 MachineRegistry.registerPrototype(BlockID.solarPanel, {
-	energyTick: function(){
-		if(World.getThreadTime()%10 == 0 && nativeGetLightLevel(this.x, this.y + 1, this.z) == 15){
-			this.web.addEnergy(10);
+	isGenerator: function() {
+		return true;
+	},
+	
+	energyTick: function(type, src){
+		if(nativeGetLightLevel(this.x, this.y + 1, this.z) == 15){
+			src.add(1);
 		}
 	}
 });

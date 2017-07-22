@@ -100,12 +100,16 @@ MachineRegistry.registerPrototype(BlockID.primalGenerator, {
 		return 0;
 	},
 	
+	isGenerator: function() {
+		return true;
+	},
+	
 	getEnergyStorage: function(){
 		return 10000;
 	},
 	
-	energyTick: function(){
+	energyTick: function(type, src){
 		var output = Math.min(32, this.data.energy);
-		this.data.energy += this.web.addEnergy(output) - output;
+		this.data.energy += src.add(output) - output;
 	}
 });

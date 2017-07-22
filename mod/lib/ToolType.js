@@ -59,21 +59,23 @@ ToolAPI.breakCarriedTool = function(damage){
 	Player.setCarriedItem(item.id, item.count, item.data, item.enchant);
 }
 
-ToolAPI.setTool = function(itemID, toolProperties, toolType){
+ToolAPI.setTool = function(itemID, toolMaterial, toolType){
 	Item.setToolRender(itemID, true);
-	if(ToolAPI.toolMaterials[toolProperties]){
-	toolProperties = ToolAPI.toolMaterials[toolProperties];}
+	toolMaterial = ToolAPI.toolMaterials[toolMaterial] || toolMaterial;
 	if(toolType.blockTypes){
-		ToolAPI.registerTool(itemID, toolProperties, toolType.blockTypes, toolType);
+		toolProperties = {}
+		for(var i in toolType){
+		toolProperties[i] = toolType[i];}
+		ToolAPI.registerTool(itemID, toolMaterial, toolType.blockTypes, toolProperties);
 	}
 	else{
-		Item.setMaxDamage(itemID, toolProperties.durability);
+		Item.setMaxDamage(itemID, toolMaterial.durability);
 	}
 	if(toolType.useItem){
 		Item.registerUseFunctionForID(itemID, toolType.useItem);
 	}
 	if(toolType.enchantType){
-		Item.setEnchantType(itemID, toolType.enchantType, toolProperties.enchantability);
+		Item.setEnchantType(itemID, toolType.enchantType, toolMaterial.enchantability);
 	}
 }
 

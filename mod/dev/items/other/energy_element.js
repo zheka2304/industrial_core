@@ -110,10 +110,9 @@ Callback.addCallback("PostLoaded", function(){
 });
 
 Item.registerUseFunction("debugItem", function(coords, item, block){
-	var machine = MachineRegistry.accessMachineAtCoords(coords.x, coords.y, coords.z);
+	var machine = EnergyTileRegistry.accessMachineAtCoords(coords.x, coords.y, coords.z);
 	if(machine){
-		if(machine.getEnergyStorage()){
-		Game.message("Energy: " + machine.data.energy + "/" + machine.getEnergyStorage());}
+		Game.message("Energy: " + machine.data.energy + "/" + machine.getEnergyStorage());
 		if(machine.data.energy_consumption){
 		Game.message("energy consumption: " + machine.data.energy_consumption + ", work time: " + machine.data.work_time);}
 	}

@@ -16,8 +16,13 @@ Callback.addCallback("PostLoaded", function(){
 });
 
 MachineRegistry.registerPrototype(BlockID.genWindmill, {
-	energyTick: function(){
-		if(World.getThreadTime() % 20 == 0){
+	isGenerator: function() {
+		return true;
+	},
+	
+	energyTick: function(type, src){
+		var time = World.getThreadTime()%20
+		if(time == 0){
 			var height = Math.max(0, Math.min(this.y-64, 96)) / 64;
 			var output = height * 140;
 			var wether = World.getWeather();
@@ -28,9 +33,13 @@ MachineRegistry.registerPrototype(BlockID.genWindmill, {
 					this.x - random(-radius, radius),
 					this.y - random(-radius, radius),
 					this.z - random(-radius, radius)
-				) == 0){
-				this.web.addEnergy(output);
+				) !== 0){
+				output = 0;
 			}
+			this.data.energy = output;
 		}
+		var output = Math.floor(this.data.energy/(20-time));
+		this.data.energy -= output;
+		src.add(output);
 	}
 });

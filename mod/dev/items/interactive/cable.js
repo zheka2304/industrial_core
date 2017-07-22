@@ -38,7 +38,7 @@ Item.registerUseFunction("cableTin1", function(coords, item, block){
 	if (GenerationUtils.isTransparentBlock(World.getBlockID(place.x, place.y, place.z))){
 		World.setBlock(place.x, place.y, place.z, BlockID.cableTin);
 		Player.setCarriedItem(item.id, item.count - 1, item.data);
-		EnergyWebBuilder.postWebRebuild();
+		EnergyTypeRegistry.onWirePlaced();
 	}
 });
 
@@ -47,7 +47,7 @@ Item.registerUseFunction("cableCopper1", function(coords, item, block){
 	if (GenerationUtils.isTransparentBlock(World.getBlockID(place.x, place.y, place.z))){
 		World.setBlock(place.x, place.y, place.z, BlockID.cableCopper);
 		Player.setCarriedItem(item.id, item.count - 1, item.data);
-		EnergyWebBuilder.postWebRebuild();
+		EnergyTypeRegistry.onWirePlaced();
 	}
 });
 
@@ -56,7 +56,7 @@ Item.registerUseFunction("cableGold2", function(coords, item, block){
 	if (GenerationUtils.isTransparentBlock(World.getBlockID(place.x, place.y, place.z))){
 		World.setBlock(place.x, place.y, place.z, BlockID.cableGold);
 		Player.setCarriedItem(item.id, item.count - 1, item.data);
-		EnergyWebBuilder.postWebRebuild();
+		EnergyTypeRegistry.onWirePlaced();
 	}
 });
 
@@ -65,6 +65,6 @@ Item.registerUseFunction("cableIron3", function(coords, item, block){
 	if (GenerationUtils.isTransparentBlock(World.getBlockID(place.x, place.y, place.z))){
 		World.setBlock(place.x, place.y, place.z, BlockID.cableIron);
 		Player.setCarriedItem(item.id, item.count - 1, item.data);
-		EnergyWebBuilder.postWebRebuild();
+		EnergyTypeRegistry.onWirePlaced();
 	}
 });

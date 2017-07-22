@@ -1,6 +1,6 @@
 {
 	"enabled": true,
-	"show_resource_errors": true,
+	"show_resource_errors": false,
 	"ore_gen": {
 		"copper_ore": true,
 		"tin_ore": true,
