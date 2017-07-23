@@ -22,7 +22,7 @@ Armor.registerFuncs("nightvisionGoggles", {
 			return true;
 		}
 		else{
-			if(nightVisionEnabled){
+			if(UIbuttons.nightvision){
 				if(World.getThreadTime()%4==0){slot.data++;Game.message(slot.data);}
 				var coords = Player.getPosition();
 				if(nativeGetLightLevel(coords.x, coords.y, coords.z)==15){

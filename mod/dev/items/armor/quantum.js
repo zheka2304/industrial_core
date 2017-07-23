@@ -65,7 +65,7 @@ var QUANTUM_ARMOR_FUNCS_CHARGED = {
 			case 0:
 				Entity.clearEffect(player, MobEffect.poison);
 				Entity.clearEffect(player, MobEffect.wither);
-				if(nightVisionEnabled){
+				if(UIbuttons.nightvision){
 					if(World.getThreadTime()%480==0){slot.data++;}
 					var coords = Player.getPosition();
 					if(nativeGetLightLevel(coords.x, coords.y, coords.z)==15){

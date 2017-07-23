@@ -5,6 +5,7 @@ Callback.addCallback("NativeGuiChanged", function(screenName){
 
 var UIbuttons = {
 	isEnabled: false,
+	nightvision: false,
 	container: null,
 	Window: new UI.Window({
 		location: {
@@ -42,13 +43,13 @@ function updateUIbuttons(){
 			scale: 50,
 			clicker: {
 				onClick: function(){
-					if(nightVisionEnabled){
-						nightVisionEnabled = false;
-						Game.message("§4 Nightvision mode disabled");
+					if(UIbuttons.nightvision){
+						UIbuttons.nightvision = false;
+						Game.message("§4Nightvision mode disabled");
 					}
 					else{
-						nightVisionEnabled = true;
-						Game.message("§2 Nightvision mode enabled");
+						UIbuttons.nightvision = true;
+						Game.message("§2Nightvision mode enabled");
 					}
 				}
 			}

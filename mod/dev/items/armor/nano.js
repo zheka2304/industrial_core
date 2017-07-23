@@ -57,7 +57,7 @@ var NANO_ARMOR_FUNCS_CHARGED = {
 			return true;
 		}
 		else{
-			if(index==0 && nightVisionEnabled){
+			if(index==0 && UIbuttons.nightvision){
 				if(World.getThreadTime()%640==0){slot.data++;}
 				var coords = Player.getPosition();
 				if(nativeGetLightLevel(coords.x, coords.y, coords.z)==15){
