@@ -251,7 +251,7 @@ if (!ICRenderLib){
 			model.addConnectionGroup(connectionGroupName);
 			model.addSelfConnection();
 			model.setConnectionWidth(width);
-			model.addBox(.5 - width / 2.0, .5 - width / 2.0, .5 - width / 2.0, {
+			model.addBox(0.5 - width / 2.0, 0.5 - width / 2.0, 0.5 - width / 2.0, {
 				x: width,
 				y: width,
 				z: width,

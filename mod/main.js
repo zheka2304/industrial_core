@@ -12,7 +12,6 @@
 
 // constants
 var GUI_BAR_STANDART_SCALE = 3.2;
-var TILE_RENDERER_CONNECTION_GROUP = "ic-wire";
 
 var FURNACE_FUEL_MAP = {
 	5: 300,
@@ -238,14 +237,15 @@ Translation.addTranslation("Water Cell", {ru: "Капсула с водой", es
 Translation.addTranslation("Lava Cell", {ru: "Капсула с лавой", es: "Celda de Lava", zh: "岩浆单元"});
 
 // Wires
-Translation.addTranslation("Tin wire", {ru: "Оловянный провод", es: "Cable de Ultra-Baja Tensión", zh: "锡质导线"});
-Translation.addTranslation("Tin wire (isolated)", {ru: "Изолированный оловянный провод", es: "Cable de Estaño Aislado", zh: "绝缘锡质导线"});
-Translation.addTranslation("Copper wire", {ru: "Медный провод", es: "Cable de Cobre", zh: "铜质导线"});
-Translation.addTranslation("Copper wire (isolated)", {ru: "Изолированный медный провод", es: "Cable de Cobre Aislado", zh: "绝缘质铜导线"});
-Translation.addTranslation("Gold wire", {ru: "Золотой провод", es: "Cable de Oro", zh: "金质导线"});
-Translation.addTranslation("Gold wire (isolated 2x)", {ru: "Золотой провод с двойной изоляцией", es: "Cable de Oro Aislado x2", zh: "2x绝缘金质导线"});
-Translation.addTranslation("Iron wire", {ru: "Высоковольтный провод", es: "Cable de Alta Tensión", zh: "高压导线"});
-Translation.addTranslation("Iron wire (isolated 3x)", {ru: "Высоковольтный провод с тройной изоляцией", es: "Cable de Alta Tensión Aislado x3", zh: "3x绝缘高压导线"});
+Translation.addTranslation("Tin Wire", {ru: "Оловянный провод", es: "Cable de Ultra-Baja Tensión", zh: "锡质导线"});
+Translation.addTranslation("Insulated Tin Wire", {ru: "Изолированный оловянный провод", es: "Cable de Estaño Aislado", zh: "绝缘锡质导线"});
+Translation.addTranslation("Copper Wire", {ru: "Медный провод", es: "Cable de Cobre", zh: "铜质导线"});
+Translation.addTranslation("Insulated Copper Wire", {ru: "Изолированный медный провод", es: "Cable de Cobre Aislado", zh: "绝缘质铜导线"});
+Translation.addTranslation("Gold Cable", {ru: "Золотой провод", es: "Cable de Oro", zh: "金质导线"});
+Translation.addTranslation("Gold Cable (insulated x2)", {ru: "Золотой провод с двойной изоляцией", es: "Cable de Oro Aislado x2", zh: "2x绝缘金质导线"});
+Translation.addTranslation("HV Cable", {ru: "Высоковольтный провод", es: "Cable de Alta Tensión", zh: "高压导线"});
+Translation.addTranslation("HV Cable (insulated x3)", {ru: "Высоковольтный провод с тройной изоляцией", es: "Cable de Alta Tensión Aislado x3", zh: "3x绝缘高压导线"});
+Translation.addTranslation("Glass Fibre Cable", {ru: "Стекловолоконный провод", es: "Cable de Alta Tensión", zh: "玻璃纤维导线"});
 
 // Armor
 Translation.addTranslation("Bronze Helmet", {ru: "Бронзовый шлем", es: "Casco de Bronce", zh: "青铜头盔"});
@@ -314,7 +314,7 @@ var MachineRegistry = {
 	
 	registerPrototype: function(id, Prototype){
 		// register render
-		ICRenderLib.addConnectionBlock(TILE_RENDERER_CONNECTION_GROUP, id);
+		ICRenderLib.addConnectionBlock("ic-wire", id);
 		// register ID
 		this.machineIDs[id] = true;
 		// setup energy value
@@ -348,7 +348,7 @@ var MachineRegistry = {
 	// standart functions
 	basicEnergyReceiveFunc: function(type, src){
 		var energyNeed = this.getEnergyStorage() - this.data.energy;
-		this.data.energy += src.get(energyNeed);
+		this.data.energy += src.getAll(energyNeed);
 	}
 }
 
@@ -416,6 +416,7 @@ var UpgradeAPI = {
 		for(var upgrade in upgrades){
 			UpgradeAPI.executeUpgrade({id: upgrade, count: upgrades[upgrade]}, machine, container, data, coords);
 		}
+		return upgrades;
 	},
 	
 	findNearestContainers: function(coords, direction){
@@ -698,7 +699,7 @@ if (!ICRenderLib){
 			model.addConnectionGroup(connectionGroupName);
 			model.addSelfConnection();
 			model.setConnectionWidth(width);
-			model.addBox(.5 - width / 2.0, .5 - width / 2.0, .5 - width / 2.0, {
+			model.addBox(0.5 - width / 2.0, 0.5 - width / 2.0, 0.5 - width / 2.0, {
 				x: width,
 				y: width,
 				z: width,
@@ -775,18 +776,22 @@ Block.createBlock("cableOptic", [
 	{name: "tile.cableOptic.name", texture: [["cable_block_optic", 0]], inCreative: false}
 ], EU.getWireSpecialType());
 
-var CABLE_BLOCK_WIDTH = 0.25;
-Block.setBlockShape(BlockID.cableTin, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CABLE_BLOCK_WIDTH, z: 0.5 - CABLE_BLOCK_WIDTH}, {x: 0.5 + CABLE_BLOCK_WIDTH, y: 0.5 + CABLE_BLOCK_WIDTH, z: 0.5 + CABLE_BLOCK_WIDTH});
-Block.setBlockShape(BlockID.cableCopper, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CABLE_BLOCK_WIDTH, z: 0.5 - CABLE_BLOCK_WIDTH}, {x: 0.5 + CABLE_BLOCK_WIDTH, y: 0.5 + CABLE_BLOCK_WIDTH, z: 0.5 + CABLE_BLOCK_WIDTH});
-Block.setBlockShape(BlockID.cableGold, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CABLE_BLOCK_WIDTH, z: 0.5 - CABLE_BLOCK_WIDTH}, {x: 0.5 + CABLE_BLOCK_WIDTH, y: 0.5 + CABLE_BLOCK_WIDTH, z: 0.5 + CABLE_BLOCK_WIDTH});
-Block.setBlockShape(BlockID.cableIron, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CABLE_BLOCK_WIDTH, z: 0.5 - CABLE_BLOCK_WIDTH}, {x: 0.5 + CABLE_BLOCK_WIDTH, y: 0.5 + CABLE_BLOCK_WIDTH, z: 0.5 + CABLE_BLOCK_WIDTH});
-Block.setBlockShape(BlockID.cableOptic, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CABLE_BLOCK_WIDTH, z: 0.5 - CABLE_BLOCK_WIDTH}, {x: 0.5 + CABLE_BLOCK_WIDTH, y: 0.5 + CABLE_BLOCK_WIDTH, z: 0.5 + CABLE_BLOCK_WIDTH});
+var STANDART_CABLE_WIDTH = 1/2;
+var GOLD_CABLE_WIDTH = 5/8;
+var HV_CABLE_WIDTH = 3/4;
+var OPTIC_CABLE_WIDTH = 1/4;
 
-ICRenderLib.registerAsWire(BlockID.cableTin, TILE_RENDERER_CONNECTION_GROUP);
-ICRenderLib.registerAsWire(BlockID.cableCopper, TILE_RENDERER_CONNECTION_GROUP);
-ICRenderLib.registerAsWire(BlockID.cableGold, TILE_RENDERER_CONNECTION_GROUP);
-ICRenderLib.registerAsWire(BlockID.cableIron, TILE_RENDERER_CONNECTION_GROUP);
-ICRenderLib.registerAsWire(BlockID.cableOptic, TILE_RENDERER_CONNECTION_GROUP);
+Block.setBlockShape(BlockID.cableTin, {x: 0.5 - STANDART_CABLE_WIDTH/2, y: 0.5 - STANDART_CABLE_WIDTH/2, z: 0.5 - STANDART_CABLE_WIDTH/2}, {x: 0.5 + STANDART_CABLE_WIDTH/2, y: 0.5 + STANDART_CABLE_WIDTH/2, z: 0.5 + STANDART_CABLE_WIDTH/2});
+Block.setBlockShape(BlockID.cableCopper, {x: 0.5 - STANDART_CABLE_WIDTH/2, y: 0.5 - STANDART_CABLE_WIDTH/2, z: 0.5 - STANDART_CABLE_WIDTH/2}, {x: 0.5 + STANDART_CABLE_WIDTH/2, y: 0.5 + STANDART_CABLE_WIDTH/2, z: 0.5 + STANDART_CABLE_WIDTH/2});
+Block.setBlockShape(BlockID.cableGold, {x: 0.5 - GOLD_CABLE_WIDTH/2, y: 0.5 - GOLD_CABLE_WIDTH/2, z: 0.5 - GOLD_CABLE_WIDTH/2}, {x: 0.5 + GOLD_CABLE_WIDTH/2, y: 0.5 + GOLD_CABLE_WIDTH/2, z: 0.5 + GOLD_CABLE_WIDTH/2});
+Block.setBlockShape(BlockID.cableIron, {x: 0.5 - HV_CABLE_WIDTH/2, y: 0.5 - HV_CABLE_WIDTH/2, z: 0.5 - HV_CABLE_WIDTH/2}, {x: 0.5 + HV_CABLE_WIDTH/2, y: 0.5 + HV_CABLE_WIDTH/2, z: 0.5 + HV_CABLE_WIDTH/2});
+Block.setBlockShape(BlockID.cableOptic, {x: 0.5 - OPTIC_CABLE_WIDTH/2, y: 0.5 - OPTIC_CABLE_WIDTH/2, z: 0.5 - OPTIC_CABLE_WIDTH/2}, {x: 0.5 + OPTIC_CABLE_WIDTH/2, y: 0.5 + OPTIC_CABLE_WIDTH/2, z: 0.5 + OPTIC_CABLE_WIDTH/2});
+
+ICRenderLib.registerAsWire(BlockID.cableTin, "ic-wire", STANDART_CABLE_WIDTH);
+ICRenderLib.registerAsWire(BlockID.cableCopper, "ic-wire", STANDART_CABLE_WIDTH);
+ICRenderLib.registerAsWire(BlockID.cableGold, "ic-wire", GOLD_CABLE_WIDTH);
+ICRenderLib.registerAsWire(BlockID.cableIron, "ic-wire", HV_CABLE_WIDTH);
+ICRenderLib.registerAsWire(BlockID.cableOptic, "ic-wire", OPTIC_CABLE_WIDTH);
 
 // drop 
 Block.registerDropFunction("cableTin", function(){
@@ -806,7 +811,7 @@ Block.registerDropFunction("cableIron", function(){
 });
 
 Block.registerDropFunction("cableOptic", function(){
-	return [];
+	return [[ItemID.cableOptic, 1, 0]];;
 });
 
 
@@ -1623,7 +1628,8 @@ MachineRegistry.registerPrototype(BlockID.inductionFurnace, {
 		energy_storage: 10000,
 		isHeating: false,
 		heat: 0,
-		progress: 0
+		progress: 0,
+		upgrades: {}
 	},
 	
 	getGuiScreen: function(){
@@ -1662,7 +1668,7 @@ MachineRegistry.registerPrototype(BlockID.inductionFurnace, {
 	
 	tick: function(){
 		this.data.energy_storage = 10000;
-		UpgradeAPI.executeAll(this);
+		this.data.upgrades = UpgradeAPI.executeAll(this);
 		
 		var result = this.getResult();
 		if(result){
@@ -1702,6 +1708,9 @@ MachineRegistry.registerPrototype(BlockID.inductionFurnace, {
 	
 	redstone: function(signal){
 		this.data.isHeating = signal.power > 0;
+		if(this.data.upgrades[ItemID.upgradeRedstone]){
+			this.data.isHeating = !this.data.isHeating;
+		}
 	},
 	
 	getEnergyStorage: function(){
@@ -2464,7 +2473,7 @@ MachineRegistry.registerPrototype(BlockID.massFabricator, {
 	},
 	
 	getEnergyStorage: function(){
-		return 512;
+		return 8192;
 	},
 	
 	energyTick: MachineRegistry.basicEnergyReceiveFunc
@@ -2604,7 +2613,7 @@ Callback.addCallback("PostLoaded", function(){
 		"xax",
 		"xax",
 		"b#b"
-	], ['#', BlockID.primalGenerator, -1, 'a', 111, 1, 'b', ItemID.casingIron, 0, 'x', 102, 0]);
+	], ['#', BlockID.primalGenerator, -1, 'a', 111, 1, 'b', ItemID.casingIron, 0, 'x', 20, 0]);
 });
 
 var guiGeothermalGenerator = new UI.StandartWindow({
@@ -2625,7 +2634,7 @@ var guiGeothermalGenerator = new UI.StandartWindow({
 		"slot1": {type: "slot", x: 441, y: 75},
 		"slot2": {type: "slot", x: 441, y: 212},
 		"textInfo1": {type: "text", x: 542, y: 142, width: 300, height: 30, text: "0/"},
-		"textInfo2": {type: "text", x: 542, y: 172, width: 300, height: 30, text: "16000 mB"}
+		"textInfo2": {type: "text", x: 542, y: 172, width: 300, height: 30, text: "8000 mB"}
 	}
 });
 
@@ -2633,17 +2642,12 @@ var guiGeothermalGenerator = new UI.StandartWindow({
 
 
 MachineRegistry.registerPrototype(BlockID.geothermalGenerator, {
-	defaultValues: {
-		burn: 0,
-		burnMax: 0
-	},
-	
 	getGuiScreen: function(){
 		return guiGeothermalGenerator;
 	},
 	
 	init: function(){
-		this.liquidStorage.setLimit("lava", 16);
+		this.liquidStorage.setLimit("lava", 8);
 	},
 	
 	getTransportSlots: function(){
@@ -2657,7 +2661,7 @@ MachineRegistry.registerPrototype(BlockID.geothermalGenerator, {
 		var slot2 = this.container.getSlot("slot2");
 		var empty = LiquidRegistry.getEmptyItem(slot1.id, slot1.data);
 		if(empty && empty.liquid == "lava"){
-			if(this.liquidStorage.getAmount("lava") <= 15 && (slot2.id == empty.id && slot2.data == empty.data && slot2.count < Item.getMaxStack(empty.id) || slot2.id == 0)){
+			if(this.liquidStorage.getAmount("lava") <= 7 && (slot2.id == empty.id && slot2.data == empty.data && slot2.count < Item.getMaxStack(empty.id) || slot2.id == 0)){
 				this.liquidStorage.addLiquid("lava", 1);
 				slot1.count--;
 				slot2.id = empty.id;
@@ -2738,8 +2742,7 @@ MachineRegistry.registerPrototype(BlockID.genWindmill, {
 	},
 	
 	energyTick: function(type, src){
-		var time = World.getThreadTime()%20
-		if(time == 0){
+		if(World.getThreadTime()%20 == 0){
 			var height = Math.max(0, Math.min(this.y-64, 96)) / 64;
 			var output = height * 140;
 			var wether = World.getWeather();
@@ -2750,14 +2753,10 @@ MachineRegistry.registerPrototype(BlockID.genWindmill, {
 					this.x - random(-radius, radius),
 					this.y - random(-radius, radius),
 					this.z - random(-radius, radius)
-				) !== 0){
-				output = 0;
+				) == 0){
+				src.addAll(Math.round(output));
 			}
-			this.data.energy = output;
 		}
-		var output = Math.floor(this.data.energy/(20-time));
-		this.data.energy -= output;
-		src.add(output);
 	}
 });
 
@@ -2796,8 +2795,7 @@ MachineRegistry.registerPrototype(BlockID.genWatermill, {
 	},
 	
 	energyTick: function(type, src){
-		var time = World.getThreadTime()%20
-		if(time == 0){
+		if(World.getThreadTime()%20 == 0){
 			var biome = this.biomeCheck(this.x, this.z);
 			if(biome && this.y >= 32 && this.y < 64){
 				var output = 50;
@@ -2815,15 +2813,11 @@ MachineRegistry.registerPrototype(BlockID.genWatermill, {
 					this.y - random(-radius, radius),
 					this.z - random(-radius, radius)
 				);
-				if(tile !== 8 && tile !== 9){
-					output = 0;
+				if(tile == 8 || tile == 9){
+					src.addAll(Math.round(output));
 				}
-				this.data.energy = output;
 			}
 		}
-		var output = Math.floor(this.data.energy/(20-time));
-		this.data.energy -= output;
-		src.add(output);
 	}
 });
 
@@ -2900,7 +2894,7 @@ var ChargeItemRegistry = {
 			return 0;
 		}
 		
-		var damageGot = Math.min(Math.max(item.data - 1, 0), Math.floor(transf / data.perDamage) || 1);
+		var damageGot = Math.min(item.data - 1, Math.floor(transf / data.perDamage) || 1);
 		var energyAdd = damageGot * data.perDamage;
 		if(energy >= energyAdd){
 			item.data -= damageGot;
@@ -2980,7 +2974,7 @@ MachineRegistry.registerPrototype(BlockID.storageBatBox, {
 	
 	energyTick: function(type, src){
 		var TRANSFER = 32;
-		this.data.energy += src.storage(Math.min(TRANSFER, this.getEnergyStorage() - this.data.energy), Math.min(TRANSFER, this.data.energy));
+		this.data.energy += src.storage(Math.min(TRANSFER*4, this.getEnergyStorage() - this.data.energy), Math.min(TRANSFER, this.data.energy));
 	}
 });
 
@@ -3052,7 +3046,7 @@ MachineRegistry.registerPrototype(BlockID.storageMFE, {
 	
 	energyTick: function(type, src){
 		var TRANSFER = 128;
-		this.data.energy += src.storage(Math.min(TRANSFER, this.getEnergyStorage() - this.data.energy), Math.min(TRANSFER, this.data.energy));
+		this.data.energy += src.storage(Math.min(TRANSFER*4, this.getEnergyStorage() - this.data.energy), Math.min(TRANSFER, this.data.energy));
 	}
 });
 
@@ -3120,7 +3114,7 @@ MachineRegistry.registerPrototype(BlockID.storageMFSU, {
 	
 	energyTick: function(type, src){
 		var TRANSFER = 512;
-		this.data.energy += src.storage(Math.min(TRANSFER, this.getEnergyStorage() - this.data.energy), Math.min(TRANSFER, this.data.energy));
+		this.data.energy += src.storage(Math.min(TRANSFER*4, this.getEnergyStorage() - this.data.energy), Math.min(TRANSFER, this.data.energy));
 	}
 });
 
@@ -3795,23 +3789,32 @@ Callback.addCallback("PostLoaded", function(){
 
 IDRegistry.genItemID("cableTin0");
 IDRegistry.genItemID("cableTin1");
-Item.createItem("cableTin0", "Tin wire", {name: "cable_tin", meta: 0});
-Item.createItem("cableTin1", "Tin wire (isolated)", {name: "cable_tin", meta: 1});
+Item.createItem("cableTin0", "Tin Cable", {name: "cable_tin", meta: 0});
+Item.createItem("cableTin1", "Tin Cable (insulated)", {name: "cable_tin", meta: 1});
 
 IDRegistry.genItemID("cableCopper0");
 IDRegistry.genItemID("cableCopper1");
-Item.createItem("cableCopper0", "Copper wire", {name: "cable_copper", meta: 0});
-Item.createItem("cableCopper1", "Copper wire (isolated)", {name: "cable_copper", meta: 1});
+Item.createItem("cableCopper0", "Copper Cable", {name: "cable_copper", meta: 0});
+Item.createItem("cableCopper1", "Copper Cable (insulated)", {name: "cable_copper", meta: 1});
 
 IDRegistry.genItemID("cableGold0");
 IDRegistry.genItemID("cableGold2");
-Item.createItem("cableGold0", "Gold wire", {name: "cable_gold", meta: 0});
-Item.createItem("cableGold2", "Gold wire (isolated 2x)", {name: "cable_gold", meta: 2});
+Item.createItem("cableGold0", "Gold Cable", {name: "cable_gold", meta: 0});
+Item.createItem("cableGold2", "Gold Cable (insulated x2)", {name: "cable_gold", meta: 2});
 
 IDRegistry.genItemID("cableIron0");
 IDRegistry.genItemID("cableIron3");
-Item.createItem("cableIron0", "Iron wire", {name: "cable_iron", meta: 0});
-Item.createItem("cableIron3", "Iron wire (isolated 3x)", {name: "cable_iron", meta: 3});
+Item.createItem("cableIron0", "HV Cable", {name: "cable_iron", meta: 0});
+Item.createItem("cableIron3", "HV Cable (insulated x3)", {name: "cable_iron", meta: 3});
+
+IDRegistry.genItemID("cableOptic");
+Item.createItem("cableOptic", "Glass Fibre Cable", {name: "cable_optic", meta: 0});
+
+Recipes.addShaped({id: ItemID.cableOptic, count: 4, data: 0}, [
+	"aaa",
+	"xxx",
+	"aaa"
+], ['x', ItemID.dustEnergium, 0, 'a', 20, 0]);
 
 // cutting recipes
 Callback.addCallback("PostLoaded", function(){
@@ -3830,7 +3833,7 @@ addShapelessRecipe({id: ItemID.cableIron3, count: 1, data: 0}, [{id: ItemID.cabl
 // place funcs 
 Item.registerUseFunction("cableTin1", function(coords, item, block){
 	var place = coords.relative;
-	if (GenerationUtils.isTransparentBlock(World.getBlockID(place.x, place.y, place.z))){
+	if(GenerationUtils.isTransparentBlock(World.getBlockID(place.x, place.y, place.z))){
 		World.setBlock(place.x, place.y, place.z, BlockID.cableTin);
 		Player.setCarriedItem(item.id, item.count - 1, item.data);
 		EnergyTypeRegistry.onWirePlaced();
@@ -3839,7 +3842,7 @@ Item.registerUseFunction("cableTin1", function(coords, item, block){
 
 Item.registerUseFunction("cableCopper1", function(coords, item, block){
 	var place = coords.relative;
-	if (GenerationUtils.isTransparentBlock(World.getBlockID(place.x, place.y, place.z))){
+	if(GenerationUtils.isTransparentBlock(World.getBlockID(place.x, place.y, place.z))){
 		World.setBlock(place.x, place.y, place.z, BlockID.cableCopper);
 		Player.setCarriedItem(item.id, item.count - 1, item.data);
 		EnergyTypeRegistry.onWirePlaced();
@@ -3848,7 +3851,7 @@ Item.registerUseFunction("cableCopper1", function(coords, item, block){
 
 Item.registerUseFunction("cableGold2", function(coords, item, block){
 	var place = coords.relative;
-	if (GenerationUtils.isTransparentBlock(World.getBlockID(place.x, place.y, place.z))){
+	if(GenerationUtils.isTransparentBlock(World.getBlockID(place.x, place.y, place.z))){
 		World.setBlock(place.x, place.y, place.z, BlockID.cableGold);
 		Player.setCarriedItem(item.id, item.count - 1, item.data);
 		EnergyTypeRegistry.onWirePlaced();
@@ -3857,8 +3860,17 @@ Item.registerUseFunction("cableGold2", function(coords, item, block){
 
 Item.registerUseFunction("cableIron3", function(coords, item, block){
 	var place = coords.relative;
-	if (GenerationUtils.isTransparentBlock(World.getBlockID(place.x, place.y, place.z))){
+	if(GenerationUtils.isTransparentBlock(World.getBlockID(place.x, place.y, place.z))){
 		World.setBlock(place.x, place.y, place.z, BlockID.cableIron);
+		Player.setCarriedItem(item.id, item.count - 1, item.data);
+		EnergyTypeRegistry.onWirePlaced();
+	}
+});
+
+Item.registerUseFunction("cableOptic", function(coords, item, block){
+	var place = coords.relative;
+	if(GenerationUtils.isTransparentBlock(World.getBlockID(place.x, place.y, place.z))){
+		World.setBlock(place.x, place.y, place.z, BlockID.cableOptic);
 		Player.setCarriedItem(item.id, item.count - 1, item.data);
 		EnergyTypeRegistry.onWirePlaced();
 	}
@@ -4046,9 +4058,14 @@ Callback.addCallback("PostLoaded", function(){
 Item.registerUseFunction("debugItem", function(coords, item, block){
 	var machine = EnergyTileRegistry.accessMachineAtCoords(coords.x, coords.y, coords.z);
 	if(machine){
-		Game.message("Energy: " + machine.data.energy + "/" + machine.getEnergyStorage());
-		if(machine.data.energy_consumption){
-		Game.message("energy consumption: " + machine.data.energy_consumption + ", work time: " + machine.data.work_time);}
+		for(var i in machine.data){
+			if(i != "energy_storage"){
+				if(i == "energy"){
+				Game.message(i + ": " + machine.data[i] + "/" + machine.getEnergyStorage() + "\n");}
+				else{
+				Game.message(i + ": " + machine.data[i] + "\n");}
+			}
+		}
 	}
 });
 
@@ -4058,6 +4075,9 @@ Item.createItem("upgradeOverclocker", "Overclocker Upgrade", {name: "upgrade_ove
 
 IDRegistry.genItemID("upgradeEnergyStorage");
 Item.createItem("upgradeEnergyStorage", "Energy Storage Upgrade", {name: "upgrade_energy_storage", meta: 0});
+
+//IDRegistry.genItemID("upgradeTransformer");
+//Item.createItem("upgradeTransformer", "Transformer Upgrade", {name: "upgrade_transformer", meta: 0});
 
 IDRegistry.genItemID("upgradeRedstone");
 Item.createItem("upgradeRedstone", "Redstone Signal Inverter Upgrade", {name: "upgrade_redstone_inv", meta: 0});
@@ -4269,10 +4289,6 @@ UpgradeAPI.registerUpgrade(ItemID.upgradeEnergyStorage, function(count, machine,
 	data.energy_storage += 10000 * count;
 });
 
-UpgradeAPI.registerUpgrade(ItemID.upgradeRedstone, function(count, machine, container, data, coords){
-	if(data.isHeating !== undefined) data.isHeating = !data.isHeating;
-});
-
 UpgradeAPI.registerUpgrade(ItemID.upgradePulling, function(count, machine, container, data, coords){
 	PULLING_UPGRADE_FUNC(machine, container, data, coords);
 });
@@ -4457,6 +4473,7 @@ Callback.addCallback("NativeGuiChanged", function(screenName){
 
 var UIbuttons = {
 	isEnabled: false,
+	nightvision: false,
 	container: null,
 	Window: new UI.Window({
 		location: {
@@ -4494,13 +4511,13 @@ function updateUIbuttons(){
 			scale: 50,
 			clicker: {
 				onClick: function(){
-					if(nightVisionEnabled){
-						nightVisionEnabled = false;
-						Game.message("§4 Nightvision mode disabled");
+					if(UIbuttons.nightvision){
+						UIbuttons.nightvision = false;
+						Game.message("§4Nightvision mode disabled");
 					}
 					else{
-						nightVisionEnabled = true;
-						Game.message("§2 Nightvision mode enabled");
+						UIbuttons.nightvision = true;
+						Game.message("§2Nightvision mode enabled");
 					}
 				}
 			}
@@ -4605,7 +4622,7 @@ Armor.registerFuncs("nightvisionGoggles", {
 			return true;
 		}
 		else{
-			if(nightVisionEnabled){
+			if(UIbuttons.nightvision){
 				if(World.getThreadTime()%4==0){slot.data++;Game.message(slot.data);}
 				var coords = Player.getPosition();
 				if(nativeGetLightLevel(coords.x, coords.y, coords.z)==15){
@@ -4679,7 +4696,7 @@ var NANO_ARMOR_FUNCS_CHARGED = {
 			return true;
 		}
 		else{
-			if(index==0 && nightVisionEnabled){
+			if(index==0 && UIbuttons.nightvision){
 				if(World.getThreadTime()%640==0){slot.data++;}
 				var coords = Player.getPosition();
 				if(nativeGetLightLevel(coords.x, coords.y, coords.z)==15){
@@ -4801,7 +4818,7 @@ var QUANTUM_ARMOR_FUNCS_CHARGED = {
 			case 0:
 				Entity.clearEffect(player, MobEffect.poison);
 				Entity.clearEffect(player, MobEffect.wither);
-				if(nightVisionEnabled){
+				if(UIbuttons.nightvision){
 					if(World.getThreadTime()%480==0){slot.data++;}
 					var coords = Player.getPosition();
 					if(nativeGetLightLevel(coords.x, coords.y, coords.z)==15){

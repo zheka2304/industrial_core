@@ -63,6 +63,6 @@ MachineRegistry.registerPrototype(BlockID.storageMFE, {
 	
 	energyTick: function(type, src){
 		var TRANSFER = 128;
-		this.data.energy += src.storage(Math.min(TRANSFER, this.getEnergyStorage() - this.data.energy), Math.min(TRANSFER, this.data.energy));
+		this.data.energy += src.storage(Math.min(TRANSFER*4, this.getEnergyStorage() - this.data.energy), Math.min(TRANSFER, this.data.energy));
 	}
 });

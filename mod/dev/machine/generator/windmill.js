@@ -21,8 +21,7 @@ MachineRegistry.registerPrototype(BlockID.genWindmill, {
 	},
 	
 	energyTick: function(type, src){
-		var time = World.getThreadTime()%20
-		if(time == 0){
+		if(World.getThreadTime()%20 == 0){
 			var height = Math.max(0, Math.min(this.y-64, 96)) / 64;
 			var output = height * 140;
 			var wether = World.getWeather();
@@ -33,13 +32,9 @@ MachineRegistry.registerPrototype(BlockID.genWindmill, {
 					this.x - random(-radius, radius),
 					this.y - random(-radius, radius),
 					this.z - random(-radius, radius)
-				) !== 0){
-				output = 0;
+				) == 0){
+				src.addAll(Math.round(output));
 			}
-			this.data.energy = output;
 		}
-		var output = Math.floor(this.data.energy/(20-time));
-		this.data.energy -= output;
-		src.add(output);
 	}
 });

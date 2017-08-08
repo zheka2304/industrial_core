@@ -14,7 +14,7 @@ Callback.addCallback("PostLoaded", function(){
 		"xax",
 		"xax",
 		"b#b"
-	], ['#', BlockID.primalGenerator, -1, 'a', 111, 1, 'b', ItemID.casingIron, 0, 'x', 102, 0]);
+	], ['#', BlockID.primalGenerator, -1, 'a', 111, 1, 'b', ItemID.casingIron, 0, 'x', 20, 0]);
 });
 
 var guiGeothermalGenerator = new UI.StandartWindow({
@@ -35,7 +35,7 @@ var guiGeothermalGenerator = new UI.StandartWindow({
 		"slot1": {type: "slot", x: 441, y: 75},
 		"slot2": {type: "slot", x: 441, y: 212},
 		"textInfo1": {type: "text", x: 542, y: 142, width: 300, height: 30, text: "0/"},
-		"textInfo2": {type: "text", x: 542, y: 172, width: 300, height: 30, text: "16000 mB"}
+		"textInfo2": {type: "text", x: 542, y: 172, width: 300, height: 30, text: "8000 mB"}
 	}
 });
 
@@ -43,17 +43,12 @@ var guiGeothermalGenerator = new UI.StandartWindow({
 
 
 MachineRegistry.registerPrototype(BlockID.geothermalGenerator, {
-	defaultValues: {
-		burn: 0,
-		burnMax: 0
-	},
-	
 	getGuiScreen: function(){
 		return guiGeothermalGenerator;
 	},
 	
 	init: function(){
-		this.liquidStorage.setLimit("lava", 16);
+		this.liquidStorage.setLimit("lava", 8);
 	},
 	
 	getTransportSlots: function(){
@@ -67,7 +62,7 @@ MachineRegistry.registerPrototype(BlockID.geothermalGenerator, {
 		var slot2 = this.container.getSlot("slot2");
 		var empty = LiquidRegistry.getEmptyItem(slot1.id, slot1.data);
 		if(empty && empty.liquid == "lava"){
-			if(this.liquidStorage.getAmount("lava") <= 15 && (slot2.id == empty.id && slot2.data == empty.data && slot2.count < Item.getMaxStack(empty.id) || slot2.id == 0)){
+			if(this.liquidStorage.getAmount("lava") <= 7 && (slot2.id == empty.id && slot2.data == empty.data && slot2.count < Item.getMaxStack(empty.id) || slot2.id == 0)){
 				this.liquidStorage.addLiquid("lava", 1);
 				slot1.count--;
 				slot2.id = empty.id;

@@ -59,11 +59,11 @@ ToolAPI.breakCarriedTool = function(damage){
 	Player.setCarriedItem(item.id, item.count, item.data, item.enchant);
 }
 
-ToolAPI.setTool = function(itemID, toolMaterial, toolType){
+ToolAPI.setTool = function(itemID, toolMaterial, toolType, brokenId){
 	Item.setToolRender(itemID, true);
 	toolMaterial = ToolAPI.toolMaterials[toolMaterial] || toolMaterial;
 	if(toolType.blockTypes){
-		toolProperties = {}
+		toolProperties = {brokenId: brokenId || 0};
 		for(var i in toolType){
 		toolProperties[i] = toolType[i];}
 		ToolAPI.registerTool(itemID, toolMaterial, toolType.blockTypes, toolProperties);

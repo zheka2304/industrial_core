@@ -98,7 +98,7 @@ MachineRegistry.registerPrototype(BlockID.massFabricator, {
 	},
 	
 	getEnergyStorage: function(){
-		return 512;
+		return 8192;
 	},
 	
 	energyTick: MachineRegistry.basicEnergyReceiveFunc

@@ -23,7 +23,7 @@ var MachineRegistry = {
 	
 	registerPrototype: function(id, Prototype){
 		// register render
-		ICRenderLib.addConnectionBlock(TILE_RENDERER_CONNECTION_GROUP, id);
+		ICRenderLib.addConnectionBlock("ic-wire", id);
 		// register ID
 		this.machineIDs[id] = true;
 		// setup energy value
@@ -57,6 +57,6 @@ var MachineRegistry = {
 	// standart functions
 	basicEnergyReceiveFunc: function(type, src){
 		var energyNeed = this.getEnergyStorage() - this.data.energy;
-		this.data.energy += src.get(energyNeed);
+		this.data.energy += src.getAll(energyNeed);
 	}
 }

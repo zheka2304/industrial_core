@@ -4,6 +4,9 @@ Item.createItem("upgradeOverclocker", "Overclocker Upgrade", {name: "upgrade_ove
 IDRegistry.genItemID("upgradeEnergyStorage");
 Item.createItem("upgradeEnergyStorage", "Energy Storage Upgrade", {name: "upgrade_energy_storage", meta: 0});
 
+//IDRegistry.genItemID("upgradeTransformer");
+//Item.createItem("upgradeTransformer", "Transformer Upgrade", {name: "upgrade_transformer", meta: 0});
+
 IDRegistry.genItemID("upgradeRedstone");
 Item.createItem("upgradeRedstone", "Redstone Signal Inverter Upgrade", {name: "upgrade_redstone_inv", meta: 0});
 
@@ -212,10 +215,6 @@ UpgradeAPI.registerUpgrade(ItemID.upgradeOverclocker, function(count, machine, c
 
 UpgradeAPI.registerUpgrade(ItemID.upgradeEnergyStorage, function(count, machine, container, data, coords){
 	data.energy_storage += 10000 * count;
-});
-
-UpgradeAPI.registerUpgrade(ItemID.upgradeRedstone, function(count, machine, container, data, coords){
-	if(data.isHeating !== undefined) data.isHeating = !data.isHeating;
 });
 
 UpgradeAPI.registerUpgrade(ItemID.upgradePulling, function(count, machine, container, data, coords){

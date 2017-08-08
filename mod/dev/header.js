@@ -12,7 +12,6 @@
 
 // constants
 var GUI_BAR_STANDART_SCALE = 3.2;
-var TILE_RENDERER_CONNECTION_GROUP = "ic-wire";
 
 var FURNACE_FUEL_MAP = {
 	5: 300,

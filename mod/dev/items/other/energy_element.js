@@ -112,8 +112,13 @@ Callback.addCallback("PostLoaded", function(){
 Item.registerUseFunction("debugItem", function(coords, item, block){
 	var machine = EnergyTileRegistry.accessMachineAtCoords(coords.x, coords.y, coords.z);
 	if(machine){
-		Game.message("Energy: " + machine.data.energy + "/" + machine.getEnergyStorage());
-		if(machine.data.energy_consumption){
-		Game.message("energy consumption: " + machine.data.energy_consumption + ", work time: " + machine.data.work_time);}
+		for(var i in machine.data){
+			if(i != "energy_storage"){
+				if(i == "energy"){
+				Game.message(i + ": " + machine.data[i] + "/" + machine.getEnergyStorage() + "\n");}
+				else{
+				Game.message(i + ": " + machine.data[i] + "\n");}
+			}
+		}
 	}
 });

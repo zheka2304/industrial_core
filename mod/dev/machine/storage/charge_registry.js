@@ -70,7 +70,7 @@ var ChargeItemRegistry = {
 			return 0;
 		}
 		
-		var damageGot = Math.min(Math.max(item.data - 1, 0), Math.floor(transf / data.perDamage) || 1);
+		var damageGot = Math.min(item.data - 1, Math.floor(transf / data.perDamage) || 1);
 		var energyAdd = damageGot * data.perDamage;
 		if(energy >= energyAdd){
 			item.data -= damageGot;

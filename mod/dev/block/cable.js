@@ -23,18 +23,22 @@ Block.createBlock("cableOptic", [
 	{name: "tile.cableOptic.name", texture: [["cable_block_optic", 0]], inCreative: false}
 ], EU.getWireSpecialType());
 
-var CABLE_BLOCK_WIDTH = 0.25;
-Block.setBlockShape(BlockID.cableTin, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CABLE_BLOCK_WIDTH, z: 0.5 - CABLE_BLOCK_WIDTH}, {x: 0.5 + CABLE_BLOCK_WIDTH, y: 0.5 + CABLE_BLOCK_WIDTH, z: 0.5 + CABLE_BLOCK_WIDTH});
-Block.setBlockShape(BlockID.cableCopper, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CABLE_BLOCK_WIDTH, z: 0.5 - CABLE_BLOCK_WIDTH}, {x: 0.5 + CABLE_BLOCK_WIDTH, y: 0.5 + CABLE_BLOCK_WIDTH, z: 0.5 + CABLE_BLOCK_WIDTH});
-Block.setBlockShape(BlockID.cableGold, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CABLE_BLOCK_WIDTH, z: 0.5 - CABLE_BLOCK_WIDTH}, {x: 0.5 + CABLE_BLOCK_WIDTH, y: 0.5 + CABLE_BLOCK_WIDTH, z: 0.5 + CABLE_BLOCK_WIDTH});
-Block.setBlockShape(BlockID.cableIron, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CABLE_BLOCK_WIDTH, z: 0.5 - CABLE_BLOCK_WIDTH}, {x: 0.5 + CABLE_BLOCK_WIDTH, y: 0.5 + CABLE_BLOCK_WIDTH, z: 0.5 + CABLE_BLOCK_WIDTH});
-Block.setBlockShape(BlockID.cableOptic, {x: 0.5 - CABLE_BLOCK_WIDTH, y: 0.5 - CABLE_BLOCK_WIDTH, z: 0.5 - CABLE_BLOCK_WIDTH}, {x: 0.5 + CABLE_BLOCK_WIDTH, y: 0.5 + CABLE_BLOCK_WIDTH, z: 0.5 + CABLE_BLOCK_WIDTH});
+var STANDART_CABLE_WIDTH = 1/2;
+var GOLD_CABLE_WIDTH = 5/8;
+var HV_CABLE_WIDTH = 3/4;
+var OPTIC_CABLE_WIDTH = 1/4;
 
-ICRenderLib.registerAsWire(BlockID.cableTin, TILE_RENDERER_CONNECTION_GROUP);
-ICRenderLib.registerAsWire(BlockID.cableCopper, TILE_RENDERER_CONNECTION_GROUP);
-ICRenderLib.registerAsWire(BlockID.cableGold, TILE_RENDERER_CONNECTION_GROUP);
-ICRenderLib.registerAsWire(BlockID.cableIron, TILE_RENDERER_CONNECTION_GROUP);
-ICRenderLib.registerAsWire(BlockID.cableOptic, TILE_RENDERER_CONNECTION_GROUP);
+Block.setBlockShape(BlockID.cableTin, {x: 0.5 - STANDART_CABLE_WIDTH/2, y: 0.5 - STANDART_CABLE_WIDTH/2, z: 0.5 - STANDART_CABLE_WIDTH/2}, {x: 0.5 + STANDART_CABLE_WIDTH/2, y: 0.5 + STANDART_CABLE_WIDTH/2, z: 0.5 + STANDART_CABLE_WIDTH/2});
+Block.setBlockShape(BlockID.cableCopper, {x: 0.5 - STANDART_CABLE_WIDTH/2, y: 0.5 - STANDART_CABLE_WIDTH/2, z: 0.5 - STANDART_CABLE_WIDTH/2}, {x: 0.5 + STANDART_CABLE_WIDTH/2, y: 0.5 + STANDART_CABLE_WIDTH/2, z: 0.5 + STANDART_CABLE_WIDTH/2});
+Block.setBlockShape(BlockID.cableGold, {x: 0.5 - GOLD_CABLE_WIDTH/2, y: 0.5 - GOLD_CABLE_WIDTH/2, z: 0.5 - GOLD_CABLE_WIDTH/2}, {x: 0.5 + GOLD_CABLE_WIDTH/2, y: 0.5 + GOLD_CABLE_WIDTH/2, z: 0.5 + GOLD_CABLE_WIDTH/2});
+Block.setBlockShape(BlockID.cableIron, {x: 0.5 - HV_CABLE_WIDTH/2, y: 0.5 - HV_CABLE_WIDTH/2, z: 0.5 - HV_CABLE_WIDTH/2}, {x: 0.5 + HV_CABLE_WIDTH/2, y: 0.5 + HV_CABLE_WIDTH/2, z: 0.5 + HV_CABLE_WIDTH/2});
+Block.setBlockShape(BlockID.cableOptic, {x: 0.5 - OPTIC_CABLE_WIDTH/2, y: 0.5 - OPTIC_CABLE_WIDTH/2, z: 0.5 - OPTIC_CABLE_WIDTH/2}, {x: 0.5 + OPTIC_CABLE_WIDTH/2, y: 0.5 + OPTIC_CABLE_WIDTH/2, z: 0.5 + OPTIC_CABLE_WIDTH/2});
+
+ICRenderLib.registerAsWire(BlockID.cableTin, "ic-wire", STANDART_CABLE_WIDTH);
+ICRenderLib.registerAsWire(BlockID.cableCopper, "ic-wire", STANDART_CABLE_WIDTH);
+ICRenderLib.registerAsWire(BlockID.cableGold, "ic-wire", GOLD_CABLE_WIDTH);
+ICRenderLib.registerAsWire(BlockID.cableIron, "ic-wire", HV_CABLE_WIDTH);
+ICRenderLib.registerAsWire(BlockID.cableOptic, "ic-wire", OPTIC_CABLE_WIDTH);
 
 // drop 
 Block.registerDropFunction("cableTin", function(){
@@ -54,5 +58,5 @@ Block.registerDropFunction("cableIron", function(){
 });
 
 Block.registerDropFunction("cableOptic", function(){
-	return [];
+	return [[ItemID.cableOptic, 1, 0]];;
 });

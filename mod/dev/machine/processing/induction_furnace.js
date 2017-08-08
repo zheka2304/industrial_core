@@ -51,7 +51,8 @@ MachineRegistry.registerPrototype(BlockID.inductionFurnace, {
 		energy_storage: 10000,
 		isHeating: false,
 		heat: 0,
-		progress: 0
+		progress: 0,
+		upgrades: {}
 	},
 	
 	getGuiScreen: function(){
@@ -90,7 +91,7 @@ MachineRegistry.registerPrototype(BlockID.inductionFurnace, {
 	
 	tick: function(){
 		this.data.energy_storage = 10000;
-		UpgradeAPI.executeAll(this);
+		this.data.upgrades = UpgradeAPI.executeAll(this);
 		
 		var result = this.getResult();
 		if(result){
@@ -130,6 +131,9 @@ MachineRegistry.registerPrototype(BlockID.inductionFurnace, {
 	
 	redstone: function(signal){
 		this.data.isHeating = signal.power > 0;
+		if(this.data.upgrades[ItemID.upgradeRedstone]){
+			this.data.isHeating = !this.data.isHeating;
+		}
 	},
 	
 	getEnergyStorage: function(){

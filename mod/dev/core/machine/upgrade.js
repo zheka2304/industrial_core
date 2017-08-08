@@ -27,6 +27,7 @@ var UpgradeAPI = {
 		for(var upgrade in upgrades){
 			UpgradeAPI.executeUpgrade({id: upgrade, count: upgrades[upgrade]}, machine, container, data, coords);
 		}
+		return upgrades;
 	},
 	
 	findNearestContainers: function(coords, direction){

@@ -463,6 +463,14 @@ function EnergyWeb(energyType) {
 			return amount - add;
 		},
 		
+		addAll: function(amount, doNotRegister) {
+			var lastMinAmount = self.minTransportAmount;
+			self.minTransportAmount = amount;
+			var left = this.add(amount, doNotRegister);
+			self.minTransportAmount = lastMinAmount;
+			return left;
+		},
+		
 		storage: function(amountReceive, amountRetreive) {
 			if (self.lastPotentialInAmount > self.lastPotentialOutAmount) {
 				var got = this.getAll(Math.min(amountReceive, self.lastPotentialInAmount - self.lastPotentialOutAmount), true);
