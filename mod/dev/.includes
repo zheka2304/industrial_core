@@ -11,6 +11,7 @@ block/cable.js
 block/ore.js
 block/metal.js
 block/basic.js
+block/mining_pipe.js
 block/reinforced.js
 block/rubber_tree.js
 
@@ -36,8 +37,13 @@ machine/storage/bat_box.js
 machine/storage/MFE.js
 machine/storage/MFSU.js
 
-machine/other/tree/root.js
-machine/other/tree/sapling.js
+machine/resource/pump.js
+machine/resource/miner.js
+machine/resource/advanced_miner.js
+
+machine/misc/teleporter.js
+machine/misc/tree/root.js
+machine/misc/tree/sapling.js
 
 
 items/resource/ore_drop.js
@@ -64,6 +70,8 @@ items/armor/quantum.js
 items/armor/jetpack.js
 items/armor/energy_packs.js
 
+items/tool/transmitter.js
+items/tool/scanner.js
 items/tool/treetap.js
 items/tool/crafting_tools.js
 items/tool/bronze.js
@@ -72,5 +80,6 @@ items/tool/electric.js
 items/tool/drills.js
 items/tool/chainsaw.js
 items/tool/nano_saber.js
+items/tool/mining_laser.js
 
 core/api/shared.js

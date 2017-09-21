@@ -42,6 +42,8 @@ var guiMFE = new UI.StandartWindow({
 
 
 MachineRegistry.registerPrototype(BlockID.storageMFE, {
+	isStorage: true,
+	
 	getGuiScreen: function(){
 		return guiMFE;
 	},

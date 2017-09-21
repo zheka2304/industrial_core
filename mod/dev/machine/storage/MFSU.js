@@ -40,6 +40,8 @@ var guiMFSU = new UI.StandartWindow({
 
 
 MachineRegistry.registerPrototype(BlockID.storageMFSU, {
+	isStorage: true,
+	
 	getGuiScreen: function(){
 		return guiMFSU;
 	},

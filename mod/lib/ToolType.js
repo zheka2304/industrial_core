@@ -63,6 +63,11 @@ ToolAPI.setTool = function(itemID, toolMaterial, toolType, brokenId){
 	Item.setToolRender(itemID, true);
 	toolMaterial = ToolAPI.toolMaterials[toolMaterial] || toolMaterial;
 	if(toolType.blockTypes){
+		if(!toolType.calcDestroyTime){
+			toolType.calcDestroyTime = function(item, block, params, destroyTime, enchant){
+				return destroyTime*1.5;
+			}
+		}
 		toolProperties = {brokenId: brokenId || 0};
 		for(var i in toolType){
 		toolProperties[i] = toolType[i];}
@@ -71,18 +76,43 @@ ToolAPI.setTool = function(itemID, toolMaterial, toolType, brokenId){
 	else{
 		Item.setMaxDamage(itemID, toolMaterial.durability);
 	}
-	if(toolType.useItem){
-		Item.registerUseFunctionForID(itemID, toolType.useItem);
-	}
 	if(toolType.enchantType){
 		Item.setEnchantType(itemID, toolType.enchantType, toolMaterial.enchantability);
 	}
+	if(toolType.useItem){
+		Item.registerUseFunctionForID(itemID, toolType.useItem);
+	}
+
+	if(toolType.startDestroyBlock){
+		Callback.addCallback("DestroyBlockStart", function(coords, block, player){
+			var item = Player.getCarriedItem(true);
+			if(item.id == itemID){
+				toolType.startDestroyBlock(coords, coords.side, item, block);
+			}
+		});
+	}
+	if(toolType.destroyBlock){
+		Callback.addCallback("DestroyBlock", function(coords, block, player){
+			var item = Player.getCarriedItem(true);
+			if(item.id == itemID){
+				toolType.destroyBlock(coords, coords.side, item, block);
+			}
+		});
+	}
 }
+
+Block.setDestroyTime = ModAPI.requireGlobal("Block.setDestroyTime");
 
 registerAPIUnit("ToolType", ToolType);
 
 // Core Engine bugs fix
 ToolAPI.registerBlockMaterial(159, "stone");
+Block.registerDropFunctionForID(2, function(coords, blockID, blockData, level, enchant){
+	if(enchant.silk){
+		return [[2, 1, 0]];
+	}
+	return [[3, 1, 0]];
+}, 1);
 Block.registerDropFunctionForID(23, function(coords, blockID, blockData, level){
 	if(level > 0){
 		return [[23, 1, 0]]

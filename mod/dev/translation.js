@@ -5,11 +5,15 @@ Translation.addTranslation("Copper Ore", {ru: "Медная руда", es: "Mine
 Translation.addTranslation("Tin Ore", {ru: "Оловянная руда", es: "Mineral de Estaño", zh: "锡矿石"});
 Translation.addTranslation("Lead Ore", {ru: "Свинцовая руда", es: "Mineral de Plomo", zh: "铅矿石"});
 Translation.addTranslation("Uranium Ore", {ru: "Урановая руда", es: "Mineral de Uranium", zh: "铀矿石"});
+Translation.addTranslation("Iridium Ore", {ru: "Иридиевая руда"}); //TODO: es and zh translation
 Translation.addTranslation("Copper Block", {ru: "Медный блок", es: "Bloque de Cobre", zh: "铜块"});
 Translation.addTranslation("Tin Block", {ru: "Оловянный блок", es: "Bloque de Estaño", zh: "锡矿石"});
 Translation.addTranslation("Bronze Block", {ru: "Бронзовый блок", es: "Bloque de Bronce", zh: "青铜块"});
 Translation.addTranslation("Lead Block", {ru: "Свинцовый блок", es: "Bloque de Plomo", zh: "铅块"});
 Translation.addTranslation("Steel Block", {ru: "Стальной блок", es: "Bloque de Hierro Refinado", zh: "钢块"});
+Translation.addTranslation("Mining Pipe", {ru: "Буровая труба", es: "Tubo Minero", zh: "采矿管道"});
+Translation.addTranslation("Miner", {ru: "Буровая установка", es: "Perforadora", zh: "采矿机"});
+Translation.addTranslation("Advanced Miner", {ru: "Продвинутая буровая установка", es: "Minero Avanzado", zh: "高级采矿机"});
 Translation.addTranslation("Reinforced Stone", {ru: "Укреплённый камень", es: "Piedra Reforzada", zh: "防爆石"});
 Translation.addTranslation("Reinforced Glass", {ru: "Укреплённое стекло", es: "Cristal Reforzado", zh: "防爆玻璃"});
 Translation.addTranslation("Rubber Tree Log", {ru: "Древесина гевеи", es: "Madera de Árbol de Caucho", zh: "橡胶树原木"});
@@ -32,6 +36,7 @@ Translation.addTranslation("Compressor", {ru: "Компрессор", es: "Compr
 Translation.addTranslation("Recycler", {ru: "Утилизатор", es: "Reciclador", zh: "回收机"});
 Translation.addTranslation("Extractor", {ru: "Экстрактор", es: "Extractor", zh: "提取机"});
 Translation.addTranslation("Metal Former", {ru: "Металлоформовщик", es: "Arqueador de Metal", zh: "Arqueador de Metal"});
+Translation.addTranslation("Teleporter", {ru: "Телепортер", es: "Teletransportador", zh: "传送机"});
 Translation.addTranslation("Mass Fabricator", {ru: "Генератор материи", es: "Materializador", zh: "物质生成机"});
 
 // Energy storage
@@ -42,12 +47,12 @@ Translation.addTranslation("MFSU", {ru: "МФСУ", es: "Unidad MFSU", zh: "充�
 
 // ITEMS
 Translation.addTranslation("Uranium", {ru: "Уран", es: "Bloque de Uranio", zh: "铀"});
-Translation.addTranslation("Iridium", {ru: "Иридий", es: "Mineral de Iridio", zh: "铱碎片"});
+Translation.addTranslation("§bIridium", {ru: "§bИридий", es: "§bMineral de Iridio", zh: "§b铱碎片"});
 Translation.addTranslation("Latex", {ru: "Латекс", es: "Caucho", zh: "胶乳"});
 Translation.addTranslation("Rubber", {ru: "Резина", es: "Rubber", zh: "橡胶"});
 Translation.addTranslation("Scrap", {ru: "Утильсырьё", es: "Chatarra", zh: "废料"});
 Translation.addTranslation("Scrap Box", {ru: "Коробка утильсырья", es: "Caja de Chatarra", zh: "废料盒"});
-Translation.addTranslation("UU-Matter", {ru: "Материя", es: "Materia", zh: "物质"});
+Translation.addTranslation("§bUU-Matter", {ru: "§bМатерия", es: "§bMateria", zh: "§b物质"});
 Translation.addTranslation("Coal Ball", {ru: "Угольный шарик", es: "Bola de Carbón", zh: "煤球"});
 Translation.addTranslation("Coal Block", {ru: "Сжатый угольный шарик", es: "Bola de Carbón Compactada", zh: "压缩煤球"});
 Translation.addTranslation("Coal Chunk", {ru: "Угольная глыба", es: "Carbono Bruto", zh: "煤块"});
@@ -55,7 +60,7 @@ Translation.addTranslation("Carbon Fibre", {ru: "Углеволокно", es: "F
 Translation.addTranslation("Carbon Mesh", {ru: "Углеткань", es: "Malla de Carbono Básica", zh: "粗制碳板"});
 Translation.addTranslation("Carbon Plate", {ru: "Углепластик", es: "Placa de Carbono", zh: "碳板"});
 Translation.addTranslation("Alloy Plate", {ru: "Композит", es: "Compuesto Avanzado", zh: "高级合金"});
-Translation.addTranslation("Iridium Reinforced Plate", {ru: "Иридиевый композит", es: "Placa de Iridio", zh: "强化铱板"});
+Translation.addTranslation("§bIridium Reinforced Plate", {ru: "§bИридиевый композит", es: "§bPlaca de Iridio", zh: "§b强化铱板"});
 Translation.addTranslation("Tool Box", {ru: "Ящик для инструментов", es: "Caja de Herramientas", zh: "工具盒"});
 
 // Electric
@@ -94,15 +99,14 @@ Translation.addTranslation("Energium Dust", {ru: "Энергетическая �
 
 // Small Dusts
 /*
-Translation.addTranslation("Small Copper Dust", {ru: "Небольшая кучка медной пыли", es: "Diminuta Pila de Polvo de Cobre", zh: "小撮铜粉"});
-Translation.addTranslation("Small Tin Dust", {ru: "Небольшая кучка оловянной пыли", es: "Diminuta Pila de Polvo de Estaño", zh: "小撮锡粉"});
-Translation.addTranslation("Small Iron Dust", {ru: "Небольшая кучка железной пыли", es: "Diminuta Pila de Polvo de Hierro", zh: "小撮铁粉"});
-Translation.addTranslation("Small Bronze Dust", {ru: "Небольшая кучка бронзовой пыли", es: "Diminuta Pila de Polvo de Bronce", zh: "小撮青铜粉"});
-Translation.addTranslation("Small Gold Dust", {ru: "Небольшая кучка золотой пыли", es: "Diminuta Pila de Polvo de Oro", zh: "小撮金粉"});
-Translation.addTranslation("Small Lapis Dust", {ru: "Небольшая кучка лазуритовой пыли", es: "Diminuta Pila de Polvo de Lapislázuli", zh: "小撮青金石粉"});
-Translation.addTranslation("Small Lead Dust", {ru: "Небольшая кучка свинцовой пыли", es: "Diminuta Pila de Polvo de Plomo", zh: "小撮铅粉"});
-Translation.addTranslation("Small Silver Dust", {ru: "Небольшая кучка серебрянной пыли", es: "Diminuta Pila de Polvo de Plata", zh: "小撮银粉"});
-Translation.addTranslation("Small Sulfur Dust", {ru: "Небольшая кучка серной пыли", es: "Diminuta Pila de Polvo de Sulfuro", zh: "小撮硫粉"});
+Translation.addTranslation("Tiny Pile of Copper Dust", {ru: "Небольшая кучка медной пыли", es: "Diminuta Pila de Polvo de Cobre", zh: "小撮铜粉"});
+Translation.addTranslation("Tiny Pile of Tin Dust", {ru: "Небольшая кучка оловянной пыли", es: "Diminuta Pila de Polvo de Estaño", zh: "小撮锡粉"});
+Translation.addTranslation("Tiny Pile of Iron Dust", {ru: "Небольшая кучка железной пыли", es: "Diminuta Pila de Polvo de Hierro", zh: "小撮铁粉"});
+Translation.addTranslation("Tiny Pile of Bronze Dust", {ru: "Небольшая кучка бронзовой пыли", es: "Diminuta Pila de Polvo de Bronce", zh: "小撮青铜粉"});
+Translation.addTranslation("Tiny Pile of Gold Dust", {ru: "Небольшая кучка золотой пыли", es: "Diminuta Pila de Polvo de Oro", zh: "小撮金粉"});
+Translation.addTranslation("Tiny Pile of Lead Dust", {ru: "Небольшая кучка свинцовой пыли", es: "Diminuta Pila de Polvo de Plomo", zh: "小撮铅粉"});
+Translation.addTranslation("Tiny Pile of Silver Dust", {ru: "Небольшая кучка серебрянной пыли", es: "Diminuta Pila de Polvo de Plata", zh: "小撮银粉"});
+Translation.addTranslation("Tiny Pile of Sulfur Dust", {ru: "Небольшая кучка серной пыли", es: "Diminuta Pila de Polvo de Sulfuro", zh: "小撮硫粉"});
 */
 
 // Ingots
@@ -127,7 +131,7 @@ Translation.addTranslation("Lead Plate", {ru: "Свинцовая пластин
 // Casings
 Translation.addTranslation("Copper Casing", {ru: "Медная оболочка", es: "Carcasa para Objetos de Cobre", zh: "铜质外壳"});
 Translation.addTranslation("Tin Casing", {ru: "Оловянная оболочка", es: "Carcasa para Objetos de Estaño", zh: "锡质外壳"});
-Translation.addTranslation("Iron Casing", {es: "Carcasa para Objetos de Hierro", zh: "铁质外壳"});
+Translation.addTranslation("Iron Casing", {ru: "Железная оболочка", es: "Carcasa para Objetos de Hierro", zh: "铁质外壳"});
 Translation.addTranslation("Bronze Casing", {ru: "Бронзовая оболочка", es: "Carcasa para Objetos de Bronce", zh: "青铜外壳"});
 Translation.addTranslation("Steel Casing", {ru: "Стальная оболочка", es: "Carcasa para Objetos de Hierro", zh: "钢质外壳а"});
 Translation.addTranslation("Gold Casing", {ru: "Золотая оболочка", es: "Carcasa para Objetos de Oro", zh: "黄金外壳"});
@@ -163,15 +167,16 @@ Translation.addTranslation("Nano Helmet", {ru: "Нано-шлем", es: "Casco d
 Translation.addTranslation("Nano Chestplate", {ru: "Нано-нагрудник", es: "Chaleco de Nanotraje", zh: "纳米胸甲"});
 Translation.addTranslation("Nano Leggings", {ru: "Нано-штаны", es: "Pantalones de Nanotraje", zh: "纳米护腿"});
 Translation.addTranslation("Nano Boots", {ru: "Нано-ботинки", es: "Botas de Nanotraje", zh: "纳米靴子"});
-Translation.addTranslation("Quantum Helmet", {ru: "Квантовый шлем", es: "Casco de Traje Cuántico", zh: "量子头盔"});
-Translation.addTranslation("Quantum Chestplate", {ru: "Квантовый нагрудник", es: "Chaleco de Traje Cuántico", zh: "量子护甲"});
-Translation.addTranslation("Quantum Leggings", {ru: "Квантовые штаны", es: "Pantalones de Traje Cuántico", zh: "量子护腿"});
-Translation.addTranslation("Quantum Boots", {ru: "Квантовые ботинки", es: "Botas de Traje Cuántico", zh: "量子靴子"});
+Translation.addTranslation("§bQuantum Helmet", {ru: "§bКвантовый шлем", es: "§bCasco de Traje Cuántico", zh: "§b量子头盔"});
+Translation.addTranslation("§bQuantum Chestplate", {ru: "К§bвантовый нагрудник", es: "§bChaleco de Traje Cuántico", zh: "§b量子护甲"});
+Translation.addTranslation("§bQuantum Leggings", {ru: "§bКвантовые штаны", es: "§bPantalones de Traje Cuántico", zh: "§b量子护腿"});
+Translation.addTranslation("§bQuantum Boots", {ru: "§bКвантовые ботинки", es: "§bBotas de Traje Cuántico", zh: "§b量子靴子"});
 Translation.addTranslation("Jetpack", {ru: "Реактивный ранец", es: "Jetpack Eléctrico", zh: "电力喷气背包"});
 Translation.addTranslation("Batpack", {ru: "Аккумуляторный ранец", es: "Mochila de Baterías", zh: "电池背包"});
 Translation.addTranslation("Lappack", {ru: "Лазуротроновый ранец", es: "Mochila de Baterías Avanzada", zh: "兰波顿储电背包"});
 
 // Tools
+Translation.addTranslation("Frequency Transmitter", {ru: "Частотный связыватель", es: "Transmisor de Frecuencias", zh: "传送频率遥控器"});
 Translation.addTranslation("Treetap", {ru: "Краник", es: "Grifo para Resina", zh: "木龙头"});
 Translation.addTranslation("Forge Hammer", {ru: "Кузнечный молот", es: "Martillo para Forja", zh: "锻造锤"});
 Translation.addTranslation("Cutter", {ru: "Кусачки", es: "Pelacables Universal", zh: "板材切割剪刀"});
@@ -184,8 +189,9 @@ Translation.addTranslation("Wrench", {ru: "Гаечный ключ", es: "Llave 
 Translation.addTranslation("Electric Wrench", {ru: "Электроключ", es: "Llave Inglesa Eléctrica", zh: "电动扳手"});
 Translation.addTranslation("Electric Hoe", {ru: "Электромотыга", es: "Azada Eléctrica", zh: "电动锄"});
 Translation.addTranslation("Electric Treetap", {ru: "Электрокраник", es: "Grifo para Resina Eléctrico", zh: "电动树脂提取器"});
-Translation.addTranslation("Drill", {ru: "Шахтёрский бур", es: "Taladro", zh: "采矿钻头"});
-Translation.addTranslation("Diamond Drill", {ru: "Алмазный бур", es: "Taladro de Diamante", zh: "钻石钻头"});
-Translation.addTranslation("Iridium Drill", {ru: "Иридиевый бур", es: "Taladro de Iridio", zh: "铱钻头"});
 Translation.addTranslation("Chainsaw", {ru: "Электропила", es: "Motosierra", zh: "链锯"});
+Translation.addTranslation("Mining Drill", {ru: "Шахтёрский бур", es: "Taladro", zh: "采矿钻头"});
+Translation.addTranslation("Diamond Drill", {ru: "Алмазный бур", es: "Taladro de Diamante", zh: "钻石钻头"});
+Translation.addTranslation("§bIridium Drill", {ru: "§bИридиевый бур", es: "§bTaladro de Iridio", zh: "§b铱钻头"});
 Translation.addTranslation("Nano Saber", {ru: "Нано-сабля", es: "Nano-Sable", zh: "纳米剑"});
+Translation.addTranslation("Mining Laser", {ru: "Шахтёрский лазер", es: "Láser Minero", zh: "采矿镭射枪"});

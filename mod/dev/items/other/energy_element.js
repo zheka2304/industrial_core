@@ -12,7 +12,6 @@ ChargeItemRegistry.registerItem(ItemID.storageLapotronCrystal, 1000000, 2);
 
 IDRegistry.genItemID("debugItem");
 Item.createItem("debugItem", "debug.item", {name: "debug_item", meta: 0});
-//ChargeItemRegistry.registerItem(ItemID.debugItem, Infinity, Infinity, true, Infinity);
 
 IDRegistry.genItemID("circuitBasic");
 IDRegistry.genItemID("circuitAdvanced");
@@ -54,7 +53,7 @@ Callback.addCallback("PostLoaded", function(){
 		"x#x",
 		"xax",
 		"x#x"
-	], ['a', ItemID.storageCrystal, -1, 'x', ItemID.dustLapis, 0, '#', ItemID.circuitBasic, 0], RECIPE_FUNC_TRANSPORT_ENERGY);
+	], ['a', ItemID.storageCrystal, -1, 'x', ItemID.dustLapis, 0, '#', ItemID.circuitAdvanced, 0], RECIPE_FUNC_TRANSPORT_ENERGY);
 	
 	
 	Recipes.addShaped({id: ItemID.circuitBasic, count: 1, data: 0}, [
@@ -110,14 +109,15 @@ Callback.addCallback("PostLoaded", function(){
 });
 
 Item.registerUseFunction("debugItem", function(coords, item, block){
+	Game.message(block.id+":"+block.data);
 	var machine = EnergyTileRegistry.accessMachineAtCoords(coords.x, coords.y, coords.z);
 	if(machine){
 		for(var i in machine.data){
 			if(i != "energy_storage"){
 				if(i == "energy"){
-				Game.message(i + ": " + machine.data[i] + "/" + machine.getEnergyStorage() + "\n");}
+				Game.message(i + ": " + machine.data[i] + "/" + machine.getEnergyStorage());}
 				else{
-				Game.message(i + ": " + machine.data[i] + "\n");}
+				Game.message(i + ": " + machine.data[i]);}
 			}
 		}
 	}

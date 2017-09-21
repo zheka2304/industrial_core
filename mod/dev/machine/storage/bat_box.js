@@ -36,6 +36,8 @@ var guiBatBox = new UI.StandartWindow({
 
 
 MachineRegistry.registerPrototype(BlockID.storageBatBox, {
+	isStorage: true,
+	
 	getGuiScreen: function(){
 		return guiBatBox;
 	},

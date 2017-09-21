@@ -7,61 +7,36 @@ IDRegistry.genBlockID("blockCopper");
 Block.createBlock("blockCopper", [
 	{name: "Copper Block", texture: [["block_copper", 0]], inCreative: true}
 ], BLOCK_TYPE_METAL_BLOCK);
-ToolAPI.registerBlockMaterial(BlockID.blockCopper, "stone", 2);
-Block.registerDropFunction("blockCopper", function(coords, blockID, blockData, level){
-	if(level > 1){
-		return [[blockID, 1, 0]]
-	}
-	return [];
-}, 2);
+ToolAPI.registerBlockMaterial(BlockID.blockCopper, "stone");
+Block.setDestroyLevel("blockCopper", 2)
 
 IDRegistry.genBlockID("blockTin");
 Block.createBlock("blockTin", [
 	{name: "Tin Block", texture: [["block_tin", 0]], inCreative: true}
 ], BLOCK_TYPE_METAL_BLOCK);
-ToolAPI.registerBlockMaterial(BlockID.blockTin, "stone", 2);
-Block.registerDropFunction("blockTin", function(coords, blockID, blockData, level){
-	if(level > 1){
-		return [[blockID, 1, 0]]
-	}
-	return [];
-}, 2);
+ToolAPI.registerBlockMaterial(BlockID.blockTin, "stone");
+Block.setDestroyLevel("blockTin", 2)
 
 IDRegistry.genBlockID("blockBronze");
 Block.createBlock("blockBronze", [
 	{name: "Bronze Block", texture: [["block_bronze", 0]], inCreative: true}
 ], BLOCK_TYPE_METAL_BLOCK);
-ToolAPI.registerBlockMaterial(BlockID.blockBronze, "stone", 2);
-Block.registerDropFunction("blockBronze", function(coords, blockID, blockData, level){
-	if(level > 1){
-		return [[blockID, 1, 0]]
-	}
-	return [];
-}, 2);
+ToolAPI.registerBlockMaterial(BlockID.blockBronze, "stone");
+Block.setDestroyLevel("blockBronze", 2)
 
 IDRegistry.genBlockID("blockLead");
 Block.createBlock("blockLead", [
 	{name: "Lead Block", texture: [["block_lead", 0]], inCreative: true}
 ], BLOCK_TYPE_METAL_BLOCK);
-ToolAPI.registerBlockMaterial(BlockID.blockLead, "stone", 2);
-Block.registerDropFunction("blockLead", function(coords, blockID, blockData, level){
-	if(level > 1){
-		return [[blockID, 1, 0]]
-	}
-	return [];
-}, 2);
+ToolAPI.registerBlockMaterial(BlockID.blockLead, "stone");
+Block.setDestroyLevel("blockLead", 2)
 
 IDRegistry.genBlockID("blockSteel");
 Block.createBlock("blockSteel", [
 	{name: "Steel Block", texture: [["block_steel", 0]], inCreative: true}
 ], BLOCK_TYPE_METAL_BLOCK);
-ToolAPI.registerBlockMaterial(BlockID.blockSteel, "stone", 2);
-Block.registerDropFunction("blockSteel", function(coords, blockID, blockData, level){
-	if(level > 1){
-		return [[blockID, 1, 0]]
-	}
-	return [];
-}, 3);
+ToolAPI.registerBlockMaterial(BlockID.blockSteel, "stone");
+Block.setDestroyLevel("blockSteel", 2);
 
 
 Callback.addCallback("PostLoaded", function(){

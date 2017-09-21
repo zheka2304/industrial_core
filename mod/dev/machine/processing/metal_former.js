@@ -37,7 +37,7 @@ var guiMetalFormer = new UI.StandartWindow({
 		"slotResult": {type: "slot", x: 715, y: 142},
 		"slotUpgrade1": {type: "slot", x: 820, y: 48},
 		"slotUpgrade2": {type: "slot", x: 820, y: 112},
-		"slotUpgrade3": {type: "slot", x: 820, y: 175},
+		"slotUpgrade3": {type: "slot", x: 820, y: 176},
 		"slotUpgrade4": {type: "slot", x: 820, y: 240},
 		"button": {type: "button", x: 575, y: 210, bitmap: "button_slot", scale: GUI_BAR_STANDART_SCALE, clicker: {
 			onClick: function(container, tileEntity){

@@ -38,6 +38,10 @@ var ChargeItemRegistry = {
 	},
 	
 	getEnergyFrom: function(item, amount, level){
+		if(item.id==ItemID.debugItem){
+			return amount;
+		}
+		
 		level = level || 0;
 		var data = this.getItemData(item.id);
 		if(!data || data.level > level || data.preventUncharge){

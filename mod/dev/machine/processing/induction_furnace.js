@@ -38,8 +38,8 @@ var guiInductionFurnace = new UI.StandartWindow({
 		"slotResult1": {type: "slot", x: 725, y: 142},
 		"slotResult2": {type: "slot", x: 785, y: 142},
 		"slotUpgrade1": {type: "slot", x: 900, y: 80},
-		"slotUpgrade2": {type: "slot", x: 900, y: 142},
-		"slotUpgrade3": {type: "slot", x: 900, y: 207},
+		"slotUpgrade2": {type: "slot", x: 900, y: 144},
+		"slotUpgrade3": {type: "slot", x: 900, y: 208},
 		"textInfo1": {type: "text", x: 402, y: 143, width: 100, height: 30, text: "Heat:"},
 		"textInfo2": {type: "text", x: 402, y: 173, width: 100, height: 30, text: "0%"},
 	}

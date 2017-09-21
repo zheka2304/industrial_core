@@ -120,92 +120,6 @@ function EJECTOR_UPGRADE_FUNC(machine, container, data, coords, direction){
 	}
 }
 
-function addItemsToContainers(items, containers){
-	for(var i in items){
-		for(var c in containers){
-			var container = containers[c];
-			var item = items[i];
-			container.refreshSlots();
-			var tileEntity = container.tileEntity;
-			var slots = [];
-			var slotsInitialized = false;
-			
-			if(tileEntity){
-				if(tileEntity.addTransportedItem){
-					tileEntity.addTransportedItem({}, item, {});
-					continue;
-				}
-				if(tileEntity.getTransportSlots){
-					slots = tileEntity.getTransportSlots().input || [];
-					slotsInitialized = true;
-				}
-			}
-			if(!slotsInitialized){
-				for(var name in container.slots){
-					slots.push(name);
-				}
-			}
-			for(var i in slots){
-				var slot = container.getSlot(slots[i]);
-				if(item.count <= 0){
-					break;
-				}
-				if(slot.id == 0 || slot.id == item.id && slot.data == item.data){
-					var maxstack = slot.id > 0 ? Item.getMaxStack(slot.id) : 64;
-					var add = Math.min(maxstack - slot.count, item.count);
-					item.count -= add;
-					slot.count += add;
-					slot.id = item.id;
-					slot.data = item.data;
-				}
-			}
-			container.applyChanges();
-			
-			if(item.count==0){
-				item.id = 0;
-				item.data = 0;
-				break;
-			}
-		}
-	}
-}
-
-function getItemsFrom(items, containers){
-	for(var i in items){
-		var item = items[i];
-		for(var c in containers){
-			var container = containers[c];
-			container.refreshSlots();
-			var tileEntity = container.tileEntity;
-			var slots = [];
-			var slotsInitialized = false;
-			
-			if(tileEntity && tileEntity.getTransportSlots){
-				slots = tileEntity.getTransportSlots().output || [];
-				slotsInitialized = true;
-			}
-			if(!slotsInitialized){
-				for(var name in container.slots){
-					slots.push(name);
-				}
-			}
-			for(var i in slots){
-				var slot = container.getSlot(slots[i]);
-				if(slot.id > 0 && (item.id == 0 || item.id == slot.id && item.data == slot.data)){
-					var add = Math.min(64 - item.count, slot.count);
-					slot.count -= add;
-					item.count += add;
-					item.id = slot.id;
-					item.data = slot.data;
-				}
-			}
-			container.validateAll();
-			container.applyChanges();
-			if(item.count==64){break;}
-		}
-	}
-}
-
 UpgradeAPI.registerUpgrade(ItemID.upgradeOverclocker, function(count, machine, container, data, coords){
 	if(data.work_time){
 		data.energy_consumption = Math.round(data.energy_consumption * Math.pow(1.6, count));
@@ -264,65 +178,26 @@ UpgradeAPI.registerUpgrade(ItemID.upgradeEjector6, function(count, machine, cont
 Item.registerUseFunction("upgradeEjector", function(coords, item, block){
 	Player.setCarriedItem(ItemID["upgradeEjector" + (coords.side+1)], item.count);
 });
-Item.registerUseFunction("upgradeEjector1", function(coords, item, block){
+for(var i = 1; i <= 6; i++){
+Item.registerUseFunction("upgradeEjector"+i, function(coords, item, block){
 	Player.setCarriedItem(ItemID.upgradeEjector, item.count);
 });
-Item.registerUseFunction("upgradeEjector2", function(coords, item, block){
-	Player.setCarriedItem(ItemID.upgradeEjector, item.count);
-});
-Item.registerUseFunction("upgradeEjector3", function(coords, item, block){
-	Player.setCarriedItem(ItemID.upgradeEjector, item.count);
-});
-Item.registerUseFunction("upgradeEjector4", function(coords, item, block){
-	Player.setCarriedItem(ItemID.upgradeEjector, item.count);
-});
-Item.registerUseFunction("upgradeEjector5", function(coords, item, block){
-	Player.setCarriedItem(ItemID.upgradeEjector, item.count);
-});
-Item.registerUseFunction("upgradeEjector6", function(coords, item, block){
-	Player.setCarriedItem(ItemID.upgradeEjector, item.count);
-});
+}
 
 Item.registerUseFunction("upgradePulling", function(coords, item, block){
 	Player.setCarriedItem(ItemID["upgradePulling" + (coords.side+1)], item.count);
 });
-Item.registerUseFunction("upgradePulling1", function(coords, item, block){
+for(var i = 1; i <= 6; i++){
+Item.registerUseFunction("upgradePulling"+i, function(coords, item, block){
 	Player.setCarriedItem(ItemID.upgradePulling, item.count);
 });
-Item.registerUseFunction("upgradePulling2", function(coords, item, block){
-	Player.setCarriedItem(ItemID.upgradePulling, item.count);
-});
-Item.registerUseFunction("upgradePulling3", function(coords, item, block){
-	Player.setCarriedItem(ItemID.upgradePulling, item.count);
-});
-Item.registerUseFunction("upgradePulling4", function(coords, item, block){
-	Player.setCarriedItem(ItemID.upgradePulling, item.count);
-});
-Item.registerUseFunction("upgradePulling5", function(coords, item, block){
-	Player.setCarriedItem(ItemID.upgradePulling, item.count);
-});
-Item.registerUseFunction("upgradePulling6", function(coords, item, block){
-	Player.setCarriedItem(ItemID.upgradePulling, item.count);
-});
+}
 
 Item.registerUseFunction("upgradeFluidEjector", function(coords, item, block){
 	Player.setCarriedItem(ItemID["upgradeFluidEjector" + (coords.side+1)], item.count);
 });
-Item.registerUseFunction("upgradeFluidEjector1", function(coords, item, block){
+for(var i = 1; i <= 6; i++){
+Item.registerUseFunction("upgradeFluidEjector"+i, function(coords, item, block){
 	Player.setCarriedItem(ItemID.upgradeFluidEjector, item.count);
 });
-Item.registerUseFunction("upgradeFluidEjector2", function(coords, item, block){
-	Player.setCarriedItem(ItemID.upgradeFluidEjector, item.count);
-});
-Item.registerUseFunction("upgradeFluidEjector3", function(coords, item, block){
-	Player.setCarriedItem(ItemID.upgradeFluidEjector, item.count);
-});
-Item.registerUseFunction("upgradeFluidEjector4", function(coords, item, block){
-	Player.setCarriedItem(ItemID.upgradeFluidEjector, item.count);
-});
-Item.registerUseFunction("upgradeFluidEjector5", function(coords, item, block){
-	Player.setCarriedItem(ItemID.upgradeFluidEjector, item.count);
-});
-Item.registerUseFunction("upgradeFluidEjector6", function(coords, item, block){
-	Player.setCarriedItem(ItemID.upgradeFluidEjector, item.count);
-});
+}

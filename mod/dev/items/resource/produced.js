@@ -1,11 +1,8 @@
 IDRegistry.genItemID("matter");
-Item.createItem("matter", "UU-Matter", {name: "uu_matter"});
-
-IDRegistry.genItemID("iridiumChunk");
-Item.createItem("iridiumChunk", "Iridium", {name: "iridium"});
+Item.createItem("matter", "§bUU-Matter", {name: "uu_matter"});
 
 IDRegistry.genItemID("plateReinforcedIridium");
-Item.createItem("plateReinforcedIridium", "Iridium Reinforced Plate", {name: "plate_reinforced_iridium"});
+Item.createItem("plateReinforcedIridium", "§bIridium Reinforced Plate", {name: "plate_reinforced_iridium"});
 
 IDRegistry.genItemID("ingotAlloy");
 Item.createItem("ingotAlloy", "Alloy Ingot", {name: "ingot_alloy"});

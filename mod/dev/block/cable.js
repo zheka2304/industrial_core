@@ -23,9 +23,9 @@ Block.createBlock("cableOptic", [
 	{name: "tile.cableOptic.name", texture: [["cable_block_optic", 0]], inCreative: false}
 ], EU.getWireSpecialType());
 
-var STANDART_CABLE_WIDTH = 1/2;
-var GOLD_CABLE_WIDTH = 5/8;
-var HV_CABLE_WIDTH = 3/4;
+var STANDART_CABLE_WIDTH = 1/2; // 6
+var GOLD_CABLE_WIDTH = 5/8; // 8
+var HV_CABLE_WIDTH = 3/4; // 10
 var OPTIC_CABLE_WIDTH = 1/4;
 
 Block.setBlockShape(BlockID.cableTin, {x: 0.5 - STANDART_CABLE_WIDTH/2, y: 0.5 - STANDART_CABLE_WIDTH/2, z: 0.5 - STANDART_CABLE_WIDTH/2}, {x: 0.5 + STANDART_CABLE_WIDTH/2, y: 0.5 + STANDART_CABLE_WIDTH/2, z: 0.5 + STANDART_CABLE_WIDTH/2});

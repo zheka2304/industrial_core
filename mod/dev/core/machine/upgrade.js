@@ -55,3 +55,89 @@ var UpgradeAPI = {
 		return containers;
 	}
 }
+
+function addItemsToContainers(items, containers){
+	for(var i in items){
+		for(var c in containers){
+			var container = containers[c];
+			var item = items[i];
+			container.refreshSlots();
+			var tileEntity = container.tileEntity;
+			var slots = [];
+			var slotsInitialized = false;
+			
+			if(tileEntity){
+				if(tileEntity.addTransportedItem){
+					tileEntity.addTransportedItem({}, item, {});
+					continue;
+				}
+				if(tileEntity.getTransportSlots){
+					slots = tileEntity.getTransportSlots().input || [];
+					slotsInitialized = true;
+				}
+			}
+			if(!slotsInitialized){
+				for(var name in container.slots){
+					slots.push(name);
+				}
+			}
+			for(var i in slots){
+				var slot = container.getSlot(slots[i]);
+				if(item.count <= 0){
+					break;
+				}
+				if(slot.id == 0 || slot.id == item.id && slot.data == item.data){
+					var maxstack = slot.id > 0 ? Item.getMaxStack(slot.id) : 64;
+					var add = Math.min(maxstack - slot.count, item.count);
+					item.count -= add;
+					slot.count += add;
+					slot.id = item.id;
+					slot.data = item.data;
+				}
+			}
+			container.applyChanges();
+			
+			if(item.count==0){
+				item.id = 0;
+				item.data = 0;
+				break;
+			}
+		}
+	}
+}
+
+function getItemsFrom(items, containers){
+	for(var i in items){
+		var item = items[i];
+		for(var c in containers){
+			var container = containers[c];
+			container.refreshSlots();
+			var tileEntity = container.tileEntity;
+			var slots = [];
+			var slotsInitialized = false;
+			
+			if(tileEntity && tileEntity.getTransportSlots){
+				slots = tileEntity.getTransportSlots().output || [];
+				slotsInitialized = true;
+			}
+			if(!slotsInitialized){
+				for(var name in container.slots){
+					slots.push(name);
+				}
+			}
+			for(var i in slots){
+				var slot = container.getSlot(slots[i]);
+				if(slot.id > 0 && (item.id == 0 || item.id == slot.id && item.data == slot.data)){
+					var add = Math.min(64 - item.count, slot.count);
+					slot.count -= add;
+					item.count += add;
+					item.id = slot.id;
+					item.data = slot.data;
+				}
+			}
+			container.validateAll();
+			container.applyChanges();
+			if(item.count==64){break;}
+		}
+	}
+}

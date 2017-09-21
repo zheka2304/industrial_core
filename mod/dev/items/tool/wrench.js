@@ -20,8 +20,8 @@ Callback.addCallback("DestroyBlockStart", function(coords, block){
 	if(MachineRegistry.machineIDs[block.id]){
 		var item = Player.getCarriedItem();
 		if(item.id==ItemID.wrench || item.id==ItemID.electricWrench && item.data < 200){
-			var tile = nativeGetTile(coords.x, coords.y, coords.z);
-			nativeSetDestroyTime(tile, 0);
+			var tile = Unlimited.API.GetReal(block.id, block.data).id;
+			Block.setDestroyTime(tile, 0);
 		}
 	}
 });

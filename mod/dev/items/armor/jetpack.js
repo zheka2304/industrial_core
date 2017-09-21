@@ -1,7 +1,7 @@
 IDRegistry.genItemID("jetpack");
 Item.createArmorItem("jetpack", "Jetpack", {name: "armor_jetpack"}, {type: "chestplate", armor: 3, durability: 6000, texture: "armor/jetpack_1.png", isTech: true});
-Player.addItemCreativeInv(ItemID.jetpack, 1, 1) ;
-ChargeItemRegistry.registerItem(ItemID.jetpack, 6000, 0, true, 5);
+Player.addItemCreativeInv(ItemID.jetpack, 1, 1);
+ChargeItemRegistry.registerItem(ItemID.jetpack, 30000, 0, true, 5);
 
 Recipes.addShaped({id: ItemID.jetpack, count: 1, data: 6000}, [
 	"bcb",

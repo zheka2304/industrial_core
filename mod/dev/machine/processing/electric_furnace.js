@@ -35,7 +35,7 @@ var guiElectricFurnace = new UI.StandartWindow({
 		"slotResult": {type: "slot", x: 625, y: 142},
 		"slotUpgrade1": {type: "slot", x: 820, y: 48},
 		"slotUpgrade2": {type: "slot", x: 820, y: 112},
-		"slotUpgrade3": {type: "slot", x: 820, y: 175},
+		"slotUpgrade3": {type: "slot", x: 820, y: 176},
 		"slotUpgrade4": {type: "slot", x: 820, y: 240}
 	}
 });

@@ -36,7 +36,7 @@ var guiMacerator = new UI.StandartWindow({
         "slotResult": {type: "slot", x: 625, y: 142},
 		"slotUpgrade1": {type: "slot", x: 820, y: 48},
 		"slotUpgrade2": {type: "slot", x: 820, y: 112},
-		"slotUpgrade3": {type: "slot", x: 820, y: 175},
+		"slotUpgrade3": {type: "slot", x: 820, y: 176},
 		"slotUpgrade4": {type: "slot", x: 820, y: 240}
     }
 });
@@ -68,9 +68,9 @@ Callback.addCallback("PreLoaded", function(){
         // other resources
         22: {id: ItemID.dustLapis, count: 9, data: 0},
         173: {id: ItemID.dustCoal, count: 9, data: 0},
-        263: {id: ItemID.dustCoal, count: 1, data: 0},
+        "263:0": {id: ItemID.dustCoal, count: 1, data: 0},
         264: {id: ItemID.dustDiamond, count: 1, data: 0},
-        351: {id: ItemID.dustLapis, count: 1, data: 0, ingredientData: 4},
+        "351:4": {id: ItemID.dustLapis, count: 1, data: 0},
         // other materials
         1: {id: 4, count: 1, data: 0},
         4: {id: 12, count: 1, data: 0},
@@ -111,7 +111,7 @@ MachineRegistry.registerPrototype(BlockID.macerator, {
 		UpgradeAPI.executeAll(this);
 		
         var sourceSlot = this.container.getSlot("slotSource");
-        var result = MachineRecipeRegistry.getRecipeResult("macerator", sourceSlot.id);
+        var result = MachineRecipeRegistry.getRecipeResult("macerator", sourceSlot.id, sourceSlot.data);
         if(result && (sourceSlot.data == result.ingredientData || !result.ingredientData)){
 			var resultSlot = this.container.getSlot("slotResult");
 			if(resultSlot.id == result.id && resultSlot.data == result.data && resultSlot.count <= 64 - result.count || resultSlot.id == 0){
