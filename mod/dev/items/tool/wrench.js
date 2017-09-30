@@ -4,7 +4,6 @@ Item.setMaxDamage(ItemID.wrench, 161);
 
 IDRegistry.genItemID("electricWrench");
 Item.setElectricItem("electricWrench", "Electric Wrench", {name: "electric_wrench", meta: 0}, {stack: 1});
-Item.setMaxDamage(ItemID.electricWrench, 200);
 ChargeItemRegistry.registerItem(ItemID.electricWrench, 10000, 0, true, 50, true);
 
 Recipes.addShaped({id: ItemID.wrench, count: 1, data: 0}, [
@@ -19,7 +18,7 @@ Recipes.addShapeless({id: ItemID.electricWrench, count: 1, data: 200}, [{id: Ite
 Callback.addCallback("DestroyBlockStart", function(coords, block){
 	if(MachineRegistry.machineIDs[block.id]){
 		var item = Player.getCarriedItem();
-		if(item.id==ItemID.wrench || item.id==ItemID.electricWrench && item.data < 200){
+		if(item.id==ItemID.wrench || item.id==ItemID.electricWrench && item.data+10 <= 201){
 			var tile = Unlimited.API.GetReal(block.id, block.data).id;
 			Block.setDestroyTime(tile, 0);
 		}

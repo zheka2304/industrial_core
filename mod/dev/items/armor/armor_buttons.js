@@ -33,58 +33,61 @@ var buttonMap = {
 	button_jump: false,
 }
 
-var buttonContent = {
-	button_nightvision: {
-		y: 0,
-		type: "button",
-		bitmap: "button_nightvision_on",
-		bitmap2: "button_nightvision_off",
-		scale: 50,
-		clicker: {
-			onClick: function(){
-				if(UIbuttons.nightvision){
-					UIbuttons.nightvision = false;
-					Game.message("§4Nightvision mode disabled");
-				}
-				else{
-					UIbuttons.nightvision = true;
-					Game.message("§2Nightvision mode enabled");
+function updateUIbuttons(){
+	var buttonContent = {
+		button_nightvision: {
+			y: 0,
+			type: "button",
+			bitmap: "button_nightvision_on",
+			bitmap2: "button_nightvision_off",
+			scale: 50,
+			clicker: {
+				onClick: function(){
+					if(UIbuttons.nightvision){
+						UIbuttons.nightvision = false;
+						Game.message("§4Nightvision mode disabled");
+					}
+					else{
+						UIbuttons.nightvision = true;
+						Game.message("§2Nightvision mode enabled");
+					}
 				}
 			}
-		}
-	},
-	button_fly: {
-		y: 1000,
-		type: "button",
-		bitmap: "button_fly_on",
-		bitmap2: "button_fly_off",
-		scale: 50
-	},
-	button_jump: {
-		y: 2000,
-		type: "button",
-		bitmap: "button_jump_on",
-		bitmap2: "button_jump_off",
-		scale: 50,
-		clicker: {
-			onClick: function(){
-				var armor = Player.getArmorSlot(3);
-				if(Item.getMaxDamage(armor.id) - armor.data >= 8 && Math.abs(Player.getVelocity().y + 0.078) < 0.01){
-					Player.addVelocity(0, 1.4, 0);
-					Player.setArmorSlot(3, armor.id, armor.data+8);
+		},
+		button_fly: {
+			y: 1000,
+			type: "button",
+			bitmap: "button_fly_on",
+			bitmap2: "button_fly_off",
+			scale: 50
+		},
+		button_jump: {
+			y: 2000,
+			type: "button",
+			bitmap: "button_jump_on",
+			bitmap2: "button_jump_off",
+			scale: 50,
+			clicker: {
+				onClick: function(){
+					var armor = Player.getArmorSlot(3);
+					if(Item.getMaxDamage(armor.id) - armor.data >= 8 && Math.abs(Player.getVelocity().y + 0.078) < 0.01){
+						Player.addVelocity(0, 1.4, 0);
+						Player.setArmorSlot(3, armor.id, armor.data+8);
+					}
 				}
 			}
 		}
 	}
-}
-
-function updateUIbuttons(){
 	var elements = UIbuttons.Window.content.elements;
-	elements = {};
 	for(var name in buttonMap){
 		if(buttonMap[name]){
-			elements[name] = buttonContent[name];
-			elements[name].x = 0;
+			if(!elements[name]){
+				elements[name] = buttonContent[name];
+				elements[name].x = 0;
+			}
+		}
+		else{
+			elements[name] = null;
 		}
 	}
 }

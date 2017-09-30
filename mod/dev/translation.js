@@ -143,10 +143,10 @@ Translation.addTranslation("Water Cell", {ru: "Капсула с водой", es
 Translation.addTranslation("Lava Cell", {ru: "Капсула с лавой", es: "Celda de Lava", zh: "岩浆单元"});
 
 // Wires
-Translation.addTranslation("Tin Wire", {ru: "Оловянный провод", es: "Cable de Ultra-Baja Tensión", zh: "锡质导线"});
-Translation.addTranslation("Insulated Tin Wire", {ru: "Изолированный оловянный провод", es: "Cable de Estaño Aislado", zh: "绝缘锡质导线"});
-Translation.addTranslation("Copper Wire", {ru: "Медный провод", es: "Cable de Cobre", zh: "铜质导线"});
-Translation.addTranslation("Insulated Copper Wire", {ru: "Изолированный медный провод", es: "Cable de Cobre Aislado", zh: "绝缘质铜导线"});
+Translation.addTranslation("Tin Cable", {ru: "Оловянный провод", es: "Cable de Ultra-Baja Tensión", zh: "锡质导线"});
+Translation.addTranslation("Tin Cable (insulated)", {ru: "Изолированный оловянный провод", es: "Cable de Estaño Aislado", zh: "绝缘锡质导线"});
+Translation.addTranslation("Copper Cable", {ru: "Медный провод", es: "Cable de Cobre", zh: "铜质导线"});
+Translation.addTranslation("Copper Cable (insulated)", {ru: "Изолированный медный провод", es: "Cable de Cobre Aislado", zh: "绝缘质铜导线"});
 Translation.addTranslation("Gold Cable", {ru: "Золотой провод", es: "Cable de Oro", zh: "金质导线"});
 Translation.addTranslation("Gold Cable (insulated x2)", {ru: "Золотой провод с двойной изоляцией", es: "Cable de Oro Aislado x2", zh: "2x绝缘金质导线"});
 Translation.addTranslation("HV Cable", {ru: "Высоковольтный провод", es: "Cable de Alta Tensión", zh: "高压导线"});

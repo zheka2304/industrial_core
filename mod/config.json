@@ -5,7 +5,8 @@
 		"copper_ore": true,
 		"tin_ore": true,
 		"lead_ore": true,
-		"uranium_ore": true
+		"uranium_ore": true,
+		"iridium_ore": true
 	},
 	"rubber_tree_gen": {
 		"forest_and_plains": true,

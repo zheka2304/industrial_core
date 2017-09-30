@@ -36,7 +36,7 @@ var IDrillMode = 0;
 var dirtBlocksDrop = {13:318, 60:3, 110:3, 198:3, 243:3};
 ToolAPI.setTool(ItemID.drill, {durability: 600, level: 3, efficiency: 8, damage: 3},  ToolType.drill);
 ToolAPI.setTool(ItemID.diamondDrill, {durability: 375, level: 4, efficiency: 16, damage: 4}, ToolType.drill);
-ToolAPI.setTool(ItemID.iridiumDrill, {durability: 250, level: 5, efficiency: 24, damage: 5}, {
+ToolAPI.setTool(ItemID.iridiumDrill, {durability: 400, level: 5, efficiency: 24, damage: 5}, {
 	enchantType: Native.EnchantType.pickaxe,
 	damage: 0,
 	blockTypes: ["stone", "dirt"],

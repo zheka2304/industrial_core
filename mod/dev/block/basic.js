@@ -3,14 +3,14 @@ Block.createBlock("machineBlockBasic", [
 	{name: "Machine Block", texture: [["machine_top", 0]], inCreative: true}
 ], BLOCK_TYPE_METAL_BLOCK);
 ToolAPI.registerBlockMaterial(BlockID.machineBlockBasic, "stone");
-Block.setDestroyLevel("machineBlockBasic", 2);
+Block.setDestroyLevel("machineBlockBasic", 1);
 
 IDRegistry.genBlockID("machineBlockAdvanced");
 Block.createBlock("machineBlockAdvanced", [
 	{name: "Advanced Machine Block", texture: [["machine_advanced", 0]], inCreative: true}
 ], BLOCK_TYPE_METAL_BLOCK);
 ToolAPI.registerBlockMaterial(BlockID.machineBlockAdvanced, "stone");
-Block.setDestroyLevel("machineBlockAdvanced", 2);
+Block.setDestroyLevel("machineBlockAdvanced", 1);
 
 
 Callback.addCallback("PostLoaded", function(){

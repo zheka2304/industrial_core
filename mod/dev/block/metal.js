@@ -1,6 +1,7 @@
 var BLOCK_TYPE_METAL_BLOCK = Block.createSpecialType({
 	base: 1,
 	destroytime: 5,
+	explosionres: 6,
 }, "metal_block");
 
 IDRegistry.genBlockID("blockCopper");

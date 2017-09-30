@@ -1,6 +1,7 @@
 var BLOCK_TYPE_ORE = Block.createSpecialType({
 	base: 1,
-	destroytime: 3
+	destroytime: 3,
+	explosionres: 3
 }, "ore");
 
 IDRegistry.genBlockID("oreCopper");
@@ -154,7 +155,8 @@ Callback.addCallback("PostLoaded", function(){
 		Callback.addCallback("GenerateChunk", function(chunkX, chunkZ){
 			if(Math.random() < 0.2){
 				var coords = GenerationUtils.randomCoords(chunkX, chunkZ, 1, 100);
-				World.setBlock(coords.x, coords.y, coords.z, BlockID.oreIridium);
+				if(nativeGetTile(coords.x, coords.y, coords.z) == 1){
+				World.setBlock(coords.x, coords.y, coords.z, BlockID.oreIridium);}
 			}
 		});
 	}
